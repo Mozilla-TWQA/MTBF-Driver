@@ -1,37 +1,36 @@
 import os
-import gaiatest.runtests
+from gaiatest import runtests
 #import marionette.runtest.cli
 
 class MTBF_Driver:
-    def __init(self, time)__:
-    self.start_time = time;
-    self.running_time = 0;
+    def __init__(self, time):
+        self.start_time = time;
+        self.running_time = 0;
 
 
     ## logging module should be defined here
 
-    def start_logging():
-        #TODO
+    def start_logging(self):
+        pass
 
-    def start_gaiatest():
+    def start_gaiatest(self):
         ## Infinite run before time expired
 
         try:
             while(True):
                 ## Run test
                 runtests.main()
-                get_report()
-
-
-
-        except:
+                self.get_report()
+        except Exception as e:
             ## Test run failed, halt?
-            get_report()
+            self.get_report()
+            import traceback
+            traceback.print_exc()
             raise Exception
             
 
-    def get_report():
-        ## TODO
+    def get_report(self):
+        pass
 
 
 
