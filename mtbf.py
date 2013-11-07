@@ -1,11 +1,13 @@
-import os, time, sys, signal
-from gaiatest import runtests
-#import marionette.runtest.cli
+import os, time, sys, signal, logging
+from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
+from marionette.runtests import startTestRunner
 
 class MTBF_Driver:
     def __init__(self, time):
-        self.start_time = time;
-        self.running_time = 0;
+        self.duration = time
+        self.start_time = None
+        self.running_time = 0
+        self.runner = None
 
 
     ## logging module should be defined here
@@ -15,34 +17,37 @@ class MTBF_Driver:
 
     def start_gaiatest(self):
         ## Infinite run before time expired
+        runner_class = GaiaTestRunner
+        parser_class = GaiaTestOptions
+        parser = parser_class(usage='%prog [options] test_file_or_dir <test_file_or_dir> ...')
+        options, tests = parser.parse_args()
+        parser.verify_usage(options, tests)
 
-        try:
-            while(True):
-                ## Run test
-                runtests.main()
-                self.get_report()
-        except Exception as e:
-            ## Test run failed, halt?
-            self.get_report()
-            import traceback
-            traceback.print_exc()
-            raise Exception
+        while(True):
+            ## Run test
+            self.runner = runner_class(**vars(options))
+            self.runner.run_tests(tests)
             
-
     def get_report(self):
-        pass
+        print("break point to test")
+        self.runner.logger.info('\nSUMMARY\n-------')
+        self.runner.logger.info('passed: %d' % self.runner.passed)
+        self.runner.logger.info('failed: %d' % self.runner.failed)
+        self.runner.logger.info('todo: %d' % self.runner.todo)
 
     def time_up(self, signum, frame):
         print 'Signal handler called with signal', signum
-        raise IOError, "Time is up!"
+        self.get_report()
+        raise KeyboardInterrupt
+        #raise IOError, "Time is up!"
         #sys.exit(0)
 
 
 def main():
-    mtbf = MTBF_Driver(os.getenv('MTBF_TIME', 120))  ## set default as 2 mins
+    mtbf = MTBF_Driver(int(os.getenv('MTBF_TIME', 120))) ## set default as 2 mins
 
     signal.signal(signal.SIGALRM, mtbf.time_up)
-    signal.alarm(10)
+    signal.alarm(mtbf.duration)
 
     mtbf.start_gaiatest()
     #TODO

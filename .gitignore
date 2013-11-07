@@ -1,4 +1,6 @@
 *.py[cod]
+# firefox os
+logcat
 
 # C extensions
 *.so
