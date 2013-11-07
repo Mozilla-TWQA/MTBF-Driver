@@ -1,4 +1,4 @@
-import os
+import os, time, sys, signal
 from gaiatest import runtests
 #import marionette.runtest.cli
 
@@ -32,13 +32,30 @@ class MTBF_Driver:
     def get_report(self):
         pass
 
+    def time_up(self, signum, frame):
+        print 'Signal handler called with signal', signum
+        raise IOError, "Time is up!"
+        #sys.exit(0)
 
 
 def main():
     mtbf = MTBF_Driver(os.getenv('MTBF_TIME', 120))  ## set default as 2 mins
+
+    signal.signal(signal.SIGALRM, mtbf.time_up)
+    signal.alarm(10)
+
     mtbf.start_gaiatest()
     #TODO
     ## Create MTBF object isntance and run its main function
+    
+    # This open() may hang indefinitely
+    #testalarm=1
+    #while testalarm <=1:
+    #    print "%s: %s" % ( 'mainprogram', time.ctime(time.time()) )
+    #    time.sleep(1)
+
+
+    signal.alarm(0)          # Disable the alarm
 
 if __name__ == '__main__':
     main()
