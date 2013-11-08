@@ -22,6 +22,7 @@ class MTBF_Driver:
         parser = parser_class(usage='%prog [options] test_file_or_dir <test_file_or_dir> ...')
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
+        self.start_time = time.time()
 
         while(True):
             ## Run test
@@ -29,14 +30,18 @@ class MTBF_Driver:
             self.runner.run_tests(tests)
             
     def get_report(self):
-        print("break point to test")
+        print("\nGenerate Report\n")
+        self.running_time = time.time() - self.start_time
+        self.runner.logger.info("\nTime taken %.3fs\n", self.running_time)
+        
+        
         self.runner.logger.info('\nSUMMARY\n-------')
         self.runner.logger.info('passed: %d' % self.runner.passed)
         self.runner.logger.info('failed: %d' % self.runner.failed)
         self.runner.logger.info('todo: %d' % self.runner.todo)
 
     def time_up(self, signum, frame):
-        print 'Signal handler called with signal', signum
+        print ("Signal handler called with signal", signum)
         self.get_report()
         raise KeyboardInterrupt
         #raise IOError, "Time is up!"
