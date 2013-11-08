@@ -23,11 +23,14 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-
+        
         while(True):
             ## Run test
+            ## workaround: kill the runner and create another one each round, should be fixed
             self.runner = runner_class(**vars(options))
             self.runner.run_tests(tests)
+            self.logger = logging.getLogger('Marionette')
+            self.logger.handlers = []
             
     def get_report(self):
         print("\nGenerate Report\n")
