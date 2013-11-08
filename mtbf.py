@@ -8,6 +8,9 @@ class MTBF_Driver:
         self.start_time = None
         self.running_time = 0
         self.runner = None
+        self.passed = 0
+        self.failed = 0
+        self.todo = 0
 
 
     ## logging module should be defined here
@@ -28,6 +31,9 @@ class MTBF_Driver:
             ## Run test
             self.runner = runner_class(**vars(options))
             self.runner.run_tests(tests)
+            self.passed = self.runner.passed + self.passed
+            self.failed = self.runner.failed + self.failed
+            self.todo = self.runner.todo + self.todo
             
     def get_report(self):
         print("\nGenerate Report\n")
@@ -36,9 +42,9 @@ class MTBF_Driver:
         
         
         self.runner.logger.info('\nSUMMARY\n-------')
-        self.runner.logger.info('passed: %d' % self.runner.passed)
-        self.runner.logger.info('failed: %d' % self.runner.failed)
-        self.runner.logger.info('todo: %d' % self.runner.todo)
+        self.runner.logger.info('passed: %d' % self.passed)
+        self.runner.logger.info('failed: %d' % self.failed)
+        self.runner.logger.info('todo: %d' % self.todo)
 
     def time_up(self, signum, frame):
         print ("Signal handler called with signal", signum)
