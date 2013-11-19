@@ -1,8 +1,15 @@
-import os, time, sys, signal, logging
+import logging
+import os
+import sys
+import signal
+import time
+
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from marionette.runtests import startTestRunner
 
+
 class MTBF_Driver:
+    ## time format here is seconds
     def __init__(self, time):
         self.duration = time
         self.start_time = None
@@ -12,9 +19,7 @@ class MTBF_Driver:
         self.failed = 0
         self.todo = 0
 
-
     ## logging module should be defined here
-
     def start_logging(self):
         pass
 
@@ -26,7 +31,7 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        
+
         while(True):
             ## Run test
             ## workaround: kill the runner and create another one each round, should be fixed
@@ -39,42 +44,31 @@ class MTBF_Driver:
             self.logger = logging.getLogger('Marionette')
             self.logger.handlers = []
 
-            
     def get_report(self):
-        print("\nGenerate Report\n")
         self.running_time = time.time() - self.start_time
-        self.runner.logger.info("\nTime taken %.3fs\n", self.running_time)
-        self.runner.logger.info('\nSUMMARY\n-------')
+        self.runner.logger.info("\n*Total MTBF Time: %.3fs", self.running_time)
+        self.runner.logger.info('\nMTBF TEST SUMMARY\n-----------------')
         self.runner.logger.info('passed: %d' % self.passed)
         self.runner.logger.info('failed: %d' % self.failed)
-        self.runner.logger.info('todo: %d' % self.todo)
+        self.runner.logger.info('todo:   %d' % self.todo)
 
     def time_up(self, signum, frame):
         print ("Signal handler called with signal", signum)
         self.get_report()
-        raise KeyboardInterrupt
-        #raise IOError, "Time is up!"
-        #sys.exit(0)
+        os._exit(0)
 
 
 def main():
-    mtbf = MTBF_Driver(int(os.getenv('MTBF_TIME', 120))) ## set default as 2 mins
+    ## set default as 2 mins
+    time = int(os.getenv('MTBF_TIME', 2)) * 60
+    mtbf = MTBF_Driver(time)
 
     signal.signal(signal.SIGALRM, mtbf.time_up)
     signal.alarm(mtbf.duration)
 
     mtbf.start_gaiatest()
-    #TODO
-    ## Create MTBF object isntance and run its main function
-    
-    # This open() may hang indefinitely
-    #testalarm=1
-    #while testalarm <=1:
-    #    print "%s: %s" % ( 'mainprogram', time.ctime(time.time()) )
-    #    time.sleep(1)
-
-
-    signal.alarm(0)          # Disable the alarm
+    ## Disable the alarm
+    signal.alarm(0)
 
 if __name__ == '__main__':
     main()
