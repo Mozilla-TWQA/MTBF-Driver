@@ -9,6 +9,7 @@ from marionette.runtests import startTestRunner
 
 
 class MTBF_Driver:
+    ## time format here is seconds
     def __init__(self, time):
         self.duration = time
         self.start_time = None
@@ -59,22 +60,15 @@ class MTBF_Driver:
 
 def main():
     ## set default as 2 mins
-    mtbf = MTBF_Driver(int(os.getenv('MTBF_TIME', 120)))
+    time = int(os.getenv('MTBF_TIME', 2)) * 60
+    mtbf = MTBF_Driver(time)
 
     signal.signal(signal.SIGALRM, mtbf.time_up)
     signal.alarm(mtbf.duration)
 
     mtbf.start_gaiatest()
-    #TODO
-    ## Create MTBF object isntance and run its main function
-
-    # This open() may hang indefinitely
-    #testalarm=1
-    #while testalarm <=1:
-    #    print "%s: %s" % ( 'mainprogram', time.ctime(time.time()) )
-    #    time.sleep(1)
-
-    signal.alarm(0)          # Disable the alarm
+    ## Disable the alarm
+    signal.alarm(0)
 
 if __name__ == '__main__':
     main()
