@@ -68,6 +68,11 @@ class GaiaMtbfTestCase(GaiaTestCase):
         self.marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
         self.marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
 
+        if self.restart:
+            self.cleanup_gaia(full_reset=False)
+        else:
+            self.cleanup_gaia(full_reset=True)
+
     def launch_by_touch(self, name, switch_to_frame=True, url=None, launch_timeout=None):
         from gaiatest.apps.homescreen.app import Homescreen
         homescreen = Homescreen(self.marionette)
@@ -92,7 +97,66 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
         return iframe_id
 
+    def cleanup_gaia(self, full_reset=True):
+        # remove media
+        if self.device.is_android_build:
+            for filename in self.data_layer.media_files:
+                self.device.manager.removeFile(filename)
+
+        # switch off keyboard FTU screen
+        self.data_layer.set_setting("keyboard.ftu.enabled", False)
+
+        # restore settings from testvars
+        [self.data_layer.set_setting(name, value) for name, value in self.testvars.get('settings', {}).items()]
+
+        # unlock
+        self.lockscreen.unlock()
+
+        if full_reset:
+            # disable passcode
+            self.data_layer.set_setting('lockscreen.passcode-lock.code', '1111')
+            self.data_layer.set_setting('lockscreen.passcode-lock.enabled', False)
+
+            # change language back to english
+            self.data_layer.set_setting("language.current", "en-US")
+
+            # switch off spanish keyboard
+            self.data_layer.set_setting("keyboard.layouts.spanish", False)
+
+            # reset do not track
+            self.data_layer.set_setting('privacy.donottrackheader.value', '-1')
+
+            if self.data_layer.get_setting('ril.radio.disabled'):
+                # enable the device radio, disable airplane mode
+                self.data_layer.set_setting('ril.radio.disabled', False)
+
+            # disable carrier data connection
+            if self.device.has_mobile_connection:
+                self.data_layer.disable_cell_data()
+
+            self.data_layer.disable_cell_roaming()
+
+            if self.device.has_wifi:
+                # Bug 908553 - B2G Emulator: support wifi emulation
+                if not self.device.is_emulator:
+                    self.data_layer.enable_wifi()
+                    self.data_layer.forget_all_networks()
+                    self.data_layer.disable_wifi()
+
+            # remove data
+            self.data_layer.remove_all_contacts()
+
+            # reset to home screen
+            self.marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
+
+        # kill any open apps
+        self.apps.kill_all()
+
+        # disable sound completely
+        self.data_layer.set_volume(0)
+
     def tearDown(self):
         self.marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
         time.sleep(2)
         MarionetteTestCase.tearDown(self)
+
