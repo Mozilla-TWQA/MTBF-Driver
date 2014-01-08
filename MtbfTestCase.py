@@ -149,9 +149,6 @@ class GaiaMtbfTestCase(GaiaTestCase):
             # reset to home screen
             self.marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
 
-        # kill any open apps
-        self.apps.kill_all()
-
         # disable sound completely
         self.data_layer.set_volume(0)
 
