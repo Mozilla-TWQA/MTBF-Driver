@@ -44,6 +44,10 @@ class MTBF_Driver:
             self.logger = logging.getLogger('Marionette')
             self.logger.handlers = []
 
+            if self.runner.passed == 0:
+                break
+
+
     def get_report(self):
         self.running_time = time.time() - self.start_time
         self.runner.logger.info("\n*Total MTBF Time: %.3fs", self.running_time)
