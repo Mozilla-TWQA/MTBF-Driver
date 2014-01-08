@@ -44,9 +44,11 @@ class MTBF_Driver:
             self.logger = logging.getLogger('Marionette')
             self.logger.handlers = []
 
+            # This is a temporary solution for stop the tests
+            # If there should be any interface there for us to detect continuous failure
+            # We can then remove this
             if self.runner.passed == 0:
                 break
-
 
     def get_report(self):
         self.running_time = time.time() - self.start_time
