@@ -32,12 +32,12 @@ class GaiaMtbfTestCase(GaiaTestCase):
                 pass
 
         self.device = GaiaDevice(self.marionette, self.testvars)
+        if self.device.is_android_build:
+            self.device.add_device_manager(self.device_manager)
         if self.restart and (self.device.is_android_build or self.marionette.instance):
             self.device.stop_b2g()
             if self.device.is_android_build:
-                # revert device to a clean state
-                self.device.manager.removeDir('/data/local/storage/persistent')
-                self.device.manager.removeDir('/data/b2g/mozilla')
+                self.cleanup_data()
             self.device.start_b2g()
 
        # we need to set the default timeouts because we may have a new session
