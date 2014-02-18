@@ -85,9 +85,7 @@ class MTBF_Driver:
             signum
         )
         self.get_report()
-        #os._exit(0)
-        sys.exit(0)
-
+        os._exit(0)
 
 def main():
     ## set default as 2 mins
