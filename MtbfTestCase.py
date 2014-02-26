@@ -73,6 +73,9 @@ class GaiaMtbfTestCase(GaiaTestCase):
         else:
             self.cleanup_gaia(full_reset=True)
 
+        # always sleep 4 seconds before starting
+        time.sleep(4)
+
     def launch_by_touch(self, name, switch_to_frame=True, url=None, launch_timeout=None):
         from gaiatest.apps.homescreen.app import Homescreen
         homescreen = Homescreen(self.marionette)
