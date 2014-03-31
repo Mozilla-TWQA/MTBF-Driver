@@ -1,13 +1,57 @@
+import argparse
 import logging
 import os
-import sys
-import signal
-import time
 import re
+import signal
+import sys
+import textwrap
+import time
+import json
 
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 
 
+## this is for faking out an argument set for memory report
+def memory_report_args(minimize=False, leave_on_device=False, no_auto_open=True,
+                       keep_report=False, gc_log=True, abbrev_gc_log=False):
+    parser = argparse.ArgumentParser(description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    parser.add_argument('--minimize', '-m', dest='minimize_memory_usage',
+        action='store_true', default=minimize)
+
+    parser.add_argument('--directory', '-d', dest='output_directory',
+        action='store', metavar='DIR')
+
+    parser.add_argument('--leave-on-device', '-l', dest='leave_on_device',
+        action='store_true', default=leave_on_device)
+
+    parser.add_argument('--no-auto-open', '-o', dest='open_in_firefox',
+        action='store_false', default=no_auto_open)
+
+    parser.add_argument('--keep-individual-reports',
+        dest='keep_individual_reports',
+        action='store_true', default=keep_report)
+
+    gc_log_group = parser.add_mutually_exclusive_group()
+
+    gc_log_group.add_argument('--no-gc-cc-log',
+        dest='get_gc_cc_logs',
+        action='store_false',
+        default=gc_log)
+
+    gc_log_group.add_argument('--abbreviated-gc-cc-log',
+        dest='abbreviated_gc_cc_log',
+        action='store_true',
+        default=abbrev_gc_log)
+
+    parser.add_argument('--no-dmd', action='store_true', default=False)
+
+    args, unknown = parser.parse_known_args()
+    return args
+
+
+## this is for getting MTBF_TIME translated to seconds
 def time2sec(input_str):
     day = check_none_group(re.search('[^0-9]*([0-9]+)[Dd]', input_str))
     hour = check_none_group(re.search('[^0-9]*([0-9]+)[Hh]', input_str))
@@ -36,6 +80,9 @@ class MTBF_Driver:
         self.failed = 0
         self.todo = 0
 
+        with open("mtbf_config.json") as json_file:
+            self.configuration = json.load(json_file)
+
     ## logging module should be defined here
     def start_logging(self):
         pass
@@ -52,6 +99,12 @@ class MTBF_Driver:
         self.start_time = time.time()
 
         while(True):
+            ## import only if config file states tools is there
+            if self.configuration['memory_report']:
+                ## get some memory report before each round
+                import tools.get_about_memory
+                tools.get_about_memory.get_and_show_info(memory_report_args())
+
             ## Run test
             ## workaround: kill the runner and create another
             ## one each round, should be fixed
@@ -87,7 +140,9 @@ class MTBF_Driver:
         self.get_report()
         os._exit(0)
 
+
 def main():
+    # TODO: maybe get MTBF_TIME into json config file?
     ## set default as 2 mins
     try:
         time = int(time2sec(os.getenv('MTBF_TIME', '2m')))
