@@ -1,46 +1,74 @@
 import argparse
 import logging
 import os
-import re
 import signal
-import sys
-import textwrap
 import time
 import json
+from utils.time_utils import time2sec
 
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 
 
 ## this is for faking out an argument set for memory report
-def memory_report_args(minimize=False, leave_on_device=False, no_auto_open=True,
-                       keep_report=False, gc_log=True, abbrev_gc_log=False):
-    parser = argparse.ArgumentParser(description=__doc__,
+def memory_report_args(
+        minimize=False,
+        leave_on_device=False,
+        no_auto_open=True,
+        keep_report=False,
+        gc_log=True,
+        abbrev_gc_log=False
+        ):
+    parser = argparse.ArgumentParser(
+        description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument('--minimize', '-m', dest='minimize_memory_usage',
-        action='store_true', default=minimize)
+    parser.add_argument(
+        '--minimize',
+        '-m',
+        dest='minimize_memory_usage',
+        action='store_true',
+        default=minimize
+        )
+    parser.add_argument(
+        '--directory',
+        '-d',
+        dest='output_directory',
+        action='store',
+        metavar='DIR'
+        )
 
-    parser.add_argument('--directory', '-d', dest='output_directory',
-        action='store', metavar='DIR')
+    parser.add_argument(
+        '--leave-on-device',
+        '-l',
+        dest='leave_on_device',
+        action='store_true',
+        default=leave_on_device
+        )
 
-    parser.add_argument('--leave-on-device', '-l', dest='leave_on_device',
-        action='store_true', default=leave_on_device)
-
-    parser.add_argument('--no-auto-open', '-o', dest='open_in_firefox',
-        action='store_false', default=no_auto_open)
-
-    parser.add_argument('--keep-individual-reports',
+    parser.add_argument(
+        '--no-auto-open',
+        '-o',
+        dest='open_in_firefox',
+        action='store_false',
+        default=no_auto_open
+        )
+    parser.add_argument(
+        '--keep-individual-reports',
         dest='keep_individual_reports',
-        action='store_true', default=keep_report)
+        action='store_true',
+        default=keep_report
+        )
 
     gc_log_group = parser.add_mutually_exclusive_group()
 
-    gc_log_group.add_argument('--no-gc-cc-log',
+    gc_log_group.add_argument(
+        '--no-gc-cc-log',
         dest='get_gc_cc_logs',
         action='store_false',
         default=gc_log)
 
-    gc_log_group.add_argument('--abbreviated-gc-cc-log',
+    gc_log_group.add_argument(
+        '--abbreviated-gc-cc-log',
         dest='abbreviated_gc_cc_log',
         action='store_true',
         default=abbrev_gc_log)
@@ -49,24 +77,6 @@ def memory_report_args(minimize=False, leave_on_device=False, no_auto_open=True,
 
     args, unknown = parser.parse_known_args()
     return args
-
-
-## this is for getting MTBF_TIME translated to seconds
-def time2sec(input_str):
-    day = check_none_group(re.search('[^0-9]*([0-9]+)[Dd]', input_str))
-    hour = check_none_group(re.search('[^0-9]*([0-9]+)[Hh]', input_str))
-    minute = check_none_group(re.search('[^0-9]*([0-9]+)[Mm]', input_str))
-    second = check_none_group(re.search('[^0-9]*([0-9]+)[Ss]', input_str))
-    ret = ((day * 24 + hour) * 60 + minute) * 60 + second
-    if(ret > 0):
-        return ret
-    raise ValueError
-
-
-def check_none_group(m):
-    if m is None:
-        return 0
-    return int(m.group(1))
 
 
 class MTBF_Driver:
@@ -142,7 +152,6 @@ class MTBF_Driver:
 
 
 def main():
-    # TODO: maybe get MTBF_TIME into json config file?
     ## set default as 2 mins
     try:
         time = int(time2sec(os.getenv('MTBF_TIME', '2m')))
@@ -158,7 +167,6 @@ def main():
     signal.alarm(mtbf.duration)
 
     mtbf.start_gaiatest()
-    ## Disable the alarm
     signal.alarm(0)
 
 if __name__ == '__main__':
