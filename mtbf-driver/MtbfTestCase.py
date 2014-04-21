@@ -5,8 +5,9 @@
 import re
 import time
 
+from marionette import MarionetteTestCase
+
 from gaiatest import GaiaTestCase
-from gaiatest.apps.homescreen.app import Homescreen
 
 
 class GaiaMtbfTestCase(GaiaTestCase):
@@ -24,6 +25,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
             url=None,
             launch_timeout=None
             ):
+        from gaiatest.apps.homescreen.app import Homescreen
         homescreen = Homescreen(self.marionette)
         self.marionette.switch_to_frame(self.apps.displayed_app.frame)
 
@@ -80,20 +82,26 @@ return pageHelper.getCurrentPageNumber() > 0;"""):
             self.data_layer.set_setting(
                 'lockscreen.passcode-lock.enabled',
                 False)
+
             # change language back to english
             self.data_layer.set_setting("language.current", "en-US")
+
             # switch off spanish keyboard
             self.data_layer.set_setting("keyboard.layouts.spanish", False)
+
             # reset do not track
             self.data_layer.set_setting('privacy.donottrackheader.value', '-1')
+
             if self.data_layer.get_setting('ril.radio.disabled'):
                 # enable the device radio, disable airplane mode
                 self.data_layer.set_setting('ril.radio.disabled', False)
+
             # disable carrier data connection
             if self.device.has_mobile_connection:
                 self.data_layer.disable_cell_data()
 
             self.data_layer.disable_cell_roaming()
+
             if self.device.has_wifi:
                 # Bug 908553 - B2G Emulator: support wifi emulation
                 if not self.device.is_emulator:
@@ -115,4 +123,4 @@ return pageHelper.getCurrentPageNumber() > 0;"""):
         self.marionette.execute_script("window.wrappedJSObject\
 .dispatchEvent(new Event('home'));")
         time.sleep(2)
-        GaiaTestCase.tearDown(self)
+        MarionetteTestCase.tearDown(self)
