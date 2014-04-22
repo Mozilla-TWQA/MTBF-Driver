@@ -56,14 +56,13 @@ class GaiaMtbfTestCase(GaiaTestCase):
             self.marionette.import_script(js)
             result = self.marionette.execute_async_script("GaiaApps.kill('app://communications.gaiamobile.org/ftu/index.html');")
 
-        self.lockscreen = LockScreen(self.marionette)
         self.apps = GaiaApps(self.marionette)
         self.data_layer = GaiaData(self.marionette, self.testvars)
         from gaiatest.apps.keyboard.app import Keyboard
         self.keyboard = Keyboard(self.marionette)
 
         # unlock screen and go back to home screen
-        self.lockscreen.unlock()
+        self.device.unlock()
         self.data_layer.set_setting("keyboard.ftu.enabled", False)
         self.marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
         self.marionette.execute_script("window.wrappedJSObject.dispatchEvent(new Event('home'));")
@@ -113,7 +112,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
         [self.data_layer.set_setting(name, value) for name, value in self.testvars.get('settings', {}).items()]
 
         # unlock
-        self.lockscreen.unlock()
+        self.device.unlock()
 
         if full_reset:
             # disable passcode

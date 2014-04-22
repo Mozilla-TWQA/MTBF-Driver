@@ -12,7 +12,7 @@ from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 
 
 ## this is for faking out an argument set for memory report
-def memory_report_args(minimize=False, leave_on_device=False, no_auto_open=True,
+def memory_report_args(minimize=False, leave_on_device=False, no_auto_open=False,
                        keep_report=False, gc_log=True, abbrev_gc_log=False):
     parser = argparse.ArgumentParser(description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
