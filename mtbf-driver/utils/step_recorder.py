@@ -7,7 +7,9 @@ class StepRecorder(object):
     def replay(self):
         pass
     
-    def set_output(self, fd):
+    def set_output(self, fd=None):
+        if fd:
+            fd = open("/tmp/manifest.ini")
         pass
 
     def save(self):
