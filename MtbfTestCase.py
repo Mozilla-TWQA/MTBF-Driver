@@ -86,6 +86,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
         while not icon.is_displayed() and self.marionette.execute_script("""var pageHelper = window.wrappedJSObject.GridManager.pageHelper;return pageHelper.getCurrentPageNumber() > 0;"""):
             self.marionette.execute_script('window.wrappedJSObject.GridManager.goToPreviousPage()')
+            self.wait_for_condition(lambda m: m.find_element('tag name', 'body').get_attribute('data-transitioning') != 'true')
         icon.tap()
 
         pt = re.compile("_|-")
