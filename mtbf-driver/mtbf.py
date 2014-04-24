@@ -13,7 +13,7 @@ from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 def memory_report_args(
         minimize=False,
         leave_on_device=False,
-        no_auto_open=True,
+        no_auto_open=False,
         keep_report=False,
         gc_log=True,
         abbrev_gc_log=False

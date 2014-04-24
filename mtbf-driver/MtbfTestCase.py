@@ -40,6 +40,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
 return pageHelper.getCurrentPageNumber() > 0;"""):
             self.marionette.execute_script('window.wrappedJSObject\
 .GridManager.goToPreviousPage()')
+            self.wait_for_condition(lambda m: m.find_element('tag name', 'body').get_attribute('data-transitioning') != 'true')
         icon.tap()
 
         pt = re.compile("_|-")
