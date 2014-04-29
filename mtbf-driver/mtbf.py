@@ -5,7 +5,7 @@ import signal
 import time
 import json
 from utils.time_utils import time2sec
-
+from utils.step_gen import StepGen
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 
 
@@ -16,8 +16,7 @@ def memory_report_args(
         no_auto_open=False,
         keep_report=False,
         gc_log=True,
-        abbrev_gc_log=False
-        ):
+        abbrev_gc_log=False):
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -27,37 +26,32 @@ def memory_report_args(
         '-m',
         dest='minimize_memory_usage',
         action='store_true',
-        default=minimize
-        )
+        default=minimize)
     parser.add_argument(
         '--directory',
         '-d',
         dest='output_directory',
         action='store',
-        metavar='DIR'
-        )
+        metavar='DIR')
 
     parser.add_argument(
         '--leave-on-device',
         '-l',
         dest='leave_on_device',
         action='store_true',
-        default=leave_on_device
-        )
+        default=leave_on_device)
 
     parser.add_argument(
         '--no-auto-open',
         '-o',
         dest='open_in_firefox',
         action='store_false',
-        default=no_auto_open
-        )
+        default=no_auto_open)
     parser.add_argument(
         '--keep-individual-reports',
         dest='keep_individual_reports',
         action='store_true',
-        default=keep_report
-        )
+        default=keep_report)
 
     gc_log_group = parser.add_mutually_exclusive_group()
 
@@ -89,15 +83,20 @@ class MTBF_Driver:
         self.passed = 0
         self.failed = 0
         self.todo = 0
-
-        with open("mtbf_config.json") as json_file:
-            self.configuration = json.load(json_file)
+        mtbf_conf_file = os.getenv("MTBF_CONF", "mtbf_config.json")
+        with open(mtbf_conf_file) as json_file:
+            self.conf = json.load(json_file)
 
     ## logging module should be defined here
     def start_logging(self):
         pass
 
     def start_gaiatest(self):
+        step_log = 'last_replay.txt'
+        rp = open(step_log, 'w')
+        run_file = 'run_file.txt'  # TODO: default value, may not exist
+        if self.conf['runlist'] and self.conf['runlist'].strip():
+            run_file = self.conf['runlist']
         ## Infinite run before time expired
         runner_class = GaiaTestRunner
         parser_class = GaiaTestOptions
@@ -107,10 +106,11 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
+        sg = StepGen(level=0, root=self.conf['rootdir'], workspace=self.conf['workspace'], runlist=run_file)
 
         while(True):
             ## import only if config file states tools is there
-            if self.configuration['memory_report']:
+            if self.conf['memory_report']:
                 ## get some memory report before each round
                 import tools.get_about_memory
                 tools.get_about_memory.get_and_show_info(memory_report_args())
@@ -119,7 +119,10 @@ class MTBF_Driver:
             ## workaround: kill the runner and create another
             ## one each round, should be fixed
             self.runner = runner_class(**vars(options))
-            self.runner.run_tests(tests)
+            tests = sg.generate()
+            file_name, file_path = zip(*tests)
+            rp.write(json.dumps(file_name) + "\n")
+            self.runner.run_tests(file_path)
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
