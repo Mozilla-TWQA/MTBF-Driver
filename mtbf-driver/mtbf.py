@@ -83,7 +83,7 @@ class MTBF_Driver:
         self.passed = 0
         self.failed = 0
         self.todo = 0
-        mtbf_conf_file = os.getenv("MTBF_CONF", "mtbf_config.json")
+        mtbf_conf_file = os.getenv("MTBF_CONF", "conf/mtbf_config.json")
         with open(mtbf_conf_file) as json_file:
             self.conf = json.load(json_file)
 
