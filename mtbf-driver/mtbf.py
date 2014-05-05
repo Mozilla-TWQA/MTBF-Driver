@@ -87,7 +87,7 @@ class MTBF_Driver:
         mtbf_conf_file = os.getenv("MTBF_CONF", "conf/mtbf_config.json")
         with open(mtbf_conf_file) as json_file:
             self.conf = json.load(json_file)
-        if self.conf['level']:
+        if self.conf.has_key('level'):
             self.level = self.conf['level']
 
     ## logging module should be defined here
