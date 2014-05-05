@@ -4,6 +4,6 @@
   "workspace": "/tmp/workspace",
   "manifest_prefix": "mtbf",
   "archive": "output",
-  "runlist": "tests/test_run.txt",
+  "runlist": "runlist/keyboard.list",
   "level": 1
 }

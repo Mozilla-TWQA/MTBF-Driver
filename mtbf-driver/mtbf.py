@@ -98,7 +98,7 @@ class MTBF_Driver:
         step_log = 'last_replay.txt'
         rp = open(step_log, 'w')
         run_file = 'run_file.txt'  # TODO: default value, may not exist
-        if self.conf['runlist'] and self.conf['runlist'].strip():
+        if self.conf.has_key('runlist') and self.conf['runlist'].strip():
             run_file = self.conf['runlist']
         ## Infinite run before time expired
         runner_class = GaiaTestRunner
@@ -109,11 +109,14 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
+        if not self.conf.has_key('rootdir') or not self.conf.has_key('workspace'):
+            print('No rootdir or workspace set, please add in config')
+            sys.exit(1)
         sg = StepGen(level=self.level, root=self.conf['rootdir'], workspace=self.conf['workspace'], runlist=run_file)
 
         while(True):
             ## import only if config file states tools is there
-            if self.conf['memory_report']:
+            if self.conf.has_key('memory_report') and self.conf['memory_report']:
                 ## get some memory report before each round
                 import tools.get_about_memory
                 tools.get_about_memory.get_and_show_info(memory_report_args())
