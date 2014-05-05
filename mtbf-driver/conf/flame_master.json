@@ -1,0 +1,9 @@
+{
+  "memory_report": false,
+  "rootdir": "tests/mtbf",
+  "workspace": "/tmp/workspace",
+  "manifest_prefix": "mtbf",
+  "archive": "output",
+  "runlist": "tests/test_run.txt",
+  "level": 1
+}

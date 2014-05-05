@@ -83,9 +83,12 @@ class MTBF_Driver:
         self.passed = 0
         self.failed = 0
         self.todo = 0
+        self.level = 0
         mtbf_conf_file = os.getenv("MTBF_CONF", "conf/mtbf_config.json")
         with open(mtbf_conf_file) as json_file:
             self.conf = json.load(json_file)
+        if self.conf['level']:
+            self.level = self.conf['level']
 
     ## logging module should be defined here
     def start_logging(self):
@@ -106,7 +109,7 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        sg = StepGen(level=0, root=self.conf['rootdir'], workspace=self.conf['workspace'], runlist=run_file)
+        sg = StepGen(level=self.level, root=self.conf['rootdir'], workspace=self.conf['workspace'], runlist=run_file)
 
         while(True):
             ## import only if config file states tools is there
