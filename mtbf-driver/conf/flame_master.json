@@ -5,5 +5,5 @@
   "manifest_prefix": "mtbf",
   "archive": "output",
   "runlist": "runlist/keyboard.list",
-  "level": 1
+  "level": 4
 }
