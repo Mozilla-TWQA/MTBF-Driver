@@ -1,0 +1,9 @@
+{
+  "memory_report": false,
+  "rootdir": "/tmp/run_test",
+  "workspace": "/tmp/workspace",
+  "manifest_prefix": "mtbf",
+  "archive": "output",
+  "runlist": "runlist/keyboard.list",
+  "level": 4
+}
