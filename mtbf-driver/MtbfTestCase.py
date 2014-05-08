@@ -71,7 +71,7 @@ return pageHelper.getCurrentPageNumber() > 0;"""):
             for name, value in self.testvars.get('settings', {}).items()]
 
         # unlock
-        self.lockscreen.unlock()
+        self.device.unlock()
 
         if full_reset:
             # disable passcode

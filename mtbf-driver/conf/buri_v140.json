@@ -4,9 +4,10 @@
   "overall_status": false,
   "b2g_status": false,
   "get_event": false,
-  "rootdir": "/tmp/run_test",
+  "rootdir": "tests/mtbf",
   "workspace": "/tmp/workspace",
   "manifest_prefix": "mtbf",
   "archive": "output",
-  "runlist": "tests/test_run.txt"
+  "runlist": "runlist/keyboard.list",
+  "level": 4
 }

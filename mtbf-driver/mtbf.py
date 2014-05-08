@@ -133,12 +133,41 @@ class MTBF_Driver:
         self.start_time = time.time()
         sg = StepGen(level=self.level, root=self.conf['rootdir'], workspace=self.conf['workspace'], runlist=self.runlist)
 
+        current_round = 0
         while(True):
             ## import only if config file states tools is there
             if 'memory_report' in self.conf and self.conf['memory_report']:
                 ## get some memory report before each round
                 import tools.get_about_memory
                 tools.get_about_memory.get_and_show_info(memory_report_args())
+
+            ## get logcat and dmesg
+            if self.conf.has_key('logcat') and self.conf['logcat']:
+                logcat_cmd = "adb logcat -v threadtime -d > logcat" + str(current_round)
+                dmesg_cmd = "adb shell dmesg > dmesg" + str(current_round)
+                os.system(logcat_cmd)
+                os.system(dmesg_cmd)
+
+            ## show us the overall status of the phone
+            if self.conf.has_key('overall_status') and self.conf['overall_status']:
+                bugreport_cmd = "adb shell dumpstate > bugreport" + str(current_round)
+                os.system(bugreport_cmd)
+
+            ## show us b2g status of the phone
+            if self.conf.has_key('b2g_status') and self.conf['b2g_status']:
+                b2ginfo_cmd = "adb shell b2g-info -t > b2ginfo" + str(current_round)
+                b2gps_cmd = "adb shell b2g-ps -t -p -P --oom > b2gps" + str(current_round)
+                b2gprocrank_cmd = "adb shell b2g-procrank --oom > b2gprocrank" + str(current_round)
+                os.system(b2ginfo_cmd)
+                os.system(b2gps_cmd)
+                os.system(b2gprocrank_cmd)
+
+            ## show us events
+            if self.conf.has_key('get_event') and self.conf['get_event']:
+                bugreport_cmd = "adb shell getevent -S > getevent" + str(current_round)
+                os.system(bugreport_cmd)
+
+            current_round = current_round + 1
 
             ## Run test
             ## workaround: kill the runner and create another
