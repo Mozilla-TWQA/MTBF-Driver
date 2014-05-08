@@ -5,7 +5,6 @@
 import re
 import time
 
-from gaiatest import GaiaDevice
 from gaiatest import GaiaTestCase
 from gaiatest.apps.homescreen.app import Homescreen
 
@@ -72,7 +71,7 @@ return pageHelper.getCurrentPageNumber() > 0;"""):
             for name, value in self.testvars.get('settings', {}).items()]
 
         # unlock
-        self.lockscreen.unlock()
+        self.device.unlock()
 
         if full_reset:
             # disable passcode
