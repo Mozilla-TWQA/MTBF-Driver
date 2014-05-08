@@ -1,6 +1,8 @@
 import argparse
 import logging
 import os
+import sys
+import os.path
 import signal
 import time
 import json
@@ -75,7 +77,7 @@ def memory_report_args(
 
 class MTBF_Driver:
     ## time format here is seconds
-    def __init__(self, time):
+    def __init__(self, time, rp=None):
         self.duration = time
         self.start_time = None
         self.running_time = 0
@@ -84,22 +86,42 @@ class MTBF_Driver:
         self.failed = 0
         self.todo = 0
         self.level = 0
+        self.rp = rp
+
+    def load_config(self):
+        conf = []
         mtbf_conf_file = os.getenv("MTBF_CONF", "conf/mtbf_config.json")
-        with open(mtbf_conf_file) as json_file:
-            self.conf = json.load(json_file)
-        if self.conf.has_key('level'):
+        try:
+            with open(mtbf_conf_file) as json_file:
+                self.conf = json.load(json_file)
+        except IOError:
+            print("IOError on ", mtbf_conf_file)
+            sys.exit(1)
+        if 'level' in self.conf:
             self.level = self.conf['level']
+        if 'rootdir' not in self.conf or 'workspace' not in self.conf:
+            print('No rootdir or workspace set, please add in config')
+            sys.exit(1)
+        run_file = 'run_file.txt'  # TODO: default value, may not exist
+        if 'runlist' in self.conf and self.conf['runlist'].strip():
+            self.runlist = self.conf['runlist']
+
+        if not os.path.exists(self.conf['rootdir']):
+            print("Rootdir doesn't exist")
+            sys.exit(1)
+        if not os.path.exists(self.conf['workspace']):
+            print("Workspace doesn't exist")
+            sys.exit(1)
+        if not os.path.exists(run_file):
+            print(run_file, " does not exist.")
+            sys.exit(1)
+        return conf
 
     ## logging module should be defined here
     def start_logging(self):
         pass
 
     def start_gaiatest(self):
-        step_log = 'last_replay.txt'
-        rp = open(step_log, 'w')
-        run_file = 'run_file.txt'  # TODO: default value, may not exist
-        if self.conf.has_key('runlist') and self.conf['runlist'].strip():
-            run_file = self.conf['runlist']
         ## Infinite run before time expired
         runner_class = GaiaTestRunner
         parser_class = GaiaTestOptions
@@ -109,14 +131,11 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        if not self.conf.has_key('rootdir') or not self.conf.has_key('workspace'):
-            print('No rootdir or workspace set, please add in config')
-            sys.exit(1)
-        sg = StepGen(level=self.level, root=self.conf['rootdir'], workspace=self.conf['workspace'], runlist=run_file)
+        sg = StepGen(level=self.level, root=self.conf['rootdir'], workspace=self.conf['workspace'], runlist=self.runlist)
 
         while(True):
             ## import only if config file states tools is there
-            if self.conf.has_key('memory_report') and self.conf['memory_report']:
+            if 'memory_report' in self.conf and self.conf['memory_report']:
                 ## get some memory report before each round
                 import tools.get_about_memory
                 tools.get_about_memory.get_and_show_info(memory_report_args())
@@ -127,7 +146,8 @@ class MTBF_Driver:
             self.runner = runner_class(**vars(options))
             tests = sg.generate()
             file_name, file_path = zip(*tests)
-            rp.write(json.dumps(file_name) + "\n")
+            if self.rp:
+                self.rp.write(json.dumps(file_name) + ",\n")
             self.runner.run_tests(file_path)
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
@@ -141,6 +161,7 @@ class MTBF_Driver:
             ## to detect continuous failure We can then
             ## remove this
             if self.runner.passed == 0:
+                self.deinit()
                 break
 
     def get_report(self):
@@ -157,7 +178,13 @@ class MTBF_Driver:
             signum
         )
         self.get_report()
+        self.deinit()
         os._exit(0)
+
+    def deinit(self):
+        if self.rp:
+            self.rp.write("]}")
+            self.rp.close()
 
 
 def main():
@@ -170,7 +197,10 @@ def main():
             os.getenv('MTBF_TIME'),
             ", format should be '1d', '10h', '10m50s'"
         )
-    mtbf = MTBF_Driver(time)
+    step_log = 'last_replay.txt'
+    rp = open(step_log, 'w')
+    rp.write("{ \"replay\": [\n")
+    mtbf = MTBF_Driver(time, rp)
 
     signal.signal(signal.SIGALRM, mtbf.time_up)
     signal.alarm(mtbf.duration)
