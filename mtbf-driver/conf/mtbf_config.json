@@ -1,5 +1,9 @@
 {
   "memory_report": false,
+  "logcat": false,
+  "overall_status": false,
+  "b2g_status": false,
+  "get_event": false,
   "rootdir": "/tmp/run_test",
   "workspace": "/tmp/workspace",
   "manifest_prefix": "mtbf",
