@@ -5,6 +5,7 @@
 import re
 import time
 
+from gaiatest import GaiaDevice
 from gaiatest import GaiaTestCase
 from gaiatest.apps.homescreen.app import Homescreen
 
