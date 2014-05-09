@@ -39,7 +39,6 @@ class MTBF_Driver:
         if 'rootdir' not in self.conf or 'workspace' not in self.conf:
             print('No rootdir or workspace set, please add in config')
             sys.exit(1)
-        run_file = 'run_file.txt'  # TODO: default value, may not exist
         if 'runlist' in self.conf and self.conf['runlist'].strip():
             self.runlist = self.conf['runlist']
 
@@ -49,8 +48,8 @@ class MTBF_Driver:
         if not os.path.exists(self.conf['workspace']):
             print("Workspace doesn't exist")
             sys.exit(1)
-        if not os.path.exists(run_file):
-            print(run_file, " does not exist.")
+        if not os.path.exists(self.runlist):
+            print(self.runlist, " does not exist.")
             sys.exit(1)
         return conf
 
