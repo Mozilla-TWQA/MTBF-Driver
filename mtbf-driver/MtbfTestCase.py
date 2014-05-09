@@ -25,21 +25,22 @@ class GaiaMtbfTestCase(GaiaTestCase):
             launch_timeout=None
             ):
         homescreen = Homescreen(self.marionette)
-        self.marionette.switch_to_frame(self.apps.displayed_app.frame)
+        self.marionette.switch_to_frame()
+        hs = self.marionette.find_element('css selector', '#homescreen iframe')
+        self.marionette.switch_to_frame(hs)
+        homescreen.go_to_next_page()
 
         icon = self.marionette.find_element(
             'css selector',
             'li[aria-label="' + name + '"]'
             )
+
         while not icon.is_displayed() and homescreen.homescreen_has_more_pages:
             homescreen.go_to_next_page()
 
         while not icon.is_displayed() and \
-                self.marionette.execute_script("""var pageHelper = window\
-.wrappedJSObject.GridManager.pageHelper;\
-return pageHelper.getCurrentPageNumber() > 0;"""):
-            self.marionette.execute_script('window.wrappedJSObject\
-.GridManager.goToPreviousPage()')
+                self.marionette.execute_script("var pageHelper = window.wrappedJSObject.GridManager.pageHelper;return pageHelper.getCurrentPageNumber() > 0;"):
+            self.marionette.execute_script('window.wrappedJSObject.GridManager.goToPreviousPage()')
             self.wait_for_condition(lambda m: m.find_element('tag name', 'body').get_attribute('data-transitioning') != 'true')
         icon.tap()
 
@@ -67,34 +68,51 @@ return pageHelper.getCurrentPageNumber() > 0;"""):
         self.data_layer.set_setting("keyboard.ftu.enabled", False)
 
         # restore settings from testvars
-        [self.data_layer.set_setting(name, value)
-            for name, value in self.testvars.get('settings', {}).items()]
+        [self.data_layer.set_setting(name, value) for name, value in self.testvars.get('settings', {}).items()]
+
+        # restore prefs from testvars
+        for name, value in self.testvars.get('prefs', {}).items():
+            if type(value) is int:
+                self.data_layer.set_int_pref(name, value)
+            elif type(value) is bool:
+                self.data_layer.set_bool_pref(name, value)
+            else:
+                self.data_layer.set_char_pref(name, value)
 
         # unlock
         self.device.unlock()
 
+        # kill FTU if possible
+        self.marionette.switch_to_frame();
+        self.marionette.execute_async_script("GaiaApps.kill('app://communications.gaiamobile.org/ftu/index.html');")
+
         if full_reset:
             # disable passcode
-            self.data_layer.set_setting(
-                'lockscreen.passcode-lock.code',
-                '1111')
-            self.data_layer.set_setting(
-                'lockscreen.passcode-lock.enabled',
-                False)
+            self.data_layer.set_setting('lockscreen.passcode-lock.code', '1111')
+            self.data_layer.set_setting('lockscreen.passcode-lock.enabled', False)
+
             # change language back to english
             self.data_layer.set_setting("language.current", "en-US")
+
             # switch off spanish keyboard
             self.data_layer.set_setting("keyboard.layouts.spanish", False)
+
             # reset do not track
             self.data_layer.set_setting('privacy.donottrackheader.value', '-1')
-            if self.data_layer.get_setting('ril.radio.disabled'):
+
+            if self.data_layer.get_setting('airplaneMode.enabled'):
                 # enable the device radio, disable airplane mode
-                self.data_layer.set_setting('ril.radio.disabled', False)
+                self.data_layer.set_setting('airplaneMode.enabled', False)
+
+            # Re-set edge gestures pref to False
+            self.data_layer.set_setting('edgesgesture.enabled', False)
+
             # disable carrier data connection
             if self.device.has_mobile_connection:
                 self.data_layer.disable_cell_data()
 
             self.data_layer.disable_cell_roaming()
+
             if self.device.has_wifi:
                 # Bug 908553 - B2G Emulator: support wifi emulation
                 if not self.device.is_emulator:
@@ -102,18 +120,20 @@ return pageHelper.getCurrentPageNumber() > 0;"""):
                     self.data_layer.forget_all_networks()
                     self.data_layer.disable_wifi()
 
-            # remove data
-            self.data_layer.remove_all_contacts()
+            # don't remove contact data
+            # self.data_layer.remove_all_contacts()
 
             # reset to home screen
-            self.marionette.execute_script("window.wrappedJSObject\
-.dispatchEvent(new Event('home'));")
+            self.device.touch_home_button()
+
+        # don't kill all apps
+        # self.apps.kill_all()
 
         # disable sound completely
         self.data_layer.set_volume(0)
 
     def tearDown(self):
-        self.marionette.execute_script("window.wrappedJSObject\
-.dispatchEvent(new Event('home'));")
-        time.sleep(2)
+        time.sleep(1)
+        self.device.touch_home_button()
+        time.sleep(1)
         GaiaTestCase.tearDown(self)
