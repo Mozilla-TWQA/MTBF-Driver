@@ -46,8 +46,7 @@ class MTBF_Driver:
             print("Rootdir doesn't exist")
             sys.exit(1)
         if not os.path.exists(self.conf['workspace']):
-            print("Workspace doesn't exist")
-            sys.exit(1)
+            print("Workspace doesn't exist, will create new one")
         if not os.path.exists(self.runlist):
             print(self.runlist, " does not exist.")
             sys.exit(1)
