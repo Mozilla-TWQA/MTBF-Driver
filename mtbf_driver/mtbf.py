@@ -5,10 +5,11 @@ import os.path
 import signal
 import time
 import json
-from utils.time_utils import time2sec
-from utils.step_gen import StepGen
+from distutils.sysconfig import get_python_lib
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from utils.memory_report_args import memory_report_args
+from utils.step_gen import StepGen
+from utils.time_utils import time2sec
 
 
 class MTBF_Driver:
@@ -27,7 +28,14 @@ class MTBF_Driver:
 
     def load_config(self):
         conf = []
-        mtbf_conf_file = os.getenv("MTBF_CONF", "conf/mtbf_config.json")
+
+        # get location information
+        f = open(get_python_lib()+"/mtbf-driver.egg-link")
+        ori_dir = f.readline().strip() + "/"
+        if ori_dir == "/":
+            ori_dir = ""
+        mtbf_conf_file = os.getenv("MTBF_CONF", ori_dir + "conf/mtbf_config.json")
+
         try:
             with open(mtbf_conf_file) as json_file:
                 self.conf = json.load(json_file)
