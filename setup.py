@@ -22,7 +22,7 @@ setup(
         'mtbf = mtbf_driver.mtbf:main']},
     install_requires=deps,
 
-    package_data={'': ['conf/*.json']},
+    package_data={'': ['conf/*.json', 'run_list/*.list']},
     include_package_data = True
 )
 
