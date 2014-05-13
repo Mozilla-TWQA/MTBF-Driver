@@ -28,8 +28,8 @@ class MTBF_Driver:
     def load_config(self):
         conf = []
 
-        self.ori_dir = os.path.dirname(__file__) + "/"
-        mtbf_conf_file = os.getenv("MTBF_CONF", self.ori_dir + "conf/mtbf_config.json")
+        self.ori_dir = os.path.dirname(__file__)
+        mtbf_conf_file = os.getenv("MTBF_CONF", os.path.join(self.ori_dir, "conf/mtbf_config.json"))
 
         try:
             with open(mtbf_conf_file) as json_file:
@@ -45,19 +45,22 @@ class MTBF_Driver:
             sys.exit(1)
 
         if 'runlist' in self.conf and self.conf['runlist'].strip():
-            if os.path.exists(self.ori_dir + self.conf['runlist']):
-                self.runlist = self.ori_dir + self.conf['runlist']
-            else:
-                print(self.conf['runlist'], " does not exist.")
+            self.runlist = self.conf['runlist']
+            if not os.path.exists(self.runlist):
+                self.runlist = os.path.join(self.ori_dir, self.conf['runlist'])
+                if not os.path.exists(self.runlist):
+                    print(self.conf['runlist'], " does not exist.")
+                    sys.exit(1)
+
+        self.rootdir = self.conf['rootdir']
+        if not os.path.exists(self.rootdir):
+            self.rootdir = os.path.join(self.ori_dir, self.conf['rootdir'])
+            if not os.path.exists(self.rootdir):
+                print("Rootdir doesn't exist: " + self.conf['rootdir'])
                 sys.exit(1)
 
-        if os.path.exists(self.ori_dir + self.conf['rootdir']):
-            self.rootdir = self.ori_dir + self.conf['rootdir']
-        else:
-            print("Rootdir doesn't exist: " + self.conf['rootdir'])
-            sys.exit(1)
-
-        if not os.path.exists(self.conf['workspace']):
+        self.workspace = self.conf['workspace']
+        if not os.path.exists(self.workspace):
             print("Workspace doesn't exist, will create new one")
         return conf
 
@@ -75,7 +78,7 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        sg = StepGen(level=self.level, root=self.root_dir, workspace=self.ori_dir+self.conf['workspace'], runlist=self.runlist)
+        sg = StepGen(level=self.level, root=self.root_dir, workspace=self.workspace, runlist=self.runlist)
 
         current_round = 0
         while(True):
