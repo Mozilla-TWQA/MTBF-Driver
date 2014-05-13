@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 
+import os
+from distutils.sysconfig import get_python_lib
 from setuptools import setup, find_packages
 
 # dependencies
@@ -9,7 +11,7 @@ with open('requirements.txt') as f:
 
 # main setup script
 setup(
-    name="mtbf_driver",
+    name="mtbf-driver",
     version="0.1.0",
     packages = find_packages(),
     
@@ -18,6 +20,9 @@ setup(
     author_email="tw-qa@mozilla.com",
     entry_points={'console_scripts': [
         'mtbf = mtbf_driver.mtbf:main']},
-    install_requires=deps 
+    install_requires=deps,
+
+    package_data={'': ['conf/*.json']},
+    include_package_data = True
 )
 

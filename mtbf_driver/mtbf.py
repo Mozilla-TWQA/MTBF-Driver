@@ -31,9 +31,9 @@ class MTBF_Driver:
 
         # get location information
         f = open(get_python_lib()+"/mtbf-driver.egg-link")
-        self.ori_dir = f.readline().strip() + "/"
-        if self.ori_dir == "/":
-            self.ori_dir = ""
+        self.ori_dir = f.readline().strip()
+        if self.ori_dir != "":
+            self.ori_dir = self.ori_dir + "/mtbf_driver/"
         mtbf_conf_file = os.getenv("MTBF_CONF", self.ori_dir + "conf/mtbf_config.json")
 
         try:
