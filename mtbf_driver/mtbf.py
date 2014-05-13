@@ -5,7 +5,6 @@ import os.path
 import signal
 import time
 import json
-from distutils.sysconfig import get_python_lib
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import StepGen
@@ -29,15 +28,7 @@ class MTBF_Driver:
     def load_config(self):
         conf = []
 
-        # get location information
-        if os.path.exists(get_python_lib()+"/mtbf-driver.egg-link"):
-            f = open(get_python_lib()+"/mtbf-driver.egg-link")
-            self.ori_dir = f.readline().strip()
-        elif os.path.isdir(get_python_lib()+"/mtbf_driver-0.1.0-py2.7.egg"):
-            self.ori_dir = get_python_lib()+"/mtbf_driver-0.1.0-py2.7.egg"
-
-        if self.ori_dir != "":
-            self.ori_dir = self.ori_dir + "/mtbf_driver/"
+        self.ori_dir = os.path.dirname(__file__) + "/"
         mtbf_conf_file = os.getenv("MTBF_CONF", self.ori_dir + "conf/mtbf_config.json")
 
         try:
@@ -54,20 +45,15 @@ class MTBF_Driver:
             sys.exit(1)
 
         if 'runlist' in self.conf and self.conf['runlist'].strip():
-            if os.path.exists(self.conf['runlist']):
-                self.runlist = self.conf['runlist']
-            elif os.path.exists(self.ori_dir + self.conf['runlist']):
+            if os.path.exists(self.ori_dir + self.conf['runlist']):
                 self.runlist = self.ori_dir + self.conf['runlist']
             else:
                 print(self.conf['runlist'], " does not exist.")
                 sys.exit(1)
 
-        if os.path.exists(self.conf['rootdir']):
-            self.rootdir = self.conf['rootdir']
-        elif os.path.exists(self.ori_dir + self.conf['rootdir']):
+        if os.path.exists(self.ori_dir + self.conf['rootdir']):
             self.rootdir = self.ori_dir + self.conf['rootdir']
         else:
-            print(self.ori_dir + self.conf['rootdir'])
             print("Rootdir doesn't exist: " + self.conf['rootdir'])
             sys.exit(1)
 
