@@ -9,10 +9,11 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
     deps = f.read().splitlines()
 
+version="0.1.0"
 # main setup script
 setup(
     name="mtbf-driver",
-    version="0.1.0",
+    version=version,
     packages = find_packages(),
     
     description="mtbf package",
@@ -22,7 +23,7 @@ setup(
         'mtbf = mtbf_driver.mtbf:main']},
     install_requires=deps,
 
-    package_data={'': ['conf/*.json', 'run_list/*.list']},
+    package_data={'': ['conf/*.json', 'runlist/*.list']},
     include_package_data = True
 )
 

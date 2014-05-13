@@ -30,8 +30,12 @@ class MTBF_Driver:
         conf = []
 
         # get location information
-        f = open(get_python_lib()+"/mtbf-driver.egg-link")
-        self.ori_dir = f.readline().strip()
+        if os.path.exists(get_python_lib()+"/mtbf-driver.egg-link"):
+            f = open(get_python_lib()+"/mtbf-driver.egg-link")
+            self.ori_dir = f.readline().strip()
+        elif os.path.isdir(get_python_lib()+"/mtbf_driver-0.1.0-py2.7.egg"):
+            self.ori_dir = get_python_lib()+"/mtbf_driver-0.1.0-py2.7.egg"
+
         if self.ori_dir != "":
             self.ori_dir = self.ori_dir + "/mtbf_driver/"
         mtbf_conf_file = os.getenv("MTBF_CONF", self.ori_dir + "conf/mtbf_config.json")
@@ -42,22 +46,33 @@ class MTBF_Driver:
         except IOError:
             print("IOError on ", mtbf_conf_file)
             sys.exit(1)
+
         if 'level' in self.conf:
             self.level = self.conf['level']
         if 'rootdir' not in self.conf or 'workspace' not in self.conf:
             print('No rootdir or workspace set, please add in config')
             sys.exit(1)
-        if 'runlist' in self.conf and self.conf['runlist'].strip():
-            self.runlist = self.conf['runlist']
 
-        if not os.path.exists(self.conf['rootdir']):
-            print("Rootdir doesn't exist")
+        if 'runlist' in self.conf and self.conf['runlist'].strip():
+            if os.path.exists(self.conf['runlist']):
+                self.runlist = self.conf['runlist']
+            elif os.path.exists(self.ori_dir + self.conf['runlist']):
+                self.runlist = self.ori_dir + self.conf['runlist']
+            else:
+                print(self.conf['runlist'], " does not exist.")
+                sys.exit(1)
+
+        if os.path.exists(self.conf['rootdir']):
+            self.rootdir = self.conf['rootdir']
+        elif os.path.exists(self.ori_dir + self.conf['rootdir']):
+            self.rootdir = self.ori_dir + self.conf['rootdir']
+        else:
+            print(self.ori_dir + self.conf['rootdir'])
+            print("Rootdir doesn't exist: " + self.conf['rootdir'])
             sys.exit(1)
+
         if not os.path.exists(self.conf['workspace']):
             print("Workspace doesn't exist, will create new one")
-        if not os.path.exists(self.runlist):
-            print(self.runlist, " does not exist.")
-            sys.exit(1)
         return conf
 
     ## logging module should be defined here
@@ -74,7 +89,7 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        sg = StepGen(level=self.level, root=self.ori_dir+self.conf['rootdir'], workspace=self.ori_dir+self.conf['workspace'], runlist=self.runlist)
+        sg = StepGen(level=self.level, root=self.root_dir, workspace=self.ori_dir+self.conf['workspace'], runlist=self.runlist)
 
         current_round = 0
         while(True):
