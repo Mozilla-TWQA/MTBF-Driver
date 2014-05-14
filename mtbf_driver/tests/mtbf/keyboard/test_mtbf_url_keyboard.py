@@ -4,8 +4,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.mtbf_apps.ui_tests.app import UiTests
-from gaiatest.mtbf_apps.ui_tests.app import MTBF_UiTests
+from mtbf_driver.mtbf_apps.ui_tests.app import UiTests
+from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 
 class TestUrlKeyboard(GaiaMtbfTestCase):
 

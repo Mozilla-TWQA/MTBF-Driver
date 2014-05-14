@@ -5,7 +5,7 @@
 
 from MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.ui_tests.app import UiTests
-from gaiatest.mtbf_apps.ui_tests.app import MTBF_UiTests
+from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 
 
 class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
