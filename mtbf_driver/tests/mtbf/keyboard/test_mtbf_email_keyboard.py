@@ -3,7 +3,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from MtbfTestCase import GaiaMtbfTestCase
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from mtbf_driver.mtbf_apps.ui_tests.app import UiTests
 from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 
