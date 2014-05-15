@@ -78,7 +78,7 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        sg = StepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist)
+        sg = StepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist, dummy=os.path.join(self.ori_dir, "tests", "test_dummy_case.py"))
 
         current_round = 0
         while(True):

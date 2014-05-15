@@ -1,14 +1,17 @@
 #!/usr/bin/python
 import os
+import os.path
 import random
 import json
 import shutil
 
 
 class StepGen(object):
-    def __init__(self, level=1, root=None, runlist=None, workspace=None):
+    def __init__(self, level=1, root=None, runlist=None, workspace=None, dummy=None):
         self.max_level = 5
-        self.dummy = ('test_dummy_case.py', 'tests/test_dummy_case.py')
+        if dummy is None:
+            raise ValueError('fail to get dummy test case')
+        self.dummy = (os.path.basename(dummy), dummy)
         self.setLevel(level)
         self.setRunlist(runlist)
         self.setWorkspace(workspace)
