@@ -54,8 +54,6 @@ class StepGen(object):
                     uniq.add(fp)
                     shutil.copy2(full_path, self.workspace)
                     self.enqueue.append((fp, full_path))
-                else:
-                    print("possibly duplicated? : " + full_path)
         if len(self.enqueue) == 0:
             raise ValueError("0 file in runlist is matched, root dir: ", root)
 

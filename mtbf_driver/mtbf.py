@@ -5,6 +5,7 @@ import os.path
 import signal
 import time
 import json
+import shutil
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import StepGen
@@ -23,12 +24,13 @@ class MTBF_Driver:
         self.todo = 0
         self.level = 0
         self.rp = rp
+        self.ttr = []
+        self.ori_dir = os.path.dirname(__file__)
+        self.dummy = os.path.join(self.ori_dir, "tests", "test_dummy_case.py")
         self.load_config()
 
     def load_config(self):
         conf = []
-
-        self.ori_dir = os.path.dirname(__file__)
         mtbf_conf_file = os.getenv("MTBF_CONF", os.path.join(self.ori_dir, "conf/mtbf_config.json"))
 
         try:
@@ -78,7 +80,7 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        sg = StepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist, dummy=os.path.join(self.ori_dir, "tests", "test_dummy_case.py"))
+        sg = StepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist, dummy=self.dummy)
 
         current_round = 0
         while(True):
@@ -122,8 +124,7 @@ class MTBF_Driver:
             self.runner = runner_class(**vars(options))
             tests = sg.generate()
             file_name, file_path = zip(*tests)
-            if self.rp:
-                self.rp.write(json.dumps(file_name) + ",\n")
+            self.ttr = self.ttr + list(file_name)
             self.runner.run_tests(file_path)
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
@@ -153,14 +154,22 @@ class MTBF_Driver:
             "Signal handler called with signal",
             signum
         )
-        self.get_report()
         self.deinit()
         os._exit(0)
 
     def deinit(self):
+        self.get_report()
+        serialized = dict()
+        serialized['replay'] = self.ttr
         if self.rp:
-            self.rp.write("]}")
+            self.rp.write(json.dumps(serialized))
             self.rp.close()
+            shutil.copy2(self.rp.name, os.path.join(self.workspace, os.path.basename(self.rp.name)))
+        shutil.copy2(self.dummy, os.path.join(self.workspace, os.path.basename(self.dummy)))
+        dest = os.path.join(self.workspace, os.path.basename(os.getenv('VIRTUAL_ENV')))
+        if os.path.exists(dest):
+            shutil.rmtree(dest)
+        shutil.copytree(os.getenv('VIRTUAL_ENV'), dest)
 
 
 def main():
@@ -175,7 +184,6 @@ def main():
         )
     step_log = 'last_replay.txt'
     rp = open(step_log, 'w')
-    rp.write("{ \"replay\": [\n")
     mtbf = MTBF_Driver(time, rp)
 
     signal.signal(signal.SIGALRM, mtbf.time_up)
