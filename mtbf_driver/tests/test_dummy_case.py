@@ -4,7 +4,7 @@
 
 import time
 
-from MtbfTestCase import GaiaMtbfTestCase
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 
 class DummyTestCase(GaiaMtbfTestCase):
     def setUp(self):
