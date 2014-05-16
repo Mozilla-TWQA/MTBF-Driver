@@ -8,7 +8,7 @@ import json
 import shutil
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from utils.memory_report_args import memory_report_args
-from utils.step_gen import StepGen
+from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
 
@@ -80,7 +80,11 @@ class MTBF_Driver:
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.start_time = time.time()
-        sg = StepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist, dummy=self.dummy)
+        self.replay = os.getenv("MTBF_REPLAY")
+        if self.replay:
+            sg = ReplayStepGen(workspace=self.workspace, replay=self.replay)
+        else:
+            sg = RandomStepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist, dummy=self.dummy)
 
         current_round = 0
         while(True):
@@ -164,12 +168,13 @@ class MTBF_Driver:
         if self.rp:
             self.rp.write(json.dumps(serialized))
             self.rp.close()
-            shutil.copy2(self.rp.name, os.path.join(self.workspace, os.path.basename(self.rp.name)))
+            shutil.copy2(self.rp.name, os.path.join(self.workspace, "replay"))
         shutil.copy2(self.dummy, os.path.join(self.workspace, os.path.basename(self.dummy)))
         dest = os.path.join(self.workspace, os.path.basename(os.getenv('VIRTUAL_ENV')))
-        if os.path.exists(dest):
-            shutil.rmtree(dest)
-        shutil.copytree(os.getenv('VIRTUAL_ENV'), dest)
+        if not os.getenv('VIRTUAL_ENV') == dest:
+            if os.path.exists(dest):
+                shutil.rmtree(dest)
+            shutil.copytree(os.getenv('VIRTUAL_ENV'), dest)
 
 
 def main():
@@ -183,14 +188,18 @@ def main():
             ", format should be '1d', '10h', '10m50s'"
         )
     step_log = 'last_replay.txt'
-    rp = open(step_log, 'w')
+    rp = None
+    if not os.getenv("MTBF_REPLAY"):
+        rp = open(step_log, 'w')
     mtbf = MTBF_Driver(time, rp)
+    if os.getenv("MTBF_REPLAY"):
+        signal.signal(signal.SIGALRM, mtbf.time_up)
+        signal.alarm(mtbf.duration)
+        mtbf.start_gaiatest()
+        signal.alarm(0)
+    else:
+        mtbf.start_gaiatest()
 
-    signal.signal(signal.SIGALRM, mtbf.time_up)
-    signal.alarm(mtbf.duration)
-
-    mtbf.start_gaiatest()
-    signal.alarm(0)
 
 if __name__ == '__main__':
     main()

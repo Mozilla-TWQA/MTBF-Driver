@@ -5,16 +5,42 @@ import random
 import json
 import shutil
 
-
 class StepGen(object):
-    def __init__(self, level=1, root=None, runlist=None, workspace=None, dummy=None):
+    def __init__(self, workspace=None):
+        self.setWorkspace(workspace)
+
+    def setWorkspace(self, workspace):
+        self.workspace = workspace
+        if not os.path.exists(workspace):
+            os.mkdir(workspace)
+
+    def generate(self):
+        raise NotImplementedError
+
+
+class ReplayStepGen(StepGen):
+    def __init__(self, workspace, replay):
+        StepGen.__init__(self, workspace)
+        self.setReplay(replay)
+
+    def setReplay(self, replay_file):
+        if not os.path.exists(replay_file):
+            raise ValueError("Replay file " + replay_file + " does not exist.")
+        self.replay = json.load(open(replay_file))["replay"]
+
+    def generate(self):
+        return map(lambda x: [x, x], self.replay)
+
+
+class RandomStepGen(StepGen):
+    def __init__(self, workspace=None, level=1, root=None, runlist=None, dummy=None):
+        StepGen.__init__(self, workspace)
         self.max_level = 5
         if dummy is None:
             raise ValueError('fail to get dummy test case')
         self.dummy = (os.path.basename(dummy), dummy)
         self.setLevel(level)
         self.setRunlist(runlist)
-        self.setWorkspace(workspace)
         self.enqueue = []
         if(root):
             self.setRoot(root)
@@ -34,11 +60,6 @@ class StepGen(object):
 
     def setRoot(self, root):
         self.root = root
-
-    def setWorkspace(self, workspace):
-        self.workspace = workspace
-        if not os.path.exists(workspace):
-            os.mkdir(workspace)
 
     def setRunlist(self, runlist):
         with open(runlist) as fh:
