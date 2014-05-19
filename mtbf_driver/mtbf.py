@@ -162,6 +162,7 @@ class MTBF_Driver:
         os._exit(0)
 
     def deinit(self):
+        virtual_home = os.getenv('VIRTUAL_ENV')
         self.get_report()
         serialized = dict()
         serialized['replay'] = self.ttr
@@ -170,11 +171,14 @@ class MTBF_Driver:
             self.rp.close()
             shutil.copy2(self.rp.name, os.path.join(self.workspace, "replay"))
         shutil.copy2(self.dummy, os.path.join(self.workspace, os.path.basename(self.dummy)))
-        dest = os.path.join(self.workspace, os.path.basename(os.getenv('VIRTUAL_ENV')))
-        if not os.getenv('VIRTUAL_ENV') == dest:
+        dest = os.path.join(self.workspace, os.path.basename(virtual_home))
+        if not virtual_home == dest:
             if os.path.exists(dest):
                 shutil.rmtree(dest)
-            shutil.copytree(os.getenv('VIRTUAL_ENV'), dest)
+            shutil.copytree(virtual_home, dest)
+        info = os.path.join(virtual_home, 'info')
+        if os.exists(info):
+            shutil.copy2(info, self.workspace)
 
 
 def main():
@@ -192,7 +196,7 @@ def main():
     if not os.getenv("MTBF_REPLAY"):
         rp = open(step_log, 'w')
     mtbf = MTBF_Driver(time, rp)
-    if os.getenv("MTBF_REPLAY"):
+    if not os.getenv("MTBF_REPLAY"):
         signal.signal(signal.SIGALRM, mtbf.time_up)
         signal.alarm(mtbf.duration)
         mtbf.start_gaiatest()
