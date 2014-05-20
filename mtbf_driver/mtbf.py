@@ -6,11 +6,14 @@ import signal
 import time
 import json
 import shutil
+import logging
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 class MTBF_Driver:
     ## time format here is seconds
@@ -37,13 +40,13 @@ class MTBF_Driver:
             with open(mtbf_conf_file) as json_file:
                 self.conf = json.load(json_file)
         except IOError:
-            print("IOError on ", mtbf_conf_file)
+            logger.error("IOError on ", mtbf_conf_file)
             sys.exit(1)
 
         if 'level' in self.conf:
             self.level = self.conf['level']
         if 'rootdir' not in self.conf or 'workspace' not in self.conf:
-            print('No rootdir or workspace set, please add in config')
+            logger.error('No rootdir or workspace set, please add in config')
             sys.exit(1)
 
         if 'runlist' in self.conf and self.conf['runlist'].strip():
@@ -51,19 +54,19 @@ class MTBF_Driver:
             if not os.path.exists(self.runlist):
                 self.runlist = os.path.join(self.ori_dir, self.conf['runlist'])
                 if not os.path.exists(self.runlist):
-                    print(self.conf['runlist'], " does not exist.")
+                    (self.conf['runlist'], " does not exist.")
                     sys.exit(1)
 
         self.rootdir = self.conf['rootdir']
         if not os.path.exists(self.rootdir):
             self.rootdir = os.path.join(self.ori_dir, self.conf['rootdir'])
             if not os.path.exists(self.rootdir):
-                print("Rootdir doesn't exist: " + self.conf['rootdir'])
+                logger.error("Rootdir doesn't exist: " + self.conf['rootdir'])
                 sys.exit(1)
 
         self.workspace = self.conf['workspace']
         if not os.path.exists(self.workspace):
-            print("Workspace doesn't exist, will create new one")
+            logger.info("Workspace doesn't exist, will create new one")
         return conf
 
     ## logging module should be defined here
@@ -134,8 +137,8 @@ class MTBF_Driver:
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
 
-            self.logger = logging.getLogger('Marionette')
-            self.logger.handlers = []
+            self.marionette_logger = logging.getLogger('Marionette')
+            self.marionette_logger.handlers = []
 
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
@@ -147,17 +150,14 @@ class MTBF_Driver:
 
     def get_report(self):
         self.running_time = time.time() - self.start_time
-        self.runner.logger.info("\n*Total MTBF Time: %.3fs", self.running_time)
-        self.runner.logger.info('\nMTBF TEST SUMMARY\n-----------------')
-        self.runner.logger.info('passed: %d' % self.passed)
-        self.runner.logger.info('failed: %d' % self.failed)
-        self.runner.logger.info('todo:   %d' % self.todo)
+        logger.info("\n*Total MTBF Time: %.3fs", self.running_time)
+        logger.info('\nMTBF TEST SUMMARY\n-----------------')
+        logger.info('passed: %d' % self.passed)
+        logger.info('failed: %d' % self.failed)
+        logger.info('todo:   %d' % self.todo)
 
     def time_up(self, signum, frame):
-        print(
-            "Signal handler called with signal",
-            signum
-        )
+        logger.info("Signal handler called with signal" + str(signum))
         self.deinit()
         os._exit(0)
 
@@ -177,7 +177,7 @@ class MTBF_Driver:
                 shutil.rmtree(dest)
             shutil.copytree(virtual_home, dest)
         info = os.path.join(virtual_home, 'info')
-        if os.exists(info):
+        if os.path.exists(info):
             shutil.copy2(info, self.workspace)
 
 
@@ -186,7 +186,7 @@ def main():
     try:
         time = int(time2sec(os.getenv('MTBF_TIME', '2m')))
     except ValueError:
-        print(
+        logger.error(
             "input value parse error: ",
             os.getenv('MTBF_TIME'),
             ", format should be '1d', '10h', '10m50s'"

@@ -4,6 +4,9 @@ import os.path
 import random
 import json
 import shutil
+import logging
+
+logger = logging.get_logger(__name__)
 
 class StepGen(object):
     def __init__(self, workspace=None):
@@ -95,11 +98,11 @@ class RandomStepGen(StepGen):
 def main():
     run_file = 'tests/test_run.txt'
     sg = StepGen(level=3, root='/tmp/run_test', workspace='/tmp/replay', runlist=run_file)
-    print('enqueue : ', sg.enqueue)
+    logger.debug('enqueue : ', sg.enqueue)
     import time
     while(True):
         time.sleep(1)
-        print(sg.generate())
+        logger.debug(sg.generate())
 
 if __name__ == '__main__':
     main()
