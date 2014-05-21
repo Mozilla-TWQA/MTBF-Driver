@@ -1,0 +1,6 @@
+{ "runlist": ["test_mtbf_email_keyboard.py",
+"test_mtbf_keyboard_predictive_key.py",
+"test_mtbf_keyboard.py",
+"test_mtbf_number_keyboard.py",
+"test_mtbf_url_keyboard.py"]
+}

@@ -1,4 +1,9 @@
+#MTBF
+*replay*.*
+.*.swp
 *.py[cod]
+gecko.log
+
 # firefox os
 logcat
 

@@ -1,7 +1,0 @@
-{
-  "memory_report": true,
-  "logcat": true,
-  "overall_status": true,
-  "b2g_status": true,
-  "get_event": true
-}
