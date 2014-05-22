@@ -14,7 +14,7 @@ with open('requirements.txt') as f:
 version = "0.1.0"
 
 # copy check_version script
-check_version_script = os.path.join(os.path.dirname(__file__), "bin", "check_versions.sh")
+check_version_script = os.path.join(os.path.dirname(__file__), "shell", "check_versions.sh")
 virdir = os.getenv("VIRTUAL_ENV")
 bindir = os.path.join(virdir, 'bin')
 shutil.copy2(check_version_script, bindir)
@@ -37,6 +37,6 @@ setup(
         'mtbf = mtbf_driver.mtbf:main']},
     install_requires=deps,
 
-    package_data={'': ['conf/*.json', 'runlist/*.list', 'bin/*']},
+    package_data={'': ['conf/*.json', 'runlist/*.list', 'shell/*']},
     include_package_data=True
 )
