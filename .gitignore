@@ -1,5 +1,6 @@
 #MTBF
-*replay*.*
+replay.*
+last_replay.*
 .*.swp
 *.py[cod]
 gecko.log
