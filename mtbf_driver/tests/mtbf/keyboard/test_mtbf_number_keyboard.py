@@ -10,15 +10,11 @@ from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 
 class TestNumberKeyboard(GaiaMtbfTestCase):
 
-    def setUp(self):
-        GaiaMtbfTestCase.setUp(self)
-
+    def test_number_keyboard(self):
         self.app_id = self.launch_by_touch("UI tests")
         self.ui_tests = UiTests(self.marionette)
         self.mtbf_ui_tests = MTBF_UiTests(self.marionette)
         self.mtbf_ui_tests.back_to_main_screen()
-
-    def test_number_keyboard(self):
         self.ui_tests.tap_ui_button()
 
         keyboard_page = self.ui_tests.tap_keyboard_option()

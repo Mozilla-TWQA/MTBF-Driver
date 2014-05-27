@@ -22,8 +22,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
             name,
             switch_to_frame=True,
             url=None,
-            launch_timeout=None
-            ):
+            launch_timeout=None):
         homescreen = Homescreen(self.marionette)
         self.marionette.switch_to_frame()
         hs = self.marionette.find_element('css selector', '#homescreen iframe')
@@ -32,8 +31,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
         icon = self.marionette.find_element(
             'css selector',
-            'li[aria-label="' + name + '"]'
-            )
+            'li[aria-label="' + name + '"]')
 
         while not icon.is_displayed() and homescreen.homescreen_has_more_pages:
             homescreen.go_to_next_page()
@@ -47,16 +45,14 @@ class GaiaMtbfTestCase(GaiaTestCase):
         pt = re.compile("_|-")
         lowered_name = pt.sub("", name).split(' ')[0].lower()
         self.marionette.switch_to_frame()
-        app = self.marionette.find_element(
+        launched_app = self.marionette.find_element(
             'css selector',
             "iframe[mozapp^='app://" + lowered_name +
             "'][mozapp$='manifest.webapp']")
 
-        iframe_id = app.get_attribute('id')
         if switch_to_frame:
-            self.marionette.switch_to_frame(iframe_id)
-
-        return iframe_id
+            self.marionette.switch_to_frame(frame=launched_app, focus=True)
+        return launched_app
 
     def cleanup_gaia(self, full_reset=True):
         # remove media
@@ -83,7 +79,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
         self.device.unlock()
 
         # kill FTU if possible
-        self.marionette.switch_to_frame();
+        self.marionette.switch_to_frame()
         self.marionette.execute_async_script("GaiaApps.kill('app://communications.gaiamobile.org/ftu/index.html');")
 
         if full_reset:
@@ -100,7 +96,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
             # reset do not track
             self.data_layer.set_setting('privacy.donottrackheader.value', '-1')
 
-            # don't change status of airplane mode 
+            # don't change status of airplane mode
             # if self.data_layer.get_setting('airplaneMode.enabled'):
             #    # enable the device radio, disable airplane mode
             #    self.data_layer.set_setting('airplaneMode.enabled', False)
