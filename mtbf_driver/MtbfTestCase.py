@@ -36,8 +36,8 @@ class GaiaMtbfTestCase(GaiaTestCase):
         while not icon.is_displayed() and homescreen.homescreen_has_more_pages:
             homescreen.go_to_next_page()
 
-        while not icon.is_displayed() and \
-                self.marionette.execute_script("var pageHelper = window.wrappedJSObject.GridManager.pageHelper;return pageHelper.getCurrentPageNumber() > 0;"):
+        get_current_page = "var pageHelper = window.wrappedJSObject.GridManager.pageHelper;return pageHelper.getCurrentPageNumber() > 0;"
+        while not icon.is_displayed() and self.marionette.execute_script(get_current_page):
             self.marionette.execute_script('window.wrappedJSObject.GridManager.goToPreviousPage()')
             self.wait_for_condition(lambda m: m.find_element('tag name', 'body').get_attribute('data-transitioning') != 'true')
         icon.tap()
