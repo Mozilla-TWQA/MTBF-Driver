@@ -17,6 +17,9 @@ class GaiaMtbfTestCase(GaiaTestCase):
     def setUp(self):
         GaiaTestCase.setUp(self)
 
+    def push_resource(self, filename, count=1, destination=''):
+            self.device.push_file(self.resource(filename), count, '/'.join(['storage', 'sdcard1', destination]))
+
     def launch_by_touch(
             self,
             name,
@@ -31,7 +34,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
         icon = self.marionette.find_element(
             'css selector',
-            'li[aria-label="' + name + '"]')
+            'li[aria-label="' + name + '"]:not([data-type="collection"])')
 
         while not icon.is_displayed() and homescreen.homescreen_has_more_pages:
             homescreen.go_to_next_page()
