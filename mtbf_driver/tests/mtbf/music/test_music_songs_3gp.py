@@ -2,24 +2,24 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from gaiatest import GaiaTestCase
-from gaiatest.apps.music.app import Music
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
+from mtbf_driver.mtbf_apps.music.app import Mtbf_Music
 
 
-class TestPlay3GPMusic(GaiaTestCase):
+class TestPlay3GPMusic(GaiaMtbfTestCase):
 
     def setUp(self):
-        GaiaTestCase.setUp(self)
+        GaiaMtbfTestCase.setUp(self)
 
         # add video to storage
-        self.push_resource('MUS_0001.3gp')
+        #self.push_resource('MUS_0001.3gp')
 
     def test_select_songs_play_3gp_file(self):
         """https://moztrap.mozilla.org/manage/case/4031/"""
 
-        music_app = Music(self.marionette)
-        music_app.launch()
-        music_app.wait_for_music_tiles_displayed()
+        self.app_id = self.launch_by_touch("Music")
+        self.apps.switch_to_displayed_app()
+        music_app = Mtbf_Music(self.marionette)
 
         # switch to songs view
         list_view = music_app.tap_songs_tab()
@@ -42,3 +42,7 @@ class TestPlay3GPMusic(GaiaTestCase):
 
         # validate stopped playback
         self.assertFalse(player_view.is_player_playing(), 'The player did not stop playing')
+        music_app.back_from_playback()
+
+    def tearDown(self):
+        GaiaMtbfTestCase.tearDown(self)

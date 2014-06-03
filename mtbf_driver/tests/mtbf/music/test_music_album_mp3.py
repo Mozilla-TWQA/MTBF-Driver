@@ -16,7 +16,6 @@ class TestMusic(GaiaMtbfTestCase):
         self.app_id = self.launch_by_touch("Music")
         self.apps.switch_to_displayed_app()
         music_app = Music(self.marionette)
-        music_app.wait_for_music_tiles_displayed()
 
         # switch to albums view
         list_view = music_app.tap_albums_tab()
