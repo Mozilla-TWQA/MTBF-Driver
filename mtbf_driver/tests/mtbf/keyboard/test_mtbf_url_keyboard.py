@@ -31,13 +31,6 @@ class TestUrlKeyboard(GaiaMtbfTestCase):
         typed_key = keyboard_page.url_input
         self.assertEqual(typed_key, u'/')
 
-        # Test .com key
-        keyboard.tap_dotcom()
-
-        keyboard_page.switch_to_frame()
-        typed_key = keyboard_page.url_input
-        self.assertEqual(typed_key, u'/.com')
-
     def tearDown(self):
         self.marionette.switch_to_frame()
         self.marionette.switch_to_frame(self.app_id)
