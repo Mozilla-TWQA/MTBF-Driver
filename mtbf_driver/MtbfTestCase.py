@@ -48,14 +48,14 @@ class GaiaMtbfTestCase(GaiaTestCase):
         pt = re.compile("_|-")
         lowered_name = pt.sub("", name).split(' ')[0].lower()
         self.marionette.switch_to_frame()
-        launched_app = self.marionette.find_element(
-            'css selector',
-            "iframe[mozapp^='app://" + lowered_name +
-            "'][mozapp$='manifest.webapp']")
+        #launched_app = self.marionette.find_element(
+        #    'css selector',
+        #    "iframe[mozapp^='app://" + lowered_name +
+        #    "'][mozapp$='manifest.webapp']")
 
-        if switch_to_frame:
-            self.marionette.switch_to_frame(frame=launched_app, focus=True)
-        return launched_app
+        #if switch_to_frame:
+        #    self.marionette.switch_to_frame(frame=launched_app, focus=True)
+        #return launched_app
 
     def cleanup_gaia(self, full_reset=True):
         # remove media
