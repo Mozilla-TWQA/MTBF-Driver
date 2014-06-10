@@ -4,6 +4,7 @@ last_replay.*
 .*.swp
 *.py[cod]
 gecko.log
+info
 
 # firefox os
 logcat
