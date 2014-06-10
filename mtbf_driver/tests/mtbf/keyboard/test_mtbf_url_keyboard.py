@@ -4,19 +4,18 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from mtbf_driver.mtbf_apps.ui_tests.app import UiTests
 from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 
 class TestUrlKeyboard(GaiaMtbfTestCase):
 
+
     def test_url_keyboard(self):
-        self.app_id = self.launch_by_touch("UI tests")
-        self.ui_tests = UiTests(self.marionette)
+        self.app_id = self.launch_by_touch("uitest")
         self.mtbf_ui_tests = MTBF_UiTests(self.marionette)
         self.mtbf_ui_tests.back_to_main_screen()
-        self.ui_tests.tap_ui_button()
+        self.mtbf_ui_tests.tap_ui_button()
 
-        keyboard_page = self.ui_tests.tap_keyboard_option()
+        keyboard_page = self.mtbf_ui_tests.tap_keyboard_option()
         keyboard_page.switch_to_frame()
 
         # tap the field "input type=url"
@@ -31,7 +30,3 @@ class TestUrlKeyboard(GaiaMtbfTestCase):
         typed_key = keyboard_page.url_input
         self.assertEqual(typed_key, u'/')
 
-    def tearDown(self):
-        self.marionette.switch_to_frame()
-        self.marionette.switch_to_frame(self.app_id)
-        GaiaMtbfTestCase.tearDown(self)

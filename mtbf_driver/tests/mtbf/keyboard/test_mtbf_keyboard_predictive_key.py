@@ -11,7 +11,7 @@ from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
 
     def test_keyboard_predictive_key(self):
-        self.app_id = self.launch_by_touch("UI tests")
+        self.app_id = self.launch_by_touch("uitest")
         self.ui_tests = UiTests(self.marionette)
         self.mtbf_ui_tests = MTBF_UiTests(self.marionette)
         self.mtbf_ui_tests.back_to_main_screen()

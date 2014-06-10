@@ -7,6 +7,7 @@ import time
 
 from gaiatest import GaiaTestCase
 from gaiatest.apps.homescreen.app import Homescreen
+from marionette.by import By
 
 
 class GaiaMtbfTestCase(GaiaTestCase):
@@ -20,7 +21,14 @@ class GaiaMtbfTestCase(GaiaTestCase):
     def push_resource(self, filename, count=1, destination=''):
             self.device.push_file(self.resource(filename), count, '/'.join(['storage', 'sdcard1', destination]))
 
-    def launch_by_touch(
+    def launch_by_touch(self, name):
+        homescreen = Homescreen(self.marionette)
+        self.apps.switch_to_displayed_app()
+        icon = self.marionette.find_element(By.CSS_SELECTOR, '.scrollable [data-identifier*=' + name + ']')
+        icon.tap()
+        self.apps.switch_to_displayed_app()
+
+    def horizontal_launch_by_touch(
             self,
             name,
             switch_to_frame=True,

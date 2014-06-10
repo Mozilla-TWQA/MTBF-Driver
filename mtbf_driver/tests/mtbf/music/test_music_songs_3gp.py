@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
+from gaiatest import GaiaDevice
 from mtbf_driver.mtbf_apps.music.app import Mtbf_Music
 
 
@@ -12,12 +13,13 @@ class TestPlay3GPMusic(GaiaMtbfTestCase):
         GaiaMtbfTestCase.setUp(self)
 
         # add video to storage
-        #self.push_resource('MUS_0001.3gp')
+        if not self.device.manager.fileExists("/storage/sdcard1/MUS_0001.3gp"):
+            self.push_resource('MUS_0001.3gp')
 
     def test_select_songs_play_3gp_file(self):
         """https://moztrap.mozilla.org/manage/case/4031/"""
 
-        self.app_id = self.launch_by_touch("Music")
+        self.app_id = self.launch_by_touch("music")
         self.apps.switch_to_displayed_app()
         music_app = Mtbf_Music(self.marionette)
 
@@ -43,6 +45,3 @@ class TestPlay3GPMusic(GaiaMtbfTestCase):
         # validate stopped playback
         self.assertFalse(player_view.is_player_playing(), 'The player did not stop playing')
         music_app.back_from_playback()
-
-    def tearDown(self):
-        GaiaMtbfTestCase.tearDown(self)

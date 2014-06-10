@@ -13,7 +13,7 @@ class TestMusic(GaiaMtbfTestCase):
     def test_select_album_play(self):
         """https://moztrap.mozilla.org/manage/case/4031/"""
 
-        self.app_id = self.launch_by_touch("Music")
+        self.app_id = self.launch_by_touch("music")
         self.apps.switch_to_displayed_app()
         music_app = Music(self.marionette)
 
