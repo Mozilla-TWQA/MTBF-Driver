@@ -29,13 +29,9 @@ class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
 
         # tap the first predictive word
         keyboard.tap_first_predictive_word()
-        self.marionette.switch_to_frame()
-        self.marionette.switch_to_frame(self.app_id)
+        self.apps.switch_to_displayed_app()
         keyboard_page.switch_to_frame()
 
         # check if the word in the input field is the same as the expected word
         typed_word = keyboard_page.text_input
         self.assertEqual(typed_word, expected_word)
-
-    def tearDown(self):
-        GaiaMtbfTestCase.tearDown(self)
