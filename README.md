@@ -42,29 +42,17 @@ Options in config file
   "level": 4
 }
 ```
+- memory report: Enable get_about_memory script during test run
+- logcat: Trigger logcat periodically
+- overall_status: Get android system info
+- b2g_status: Get b2g specific system info
+- get_event:
+- rootdir: Indicate search path of test case bank
+- workspace: A temporary directory to store running artifacts
+- manifest_prefix: Not used in production
+- archive: Not used in production
+- runlist: Specify test cases to be randomly executed
+- level: Robust magnitude, every round test runner will insert a dummy test case.  level equals to number of active test cases inserted.
 
-memory report: Enable get_about_memory script during test run
-
-logcat: Trigger logcat periodically
-
-overall_status: Get android system info
-
-b2g_status: Get b2g specific system info
-
-get_event:
-
-rootdir: Indicate search path of test case bank
-
-workspace: A temporary directory to store running artifacts
-
-manifest_prefix: Not used in production
-
-archive: Not used in production
-
-runlist: Specify test cases to be randomly executed
-
-level: Robust magnitude, every round test runner will insert a dummy test case.  level equals to number of active test cases inserted.
-
-       For example, 3 means in each round, 2 real test cases and 1 dummy test case scheduled.  Level 0 means no test cases executed but dummy.
-
-       Level 5 is to disable dummy and run test in best effort.
+> For example, 3 means in each round, 2 real test cases and 1 dummy test case scheduled.  Level 0 means no test cases executed but dummy.<br/>
+> Level 5 is to disable dummy and run test in best effort.
