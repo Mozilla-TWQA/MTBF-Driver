@@ -6,14 +6,13 @@ import signal
 import time
 import json
 import shutil
-import logging
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
 logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+mtbf_logger = logging.getLogger(__name__)
 
 class MTBF_Driver:
     ## time format here is seconds
@@ -40,13 +39,13 @@ class MTBF_Driver:
             with open(mtbf_conf_file) as json_file:
                 self.conf = json.load(json_file)
         except IOError:
-            logger.error("IOError on ", mtbf_conf_file)
+            mtbf_logger.error("IOError on ", mtbf_conf_file)
             sys.exit(1)
 
         if 'level' in self.conf:
             self.level = self.conf['level']
         if 'rootdir' not in self.conf or 'workspace' not in self.conf:
-            logger.error('No rootdir or workspace set, please add in config')
+            mtbf_logger.error('No rootdir or workspace set, please add in config')
             sys.exit(1)
 
         if 'runlist' in self.conf and self.conf['runlist'].strip():
@@ -61,12 +60,12 @@ class MTBF_Driver:
         if not os.path.exists(self.rootdir):
             self.rootdir = os.path.join(self.ori_dir, self.conf['rootdir'])
             if not os.path.exists(self.rootdir):
-                logger.error("Rootdir doesn't exist: " + self.conf['rootdir'])
+                mtbf_logger.error("Rootdir doesn't exist: " + self.conf['rootdir'])
                 sys.exit(1)
 
         self.workspace = self.conf['workspace']
         if not os.path.exists(self.workspace):
-            logger.info("Workspace doesn't exist, will create new one")
+            mtbf_logger.info("Workspace doesn't exist, will create new one")
         return conf
 
     ## logging module should be defined here
@@ -150,14 +149,14 @@ class MTBF_Driver:
 
     def get_report(self):
         self.running_time = time.time() - self.start_time
-        logger.info("\n*Total MTBF Time: %.3fs", self.running_time)
-        logger.info('\nMTBF TEST SUMMARY\n-----------------')
-        logger.info('passed: %d' % self.passed)
-        logger.info('failed: %d' % self.failed)
-        logger.info('todo:   %d' % self.todo)
+        mtbf_logger.info("\n*Total MTBF Time: %.3fs", self.running_time)
+        mtbf_logger.info('\nMTBF TEST SUMMARY\n-----------------')
+        mtbf_logger.info('passed: %d' % self.passed)
+        mtbf_logger.info('failed: %d' % self.failed)
+        mtbf_logger.info('todo:   %d' % self.todo)
 
     def time_up(self, signum, frame):
-        logger.info("Signal handler called with signal" + str(signum))
+        mtbf_logger.info("Signal handler called with signal" + str(signum))
         self.deinit()
         os._exit(0)
 
@@ -169,6 +168,7 @@ class MTBF_Driver:
         if self.rp:
             self.rp.write(json.dumps(serialized))
             self.rp.close()
+            mtbf_logger.info("Write reproduce steps finished")
             shutil.copy2(self.rp.name, os.path.join(self.workspace, "replay"))
         shutil.copy2(self.dummy, os.path.join(self.workspace, os.path.basename(self.dummy)))
         dest = os.path.join(self.workspace, os.path.basename(virtual_home))
@@ -186,7 +186,7 @@ def main():
     try:
         time = int(time2sec(os.getenv('MTBF_TIME', '2m')))
     except ValueError:
-        logger.error(
+        mtbf_logger.error(
             "input value parse error: ",
             os.getenv('MTBF_TIME'),
             ", format should be '1d', '10h', '10m50s'"
@@ -199,7 +199,11 @@ def main():
     if not os.getenv("MTBF_REPLAY"):
         signal.signal(signal.SIGALRM, mtbf.time_up)
         signal.alarm(mtbf.duration)
-        mtbf.start_gaiatest()
+        try:
+            mtbf.start_gaiatest()
+        except:
+            mtbf_logger.error("Exception occurs")
+            mtbf.deinit()
         signal.alarm(0)
     else:
         mtbf.start_gaiatest()
