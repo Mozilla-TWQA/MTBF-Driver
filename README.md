@@ -21,11 +21,13 @@ MTBF_TIME=10h MTBF_CONF=conf/local.json mtbf --address=localhost:2828 --testvars
 System variable:
 ```
 MTBF_TIME=100h
-Specify duration of test, for example, 10h = 10 hours, 500S = 500 seconds, 120m = 120 minutes. mixing is ok.
+Specify duration of test, for example, 10h = 10 hours,
+500S = 500 seconds, 120m = 120 minutes. mixing is ok.
 -- 
 
 MTBF_CONF
-Give a file path with general runnning parameters.  You can find a couple of examples in conf folder.
+Give a file path with general runnning parameters.
+You can find a couple of examples in conf folder.
 ```
 
 Options in config file

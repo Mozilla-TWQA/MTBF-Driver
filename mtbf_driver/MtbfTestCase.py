@@ -24,7 +24,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
     def launch_by_touch(self, name):
         homescreen = Homescreen(self.marionette)
         self.apps.switch_to_displayed_app()
-        icon = self.marionette.find_element(By.CSS_SELECTOR, '.scrollable [data-identifier*=' + name + ']')
+        icon = self.marionette.find_element(By.CSS_SELECTOR, '.scrollable [aria-label*=' + name + ']')
         icon.tap()
         self.apps.switch_to_displayed_app()
 

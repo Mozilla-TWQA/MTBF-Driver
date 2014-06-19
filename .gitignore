@@ -5,6 +5,13 @@ last_replay.*
 *.py[cod]
 gecko.log
 info
+b2ginfo*
+b2gprocrank*
+b2gps*
+bugreport*
+dmesg*
+getevent*
+logcat*
 
 # firefox os
 logcat
