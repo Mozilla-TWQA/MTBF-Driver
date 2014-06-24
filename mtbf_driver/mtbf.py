@@ -53,7 +53,7 @@ class MTBF_Driver:
             if not os.path.exists(self.runlist):
                 self.runlist = os.path.join(self.ori_dir, self.conf['runlist'])
                 if not os.path.exists(self.runlist):
-                    (self.conf['runlist'], " does not exist.")
+                    mtbf_logger.error(self.conf['runlist'], " does not exist.")
                     sys.exit(1)
 
         self.rootdir = self.conf['rootdir']
@@ -149,7 +149,7 @@ class MTBF_Driver:
 
     def get_report(self):
         self.running_time = time.time() - self.start_time
-        mtbf_logger.info("\n*Total MTBF Time: %.3fs", self.running_time)
+        mtbf_logger.info("\n*Total MTBF Time: %.3fs" % self.running_time)
         mtbf_logger.info('\nMTBF TEST SUMMARY\n-----------------')
         mtbf_logger.info('passed: %d' % self.passed)
         mtbf_logger.info('failed: %d' % self.failed)
@@ -201,8 +201,8 @@ def main():
         signal.alarm(mtbf.duration)
         try:
             mtbf.start_gaiatest()
-        except:
-            mtbf_logger.error("Exception occurs")
+        except Exception as e:
+            mtbf_logger.error("Exception occurs: " + str(e))
             mtbf.deinit()
         signal.alarm(0)
     else:
