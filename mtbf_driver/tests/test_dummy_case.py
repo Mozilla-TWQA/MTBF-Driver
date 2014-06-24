@@ -6,6 +6,7 @@ import time
 import codecs
 import subprocess
 import re
+import logging
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 
@@ -37,7 +38,7 @@ class DummyTestCase(GaiaMtbfTestCase):
                 last = f.read()
         except IOError:
             pass
-        with codec.open("screenshot", "w+", encoding="utf-8") as f
+        with codec.open("screenshot", "w+", encoding="utf-8") as f:
             self.apps.switch_to_displayed_app()
             current = self.marionette.page_source()
             f.seek(0)
