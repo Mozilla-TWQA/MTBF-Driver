@@ -18,7 +18,7 @@ class MTBF_Driver:
     ## time format here is seconds
     def __init__(self, time, rp=None):
         self.duration = time
-        self.start_time = None
+        self.start_time = 0
         self.running_time = 0
         self.runner = None
         self.passed = 0
