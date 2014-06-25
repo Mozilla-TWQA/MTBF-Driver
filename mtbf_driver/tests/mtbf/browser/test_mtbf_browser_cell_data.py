@@ -29,4 +29,5 @@ class TestBrowserCellData(GaiaMtbfTestCase):
         self.assertEqual(heading.text, 'We believe that the internet should be public, open and accessible.')
 
     def tearDown(self):
+        self.data_layer.disable_cell_data()
         GaiaMtbfTestCase.tearDown(self)

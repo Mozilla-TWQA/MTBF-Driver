@@ -61,4 +61,5 @@ class TestYouTube(GaiaMtbfTestCase):
                              'video resumed to play not from place where it was paused')
 
     def tearDown(self):
+        self.data_layer.disable_wifi()
         GaiaMtbfTestCase.tearDown(self)

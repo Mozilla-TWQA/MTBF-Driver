@@ -30,6 +30,10 @@ class TestBrowserTabs(GaiaMtbfTestCase):
         Load a website ( http://mozqa.com/data/firefox/layout/mozilla.html)
         Switch back to the first tab.
         """
+
+        # Remember the tabs number
+        self.ori_tab_num = self.browser.displayed_tabs_number
+
         # Open tab menu.
         self.browser.tap_tab_badge_button()
 
@@ -43,14 +47,15 @@ class TestBrowserTabs(GaiaMtbfTestCase):
 
         # Assert that the new tab has opened.
         self.browser.switch_to_chrome()
-        self.assertEqual(browser.displayed_tabs_number, 2)
+        self.assertEqual(self.browser.displayed_tabs_number, self.ori_tab_num+1)
         # Assert that the displayed tabs number is equal with the actual number of opened tabs.
-        self.assertEqual(browser.displayed_tabs_number, browser.tabs_count)
+        self.assertEqual(self.browser.displayed_tabs_number, self.browser.tabs_count)
 
         # Switch back to the first tab.
         self.browser.tap_tab_badge_button()
         self.browser.tabs[0].tap_tab()
-        self.assertTrue(browser.is_awesome_bar_visible)
+        self.assertTrue(self.browser.is_awesome_bar_visible)
 
     def tearDown(self):
+        self.data_layer.disable_wifi()
         GaiaMtbfTestCase.tearDown(self)
