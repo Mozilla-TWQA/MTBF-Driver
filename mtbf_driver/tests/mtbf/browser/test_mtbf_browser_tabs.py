@@ -20,17 +20,7 @@ class TestBrowserTabs(GaiaMtbfTestCase):
         self.browser.launch()
 
     def test_browser_tabs(self):
-        """ Open a new tab.
-        Using Wifi/LAN
-
-        Open Browser.
-        Open tab menu.
-        Add a new tab.
-        Assert that the new tab has opened.
-        Load a website ( http://mozqa.com/data/firefox/layout/mozilla.html)
-        Switch back to the first tab.
-        """
-
+        import pdb; pdb.set_trace()
         # Remember the tabs number
         self.ori_tab_num = self.browser.displayed_tabs_number
 
