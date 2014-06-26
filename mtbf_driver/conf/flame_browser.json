@@ -1,0 +1,13 @@
+{
+  "memory_report": false,
+  "logcat": false,
+  "overall_status": false,
+  "b2g_status": false,
+  "get_event": false,
+  "rootdir": "tests/mtbf",
+  "workspace": "/tmp/workspace",
+  "manifest_prefix": "mtbf",
+  "archive": "output",
+  "runlist": "runlist/browser.list",
+  "level": 5
+}
