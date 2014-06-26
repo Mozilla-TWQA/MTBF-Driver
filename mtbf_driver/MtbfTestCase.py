@@ -87,8 +87,8 @@ class GaiaMtbfTestCase(GaiaTestCase):
         self.device.unlock()
 
         # kill FTU if possible
-        self.marionette.switch_to_frame()
-        self.marionette.execute_async_script("GaiaApps.kill('app://communications.gaiamobile.org/ftu/index.html');")
+        if self.apps.displayed_app.name.upper() == "FTU":
+            self.apps.kill(self.apps.displayed_app)
 
         if full_reset:
             # disable passcode

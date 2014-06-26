@@ -203,6 +203,7 @@ def main():
             mtbf.start_gaiatest()
         except Exception as e:
             mtbf_logger.error("Exception occurs: " + str(e))
+            mtbf_logger.exception(e)
             mtbf.deinit()
         signal.alarm(0)
     else:

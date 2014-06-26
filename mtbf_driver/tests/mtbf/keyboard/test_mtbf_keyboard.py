@@ -41,17 +41,14 @@ class TestKeyboard(GaiaMtbfTestCase):
         # go back to app frame and finish this
         self.apps.switch_to_displayed_app()
         new_contact_form.tap_done()
-        self.wait_for_condition(lambda m: len(self.contacts_app.contacts) >= 1)
+        if self.contacts_app.contact(self.contact):
+           pass 
+        #self.wait_for_condition(lambda m: )
 
         contact_details = self.contacts_app.contacts[0].tap()
         output_text = contact_details.comments
 
         self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
-
-    def search_contact_by_name(self, m, name):
-        rows = m.find_elements(By.CSS_SELECTOR, self._contact_rows)
-        names = map(lambda r:r.text, rows)
-        if name
 
     def tearDown(self):
         contacts = Contacts(self.marionette)
