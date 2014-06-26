@@ -9,5 +9,5 @@
   "manifest_prefix": "mtbf",
   "archive": "output",
   "runlist": "runlist/all.list",
-  "level": 6
+  "level": 5
 }

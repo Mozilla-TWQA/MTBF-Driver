@@ -18,9 +18,6 @@ class GaiaMtbfTestCase(GaiaTestCase):
     def setUp(self):
         GaiaTestCase.setUp(self)
 
-    def push_resource(self, filename, count=1, destination=''):
-            self.device.push_file(self.resource(filename), count, '/'.join(['storage', 'sdcard1', destination]))
-
     def launch_by_touch(self, name):
         homescreen = Homescreen(self.marionette)
         self.apps.switch_to_displayed_app()

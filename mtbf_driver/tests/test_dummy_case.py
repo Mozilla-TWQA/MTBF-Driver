@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class DummyTestCase(GaiaMtbfTestCase):
     def setUp(self):
-        pass
+        GaiaMtbfTestCase.setUp(self)
 
     def tearDown(self):
         pass
@@ -25,23 +25,28 @@ class DummyTestCase(GaiaMtbfTestCase):
         self.assertEqual(1,1)
 
     def test_cpu_load(self):
-        b2g_status = subprocess.check_output(["adb shell top -m 20 -n 1 -s cpu | grep b2g"])
+        status = True
+        adb_shell = subprocess.Popen(["adb shell top -m 20 -n 1 -s cpu"], stdout=subprocess.PIPE, shell=True)
+        b2g_status = subprocess.check_output(["grep", "b2g"], stdin=adb_shell.stdout)
         try:
             for li in b2g_status:
                 percent = re.search("\\([0-9.]+s%)\\s", b2g_status).group[0]
-        except Exception as e:
+        except OSError as e:
             logger.error(e)
+        self.assertEqual(status, True)
 
     def test_page_source(self):
+        status = True
         try:
             with codecs.open("screenshot", "r+", encoding="utf-8") as f:
                 last = f.read()
         except IOError:
             pass
-        with codec.open("screenshot", "w+", encoding="utf-8") as f:
+        with codecs.open("screenshot", "w+", encoding="utf-8") as f:
             self.apps.switch_to_displayed_app()
-            current = self.marionette.page_source()
+            current = self.marionette.page_source
             f.seek(0)
             f.write(current)
-            f.truncate()
+            f.truncatea()
+        self.assertEqual(status, True)
 

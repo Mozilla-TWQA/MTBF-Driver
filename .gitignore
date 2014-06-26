@@ -12,6 +12,7 @@ bugreport*
 dmesg*
 getevent*
 logcat*
+screenshot
 
 # firefox os
 logcat

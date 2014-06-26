@@ -6,11 +6,13 @@
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from mtbf_driver.mtbf_apps.contacts.app import MTBF_Contacts as Contacts
 from gaiatest.mocks.mock_contact import MockContact
+from marionette.by import By
 
 
 class TestKeyboard(GaiaMtbfTestCase):
 
-    _string = "aG1D2s3~!=@.#$^aśZïd".decode("UTF-8")
+    _string = "aG1 D2s3~!=@.#$^aśZïd".decode("UTF-8")
+    _contact_rows = "#group-list strong"
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
@@ -45,6 +47,11 @@ class TestKeyboard(GaiaMtbfTestCase):
         output_text = contact_details.comments
 
         self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
+
+    def search_contact_by_name(self, m, name):
+        rows = m.find_elements(By.CSS_SELECTOR, self._contact_rows)
+        names = map(lambda r:r.text, rows)
+        if name
 
     def tearDown(self):
         contacts = Contacts(self.marionette)
