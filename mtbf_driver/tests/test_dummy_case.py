@@ -20,9 +20,9 @@ class DummyTestCase(GaiaMtbfTestCase):
     def tearDown(self):
         pass
 
-    def test_wait_for_5_minutes(self):
-        time.sleep(300)
-        self.assertEqual(1,1)
+#    def test_wait_for_5_minutes(self):
+#        time.sleep(300)
+#        self.assertEqual(1,1)
 
     def test_cpu_load(self):
         status = True
@@ -30,7 +30,9 @@ class DummyTestCase(GaiaMtbfTestCase):
         b2g_status = subprocess.check_output(["grep", "b2g"], stdin=adb_shell.stdout)
         try:
             for li in b2g_status:
-                percent = re.search("\\([0-9.]+s%)\\s", b2g_status).group[0]
+                per = re.search('([0-9.]+s%)\s', b2g_status)
+                if per:
+                    percent = per.group[0]
         except OSError as e:
             logger.error(e)
         self.assertEqual(status, True)
@@ -47,6 +49,6 @@ class DummyTestCase(GaiaMtbfTestCase):
             current = self.marionette.page_source
             f.seek(0)
             f.write(current)
-            f.truncatea()
+            f.truncate()
         self.assertEqual(status, True)
 

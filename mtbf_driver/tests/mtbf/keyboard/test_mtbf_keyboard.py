@@ -41,14 +41,13 @@ class TestKeyboard(GaiaMtbfTestCase):
         # go back to app frame and finish this
         self.apps.switch_to_displayed_app()
         new_contact_form.tap_done()
-        if self.contacts_app.contact(self.contact):
-           pass 
-        #self.wait_for_condition(lambda m: )
-
-        contact_details = self.contacts_app.contacts[0].tap()
-        output_text = contact_details.comments
-
-        self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
+        new_contact = self.contacts_app.contact(self.contact['tel']['value'])
+        if new_contact:
+            contact_details = new_contact.tap()
+            output_text = contact_details.comments
+            self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
+        else:
+            self.assertEqual(True, False)
 
     def tearDown(self):
         contacts = Contacts(self.marionette)

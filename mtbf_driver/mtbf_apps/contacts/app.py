@@ -8,6 +8,7 @@ from gaiatest.apps.contacts.app import Contacts
 import time
 
 class MTBF_Contacts(Contacts):
+    _title_locator = (By.CSS_SELECTOR, "#app-title")
     _view_screenshot_locator = (By.CSS_SELECTOR, '#view-screenshot')
     _icon_back_sign_locator = (By.CSS_SELECTOR, 'span.icon-back')
     _icon_cancel_locator = (By.CSS_SELECTOR, 'span.icon-close')
@@ -19,7 +20,7 @@ class MTBF_Contacts(Contacts):
     def back_contacts_list(self):
         self.apps.switch_to_displayed_app()
         while True:
-            if not self.marionette.find_element(*self._view_screenshot_locator).is_displayed():
+            if self.marionette.find_element(*self._title_locator).is_displayed():
                 break;
 
             # get all kinds of back buttons and go back
