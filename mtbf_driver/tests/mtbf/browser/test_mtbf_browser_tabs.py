@@ -20,7 +20,6 @@ class TestBrowserTabs(GaiaMtbfTestCase):
         self.browser.launch()
 
     def test_browser_tabs(self):
-        import pdb; pdb.set_trace()
         # Remember the tabs number
         self.ori_tab_num = self.browser.displayed_tabs_number
 
