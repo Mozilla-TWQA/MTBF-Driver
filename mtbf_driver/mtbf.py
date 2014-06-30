@@ -42,6 +42,12 @@ class MTBF_Driver:
             mtbf_logger.error("IOError on ", mtbf_conf_file)
             sys.exit(1)
 
+        ## assign folder for logs or debugging information in a folder
+        if 'archive' in self.conf:
+            self.archive_folder = os.path.join(os.getcwd(), self.conf['archive'])
+        else:
+            self.archive_folder = os.path.join(os.getcwd(), "output")
+
         if 'level' in self.conf:
             self.level = self.conf['level']
         if 'rootdir' not in self.conf or 'workspace' not in self.conf:
@@ -90,6 +96,12 @@ class MTBF_Driver:
 
         current_round = 0
         while(True):
+            current_working_folder=os.getcwd()
+            ## create directory for logs or debugging information
+            if not os.path.exists(self.archive_folder):
+                os.makedirs(self.archive_folder)
+            os.chdir(self.archive_folder)
+
             ## import only if config file states tools is there
             if 'memory_report' in self.conf and self.conf['memory_report']:
                 ## get some memory report before each round
@@ -122,6 +134,7 @@ class MTBF_Driver:
                 bugreport_cmd = "adb shell getevent -S > getevent" + str(current_round)
                 os.system(bugreport_cmd)
 
+            os.chdir(current_working_folder)
             current_round = current_round + 1
 
             ## Run test
