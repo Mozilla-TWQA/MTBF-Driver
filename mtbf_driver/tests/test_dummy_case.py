@@ -20,9 +20,9 @@ class DummyTestCase(GaiaMtbfTestCase):
     def tearDown(self):
         pass
 
-#    def test_wait_for_5_minutes(self):
-#        time.sleep(300)
-#        self.assertEqual(1,1)
+    def test_wait_for_5_minutes(self):
+        time.sleep(300)
+        self.assertEqual(1,1)
 
     def test_cpu_load(self):
         status = True
