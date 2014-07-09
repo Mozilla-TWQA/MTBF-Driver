@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 class DummyTestCase(GaiaMtbfTestCase):
     def setUp(self):
-        GaiaMtbfTestCase.setUp(self)
+        pass
 
     def tearDown(self):
         pass
