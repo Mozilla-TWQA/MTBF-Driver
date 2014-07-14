@@ -36,7 +36,7 @@ class TestSms(GaiaMtbfTestCase):
         self.wait_for_condition(self.wait_for_last_message, 23)
 
     def tearDown(self):
-        if hasattr(self, message_thread):
+        if hasattr(self, "message_thread"):
             self.apps.switch_to_displayed_app()
             self.message_thread.tap_back_button()
         GaiaMtbfTestCase.tearDown(self)
