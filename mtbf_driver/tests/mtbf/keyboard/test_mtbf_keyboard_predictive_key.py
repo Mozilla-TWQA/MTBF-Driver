@@ -9,6 +9,11 @@ from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 
 
 class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
+    
+    def setUp(self):
+        GaiaMtbfTestCase.setUp(self)
+        # enable auto-correction of keyboard
+        self.data_layer.set_setting('keyboard.autocorrect', True)
 
     def test_keyboard_predictive_key(self):
         self.app_id = self.launch_by_touch("uitest")
