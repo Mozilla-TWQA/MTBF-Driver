@@ -14,9 +14,9 @@
   },
   "email": {
     "gmail": {
-      "name": "moztpeqa@gmail.com",
-      "email": "moztpeqa@gmail.com",
-      "password": "mozillaqa!"
+      "name": "",
+      "email": "",
+      "password": ""
     },
     "IMAP": {
       "name": "",
