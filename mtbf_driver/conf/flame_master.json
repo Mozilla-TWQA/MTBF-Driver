@@ -1,8 +1,8 @@
 {
   "memory_report": false,
-  "logcat": false,
+  "logcat": true,
   "overall_status": false,
-  "b2g_status": false,
+  "b2g_status": true,
   "get_event": false,
   "rootdir": "tests/mtbf",
   "workspace": "/tmp/workspace",
