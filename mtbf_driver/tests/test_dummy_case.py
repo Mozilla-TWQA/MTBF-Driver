@@ -20,11 +20,13 @@ class DummyTestCase(GaiaMtbfTestCase):
     def tearDown(self):
         pass
 
-    def test_wait_for_5_minutes(self):
+    def test_status_check(self):
+        self._check_page_source()
         time.sleep(300)
         self.assertEqual(1,1)
+        self._check_cpu_load()
 
-    def test_cpu_load(self):
+    def _check_cpu_load(self):
         status = True
         adb_shell = subprocess.Popen(["adb shell top -m 20 -n 1 -s cpu"], stdout=subprocess.PIPE, shell=True)
         b2g_status = subprocess.check_output(["grep", "b2g"], stdin=adb_shell.stdout)
@@ -37,7 +39,7 @@ class DummyTestCase(GaiaMtbfTestCase):
             logger.error(e)
         self.assertEqual(status, True)
 
-    def test_page_source(self):
+    def _check_page_source(self):
         status = True
         try:
             with codecs.open("screenshot", "r+", encoding="utf-8") as f:
