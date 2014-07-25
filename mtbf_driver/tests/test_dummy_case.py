@@ -14,11 +14,6 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 class DummyTestCase(GaiaMtbfTestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
 
     def test_status_check(self):
         self._check_page_source()
