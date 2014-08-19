@@ -2,14 +2,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from gaiatest import GaiaTestCase
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.camera.app import Camera
 
 
-class TestCameraMultipleShots(GaiaTestCase):
+class TestCameraMultipleShots(GaiaMtbfTestCase):
 
     def setUp(self):
-        GaiaTestCase.setUp(self)
+        GaiaMtbfTestCase.setUp(self)
 
         # Turn off Geolocation prompt
         self.apps.set_permission('Camera', 'geolocation', 'deny')
@@ -50,3 +50,6 @@ class TestCameraMultipleShots(GaiaTestCase):
         # Check that picture saved to SD card
         self.wait_for_condition(lambda m: len(self.data_layer.picture_files) == self.previous_number_of_pictures + 3, 10)
         self.assertEqual(len(self.data_layer.picture_files), self.previous_number_of_pictures + 3)
+
+    def tearDown(self):
+        GaiaMtbfTestCase.tearDown(self)

@@ -2,16 +2,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from gaiatest import GaiaTestCase
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.system.regions.cards_view import CardsView
 
 
-class TestCardsView(GaiaTestCase):
+class TestCardsView(GaiaMtbfTestCase):
 
     _test_apps = ['Calendar', 'Clock']
 
     def setUp(self):
-        GaiaTestCase.setUp(self)
+        GaiaMtbfTestCase.setUp(self)
 
         # Launch the test apps
         for app in self._test_apps:
@@ -46,3 +46,6 @@ class TestCardsView(GaiaTestCase):
         cards_view.wait_for_cards_view_not_displayed()
 
         self.assertEqual(self.apps.displayed_app.name, self._test_apps[0])
+
+    def tearDown(self):
+        GaiaMtbfTestCase.tearDown(self)

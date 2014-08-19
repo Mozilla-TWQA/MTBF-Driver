@@ -2,14 +2,14 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from gaiatest import GaiaTestCase
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.phone.app import Phone
 
 
-class TestCallLogAllCalls(GaiaTestCase):
+class TestCallLogAllCalls(GaiaMtbfTestCase):
 
     def setUp(self):
-        GaiaTestCase.setUp(self)
+        GaiaMtbfTestCase.setUp(self)
 
         # delete any existing call log entries - call log needs to be loaded
         self.phone = Phone(self.marionette)
@@ -46,4 +46,4 @@ class TestCallLogAllCalls(GaiaTestCase):
         # An open call creates problems for future tests
         self.data_layer.kill_active_call()
 
-        GaiaTestCase.tearDown(self)
+        GaiaMtbfTestCase.tearDown(self)
