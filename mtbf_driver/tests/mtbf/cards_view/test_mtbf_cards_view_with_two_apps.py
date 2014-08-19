@@ -48,4 +48,6 @@ class TestCardsView(GaiaMtbfTestCase):
         self.assertEqual(self.apps.displayed_app.name, self._test_apps[0])
 
     def tearDown(self):
+        self.device.touch_home_button()
+        self.device.touch_home_button()
         GaiaMtbfTestCase.tearDown(self)

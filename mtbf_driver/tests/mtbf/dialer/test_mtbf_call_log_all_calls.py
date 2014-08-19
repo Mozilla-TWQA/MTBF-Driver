@@ -18,6 +18,9 @@ class TestCallLogAllCalls(GaiaMtbfTestCase):
     def test_call_log_all_calls(self):
         """https://moztrap.mozilla.org/manage/case/1306/"""
 
+        call_log = self.phone.tap_call_log_toolbar_button()
+        current_calls_count = call_log.all_calls_count
+
         test_phone_number = self.testvars['remote_phone_number']
 
         # Make a call so it will appear in the call log
@@ -27,15 +30,13 @@ class TestCallLogAllCalls(GaiaMtbfTestCase):
         self.wait_for_condition(lambda m: self.apps.displayed_app.name == self.phone.name)
         self.apps.switch_to_displayed_app()
 
-        call_log = self.phone.tap_call_log_toolbar_button()
-
         call_log.tap_all_calls_tab()
 
         # Check that 'All calls' tab is selected
         self.assertTrue(call_log.is_all_calls_tab_selected)
 
         # Now check that one call appears in the call log
-        self.assertEqual(call_log.all_calls_count, 1)
+        self.assertEqual(call_log.all_calls_count, current_calls_count+1)
 
         # Check that the call displayed is for the call we made
         self.assertIn(test_phone_number, call_log.first_all_call_text)

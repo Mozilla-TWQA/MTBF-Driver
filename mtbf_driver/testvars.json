@@ -3,14 +3,14 @@
   "skip_warning": true,
   "settings": {},
   "carrier":{
-    "phone_number": "0984170205",
+    "phone_number": "0930092761",
     "country": "",
     "network": ""
   },
   "imei": "",
-  "remote_phone_number": "",
+  "remote_phone_number": "0930092761",
   "wifi": {
-    "ssid": ""
+    "ssid": "Mozilla Guest"
   },
   "email": {
     "gmail": {
