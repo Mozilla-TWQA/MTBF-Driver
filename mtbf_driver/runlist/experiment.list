@@ -1,6 +1,5 @@
 { "runlist": ["test_mtbf_settings_wifi.py",
-"test_mtbf_fmradio_turn_on_off.py",
-"test_mtbf_call_log_all_calls.py",
 "test_mtbf_cards_view_with_two_apps.py",
+"test_mtbf_call_log_all_calls.py",
 "test_mtbf_camera_multiple_shots.py"]
 }

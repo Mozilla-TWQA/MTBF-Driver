@@ -6,6 +6,6 @@ from gaiatest.apps.base import Base
 from gaiatest.apps.phone.app import Phone
 import time
 
-class MTBF_Phone(Base):
+class MTBF_Phone(Phone):
     def __init__(self, marionette):
-        Base.__init__(self, marionette)
+        Phone.__init__(self, marionette)

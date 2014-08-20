@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.settings.app import Settings
+from mtbf_driver.mtbf_apps.settings.app import MTBF_Settings
 
 
 class TestSettingsWifi(GaiaMtbfTestCase):
@@ -11,13 +11,15 @@ class TestSettingsWifi(GaiaMtbfTestCase):
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
         self.data_layer.disable_wifi()
+        self.settings = MTBF_Settings(self.marionette)
+        self.settings.launch()
 
     def test_connect_to_wifi_via_settings_app(self):
-        settings = Settings(self.marionette)
-        settings.launch()
-        wifi_settings = settings.open_wifi_settings()
+        self.settings.back_to_main_screen()
 
+        wifi_settings = self.settings.open_wifi_settings()
         wifi_settings.enable_wifi()
+
         wifi_settings.connect_to_network(self.testvars['wifi'])
 
         # verify that wifi is now on

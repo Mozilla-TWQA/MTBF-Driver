@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import time
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.fmradio.app import FmRadio
 
@@ -21,10 +22,10 @@ class TestFMRadioTurnOnOff(GaiaMtbfTestCase):
         https://moztrap.mozilla.org/manage/case/1931/
 
         """
-        self.wait_for_condition(lambda m: self.data_layer.is_fm_radio_enabled)
-
-        # check the headphone is plugged-in or not
-        self.assertTrue(self.data_layer.is_antenna_available, 'Antenna (headphones) not plugged in')
+        self.apps.switch_to_displayed_app()
+        time.sleep(5)
+        if not self.fm_radio.is_power_button_on:
+            self.fm_radio.tap_power_button()
 
         # wait for the radio start-up
         self.wait_for_condition(lambda m: self.data_layer.is_fm_radio_enabled)
