@@ -18,6 +18,7 @@ class TestSettingsWifi(GaiaMtbfTestCase):
         self.settings.back_to_main_screen()
 
         wifi_settings = self.settings.open_wifi_settings()
+        self.wait_for_element_displayed(*wifi_settings._wifi_enabled_label_locator)
         wifi_settings.enable_wifi()
 
         wifi_settings.connect_to_network(self.testvars['wifi'])

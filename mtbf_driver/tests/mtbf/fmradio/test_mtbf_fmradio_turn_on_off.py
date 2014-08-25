@@ -4,7 +4,7 @@
 
 import time
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.fmradio.app import FmRadio
+from mtbf_driver.mtbf_apps.fmradio.app import MTBF_FmRadio
 
 
 class TestFMRadioTurnOnOff(GaiaMtbfTestCase):
@@ -12,7 +12,7 @@ class TestFMRadioTurnOnOff(GaiaMtbfTestCase):
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
 
-        self.fm_radio = FmRadio(self.marionette)
+        self.fm_radio = MTBF_FmRadio(self.marionette)
         self.fm_radio.launch()
 
     def test_turn_radio_on_off(self):
@@ -23,15 +23,11 @@ class TestFMRadioTurnOnOff(GaiaMtbfTestCase):
 
         """
         self.apps.switch_to_displayed_app()
-        time.sleep(5)
-        if not self.fm_radio.is_power_button_on:
+        self.wait_for_element_displayed(*self.fm_radio._power_button_locator)
+        if self.fm_radio.is_power_button_on:
             self.fm_radio.tap_power_button()
 
-        # wait for the radio start-up
-        self.wait_for_condition(lambda m: self.data_layer.is_fm_radio_enabled)
-
-        # turn the radio off
-        self.fm_radio.tap_power_button()
+        time.sleep(20)
 
         # check the radio is off
         self.fm_radio.wait_for_radio_off()

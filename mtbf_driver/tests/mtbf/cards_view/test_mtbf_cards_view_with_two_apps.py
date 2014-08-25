@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import time
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.system.regions.cards_view import CardsView
 
@@ -29,6 +30,7 @@ class TestCardsView(GaiaMtbfTestCase):
         # Pull up the cards view
         self.device.hold_home_button()
         cards_view.wait_for_cards_view()
+        time.sleep(5)
 
         # Wait for first app ready
         cards_view.wait_for_card_ready(self._test_apps[1])

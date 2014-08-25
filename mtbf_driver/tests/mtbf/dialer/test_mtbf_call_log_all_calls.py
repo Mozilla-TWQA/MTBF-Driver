@@ -21,10 +21,11 @@ class TestCallLogAllCalls(GaiaMtbfTestCase):
         call_log = self.phone.tap_call_log_toolbar_button()
         self.wait_for_element_displayed("css selector", "div.view-body")
         current_calls_count = call_log.all_calls_count
-        first_number = self.marionette.find_elements("css selector", "div.view-body article ol li:first-child")[0]
-        verification_bit = 1
-        if self.testvars['remote_phone_number'] in first_number.text:
-            verification_bit = 0
+        numbers = self.marionette.find_elements("css selector", "div.view-body article ol li:first-child")
+        if len(numbers) > 0:
+            verification_bit = 1
+            if self.testvars['remote_phone_number'] in numbers[0].text:
+                verification_bit = 0
 
         test_phone_number = self.testvars['remote_phone_number']
 
