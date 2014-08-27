@@ -54,7 +54,6 @@ class TestBrowserBookmark(GaiaMtbfTestCase):
         self.device.touch_home_button()
         self.device.touch_home_button()
 
-        import pdb; pdb.set_trace()
         # delete the bookmark
         self.apps.switch_to_displayed_app()
         self.homescreen.activate_edit_mode()

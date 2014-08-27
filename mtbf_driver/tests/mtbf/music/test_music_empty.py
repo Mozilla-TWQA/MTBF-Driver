@@ -5,6 +5,7 @@
 from gaiatest.apps.music.app import Music
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 
+
 class TestMusicEmpty(GaiaMtbfTestCase):
 
     # Note: Text will need to be updated if/when Bug 834475 is fixed
