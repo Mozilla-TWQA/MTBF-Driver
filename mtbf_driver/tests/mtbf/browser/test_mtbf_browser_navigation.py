@@ -21,6 +21,9 @@ class TestBrowserNavigation(GaiaMtbfTestCase):
         self.browser.launch()
 
     def test_browser_back_button(self):
+        self.wait_for_element_displayed(*self.browser._awesome_bar_locator)
+        self.marionette.find_element(*self.browser._awesome_bar_locator).clear()
+
         self.browser.go_to_url('http://mozqa.com/data/firefox/layout/mozilla.html')
 
         self.browser.switch_to_content()
