@@ -1,5 +1,4 @@
-{ "runlist": ["test_mtbf_browser_bookmark.py",
-"test_mtbf_browser_search.py",
+{ "runlist": ["test_mtbf_browser_search.py",
 "test_mtbf_browser_cell_data.py",
 "test_mtbf_browser_navigation.py",
 "test_mtbf_browser_tabs.py",

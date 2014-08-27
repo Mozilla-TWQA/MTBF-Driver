@@ -22,6 +22,9 @@ class TestBrowserSearch(GaiaMtbfTestCase):
     def test_browser_search(self):
         search_text = 'Mozilla Web QA'
 
+        self.wait_for_element_displayed(*self.browser._awesome_bar_locator)
+
+        self.marionette.find_element(*self.browser._awesome_bar_locator).clear()
         self.browser.go_to_url(search_text)
 
         self.browser.switch_to_content()
