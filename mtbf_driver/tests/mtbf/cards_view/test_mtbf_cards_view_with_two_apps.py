@@ -3,13 +3,15 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import time
+import random
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.system.regions.cards_view import CardsView
+from marionette.marionette import Actions
 
 
 class TestCardsView(GaiaMtbfTestCase):
 
-    _test_apps = ['Calendar', 'Clock']
+    _test_apps = ['Messages', 'Clock']
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
@@ -30,24 +32,44 @@ class TestCardsView(GaiaMtbfTestCase):
         # Pull up the cards view
         self.device.hold_home_button()
         cards_view.wait_for_cards_view()
+
+        # Wait till it really displayed
+        _cards_view_locator = ('id', 'cards-view')
+        self.wait_for_condition(lambda m: m.find_element(*_cards_view_locator).is_displayed())
+
         time.sleep(5)
+        cards = self.marionette.find_elements('css selector', 'ul#cards-list li.card')
+        cards_num = len(cards)
 
-        # Wait for first app ready
-        cards_view.wait_for_card_ready(self._test_apps[1])
+        current = -1
+        for i in range(cards_num):
+            # parse the cards for the displayed card
+            for attr in cards[i].get_attribute('style').split(';'):
+                if 'opacity: 1' in attr:
+                    current = i
 
-        for app in self._test_apps:
-            self.assertTrue(cards_view.is_app_displayed(app),
-                            '%s app should be present in cards view' % app)
+        # if there is cards, don't run
+        if current != -1:
+            choose = random.randint(0, cards_num - 1)
+            card_name = self.marionette.find_elements('css selector', 'ul#cards-list li.card')[choose].text
 
-        cards_view.swipe_to_previous_app()
+            current_frame = self.apps.displayed_app.frame
+            final_x_position = current_frame.size['width']
+            # start swipe from center of window
+            start_x_position = final_x_position // 2
+            start_y_position = current_frame.size['height'] // 2
 
-        # Wait for previous app ready
-        cards_view.wait_for_card_ready(self._test_apps[0])
-        cards_view.tap_app(self._test_apps[0])
+            # swipe forward to get another app card
+            move = choose - current
+            if move > 0:
+                final_x_position = final_x_position * (-1)
+            if move != 0:
+                for i in range(abs(move)):
+                    Actions(self.marionette).flick(current_frame, start_x_position, start_y_position, final_x_position, start_y_position).perform()
 
-        cards_view.wait_for_cards_view_not_displayed()
-
-        self.assertEqual(self.apps.displayed_app.name, self._test_apps[0])
+            self.wait_for_condition(lambda m: 'opacity: 1;' in m.find_elements('css selector', 'ul#cards-list li.card')[choose].get_attribute('style'))
+            self.marionette.find_elements('css selector', 'ul#cards-list li.card')[choose].tap()
+            self.assertEqual(self.apps.displayed_app.name, card_name)
 
     def tearDown(self):
         self.device.touch_home_button()
