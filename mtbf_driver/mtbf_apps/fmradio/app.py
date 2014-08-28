@@ -10,8 +10,5 @@ import time
 class MTBF_FmRadio(FmRadio, Base):
     name = 'FM Radio'
 
-    def __init__(self, marionette):
-        FmRadio.__init__(self, marionette)
-
     def launch(self):
         Base.launch(self) 
