@@ -1,1 +1,1 @@
-gaiatest==0.24
+gaiatest-v2.0>=0.2

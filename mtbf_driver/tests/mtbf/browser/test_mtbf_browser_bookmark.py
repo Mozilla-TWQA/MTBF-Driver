@@ -5,8 +5,8 @@
 import time
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.browser.app import Browser
-from gaiatest.apps.homescreen.app import Homescreen
+from mtbf_apps.browser.app import MtbfBrowser as Browser
+from mtbf_apps.homescreen.app import MtbfHomescreen as Homescreen
 
 
 class TestBrowserBookmark(GaiaMtbfTestCase):
@@ -40,13 +40,9 @@ class TestBrowserBookmark(GaiaMtbfTestCase):
 
         # Switch to Home Screen to look for bookmark
         self.device.touch_home_button()
-
-        self.wait_for_element_displayed('id', 'bookmark-title')
+        self.apps.switch_to_displayed_app()
         self.homescreen.wait_for_app_icon_present(self.bookmark_title)
         self._bookmark_added = self.homescreen.is_app_installed(self.bookmark_title)
-        if self.find_element('id', 'edit-button').is_displayed():
-            self.find_element('id', 'edit-button').tap()
-
         self.assertTrue(self._bookmark_added, 'The bookmark %s was not found to be installed on the home screen.' % self.bookmark_title)
 
     def tearDown(self):
