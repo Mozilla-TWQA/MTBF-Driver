@@ -30,4 +30,3 @@ class TestNumberKeyboard(GaiaMtbfTestCase):
         keyboard_page.switch_to_frame()
         typed_number = keyboard_page.number_input
         self.assertEqual(typed_number, u'1')
-

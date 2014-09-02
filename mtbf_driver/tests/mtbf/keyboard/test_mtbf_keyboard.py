@@ -53,4 +53,3 @@ class TestKeyboard(GaiaMtbfTestCase):
         contacts = Contacts(self.marionette)
         contacts.back_contacts_list()
         GaiaMtbfTestCase.tearDown(self)
-        
