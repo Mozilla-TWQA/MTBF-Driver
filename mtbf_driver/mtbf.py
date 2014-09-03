@@ -7,14 +7,18 @@ import time
 import json
 import shutil
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
+from mozlog.logger import MozFormatter
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
 logging.basicConfig(level=logging.DEBUG)
 mtbf_logger = logging.getLogger(__name__)
+mtbf_logger.parent.handlers[0].setFormatter(MozFormatter(include_timestamp=True))
+
 
 class MTBF_Driver:
+
     ## time format here is seconds
     def __init__(self, time, rp=None):
         self.duration = time
@@ -39,7 +43,7 @@ class MTBF_Driver:
             with open(mtbf_conf_file) as json_file:
                 self.conf = json.load(json_file)
         except IOError:
-            mtbf_logger.error("IOError on ", mtbf_conf_file)
+            mtbf_logger.error("IOError on " + mtbf_conf_file)
             sys.exit(1)
 
         ## assign folder for logs or debugging information in a folder
@@ -96,7 +100,7 @@ class MTBF_Driver:
 
         current_round = 0
         while(True):
-            current_working_folder=os.getcwd()
+            current_working_folder = os.getcwd()
             ## create directory for logs or debugging information
             if not os.path.exists(self.archive_folder):
                 os.makedirs(self.archive_folder)
@@ -134,6 +138,7 @@ class MTBF_Driver:
                 bugreport_cmd = "adb shell getevent -S > getevent" + str(current_round)
                 os.system(bugreport_cmd)
 
+            self.marionette_logger = logging.getLogger('Marionette')
             os.chdir(current_working_folder)
             current_round = current_round + 1
 
@@ -149,7 +154,6 @@ class MTBF_Driver:
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
 
-            self.marionette_logger = logging.getLogger('Marionette')
             self.marionette_logger.handlers = []
 
             ## This is a temporary solution for stop the tests
