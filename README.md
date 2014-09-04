@@ -1,6 +1,8 @@
 MTBF-Driver
 ===========
 
+For latest document, please refer to MDN https://developer.mozilla.org/en-US/Firefox_OS/Platform/Automated_testing/MTBF_tests
+
 MTBF (Mean time between failures) is defined generally for mobile device stability testing (http://en.wikipedia.org/wiki/Mean_time_between_failures)
 
 MTBF Driver is for performing long-term testing (over 100 hours) on Firefox OS devices automatically.
