@@ -11,7 +11,6 @@ from mozlog import structured
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
-from marionette.runtests import MarionetteTbplFormatter
 
 
 class MTBF_Driver:
@@ -39,20 +38,16 @@ class MTBF_Driver:
         parser = self.parser_class(
             usage='%prog [options] test_file_or_dir <test_file_or_dir> ...'
         )
+        structured.commandline.add_logging_group(parser)
         options, tests = parser.parse_args()
         parser.verify_usage(options, tests)
         self.options = options
 
-        ## Generate logger, follow in marionette.runtests.cli()
         logger = structured.commandline.setup_logging(
-            options.logger_name, options, {})
-        has_stdout_logger = any([h.stream == sys.stdout for h in logger.handlers])
-        if not has_stdout_logger:
-            formatter = MarionetteTbplFormatter()
-            handler = structured.handlers.StreamHandler(sys.stdout, formatter)
-            logger.add_handler(structured.handlers.LogLevelFilter(
-                handler, 'info'))
+        options.logger_name, options, {"tbpl": sys.stdout})
+
         options.logger = logger
+
         self.logger = logger
 
         conf = []
