@@ -1,0 +1,10 @@
+{ "runlist": ["test_mtbf_camera_multiple_shots.py",
+"test_mtbf_cards_view_kill_apps_with_two_apps.py",
+"test_mtbf_fmradio_turn_on_off.py",
+"test_mtbf_email_keyboard.py",
+"test_mtbf_keyboard.py",
+"test_mtbf_keyboard_predictive_key.py",
+"test_mtbf_number_keyboard.py",
+test_mtbf_music_song_3gp.py",
+"test_mtbf_settings_wifi.py"]
+}
