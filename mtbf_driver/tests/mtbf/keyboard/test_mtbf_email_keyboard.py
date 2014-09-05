@@ -32,4 +32,3 @@ class TestEmailKeyboard(GaiaMtbfTestCase):
         keyboard_page.switch_to_frame()
         typed_email_adress = keyboard_page.email_input
         self.assertEqual(typed_email_adress, u'post@mydomain.com')
-

@@ -36,7 +36,7 @@ class TestBrowserTabs(GaiaMtbfTestCase):
 
         # Assert that the new tab has opened.
         self.browser.switch_to_chrome()
-        self.assertEqual(self.browser.displayed_tabs_number, self.ori_tab_num+1)
+        self.assertEqual(self.browser.displayed_tabs_number, self.ori_tab_num + 1)
         # Assert that the displayed tabs number is equal with the actual number of opened tabs.
         self.assertEqual(self.browser.displayed_tabs_number, self.browser.tabs_count)
 

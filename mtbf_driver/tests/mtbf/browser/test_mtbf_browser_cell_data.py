@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette.by import By
-
+from gaiatest import GaiaData
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.browser.app import Browser
 
@@ -14,6 +14,7 @@ class TestBrowserCellData(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.data_layer = GaiaData(self.marionette)
         self.data_layer.connect_to_cell_data()
 
         self.browser = Browser(self.marionette)
@@ -21,6 +22,9 @@ class TestBrowserCellData(GaiaMtbfTestCase):
 
     def test_browser_cell_data(self):
         """https://moztrap.mozilla.org/manage/case/1328/"""
+        self.wait_for_element_displayed(*self.browser._awesome_bar_locator)
+        self.marionette.find_element(*self.browser._awesome_bar_locator).clear()
+
         self.browser.go_to_url('http://mozqa.com/data/firefox/layout/mozilla.html', timeout=120)
         self.browser.switch_to_content()
 
