@@ -1,19 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
-from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 import time
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.messages.app import Messages
 from marionette.by import By
 
 
 class TestSms(GaiaMtbfTestCase):
 
-
     def test_sms_send(self):
         """This test sends a text message to itself. It waits for a reply message.
-
         https://moztrap.mozilla.org/manage/case/1322/
         """
         self._text_message_content = "Automated Test %s" % str(time.time())
@@ -47,6 +44,6 @@ class TestSms(GaiaMtbfTestCase):
         if len(messages) < 2:
             return False
         last_message = messages[-1]
-        if "incoming" in last_message.get_attribute("class") and self._text_message_content in last_message.find_element(By.CSS_SELECTOR, ".bubble p").text :
+        if "incoming" in last_message.get_attribute("class") and self._text_message_content in last_message.find_element(By.CSS_SELECTOR, ".bubble p").text:
             return True
         return False

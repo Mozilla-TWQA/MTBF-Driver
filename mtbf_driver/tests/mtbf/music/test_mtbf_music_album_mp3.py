@@ -3,7 +3,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from gaiatest.apps.music.app import Music
-from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase 
+from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
+
 
 class TestMusic(GaiaMtbfTestCase):
 

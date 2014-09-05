@@ -6,6 +6,7 @@
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.music.app import Music
 
+
 class TestMtbfLaunch(GaiaMtbfTestCase):
 
     def setUp(self):

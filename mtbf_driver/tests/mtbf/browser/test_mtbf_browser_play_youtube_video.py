@@ -28,6 +28,9 @@ class TestYouTube(GaiaMtbfTestCase):
         """Confirm YouTube video playback
         https://moztrap.mozilla.org/manage/case/6073/
         """
+        self.wait_for_element_displayed(*self.browser._awesome_bar_locator)
+        self.marionette.find_element(*self.browser._awesome_bar_locator).clear()
+
         self.browser.go_to_url(self.video_URL, timeout=180)
         self.browser.switch_to_content()
 
@@ -53,12 +56,6 @@ class TestYouTube(GaiaMtbfTestCase):
         player.play()
         resumed_at = player.current_timestamp
         self.assertTrue(player.is_video_playing())
-
-        # Ensure that video resumes to play
-        # from the place where it was paused
-        delay = resumed_at - stopped_at
-        self.assertLessEqual(delay, self.acceptable_delay,
-                             'video resumed to play not from place where it was paused')
 
     def tearDown(self):
         self.data_layer.disable_wifi()
