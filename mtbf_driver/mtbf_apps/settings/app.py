@@ -3,11 +3,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette.by import By
-from gaiatest.apps.base import Base
 from gaiatest.apps.settings.app import Settings
 import time
 
-class MTBF_Settings(Base):
+class MTBF_Settings(Settings):
     _header_text_locator = (By.CSS_SELECTOR, '#root > header > h1')
     _icon_back_sign_locator = (By.CSS_SELECTOR, 'span.icon-back')
     _icon_cancel_locator = (By.CSS_SELECTOR, 'span.icon-close')
@@ -15,7 +14,7 @@ class MTBF_Settings(Base):
     _cellanddata_menu_locator = (By.ID, 'data-connectivity')
 
     def __init__(self, marionette):
-        Base.__init__(self, marionette)
+        Settings.__init__(self, marionette)
 
     def wait_for_cellanddata(self):
         self.wait_for_condition(lambda m: m.find_element(*self._cellanddata_menu_locator).get_attribute('aria-disabled') != 'true')
