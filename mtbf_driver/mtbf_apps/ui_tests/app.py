@@ -4,25 +4,18 @@
 
 from marionette.by import By
 from gaiatest.apps.ui_tests.app import UiTests
-import time
-
+from marionette.errors import TimeoutException
 
 class MTBF_UiTests(UiTests):
-    _icon_back_sign_locator = (By.CSS_SELECTOR, 'span.icon-back')
-    _icon_cancel_locator = (By.CSS_SELECTOR, 'span.icon-close')
-    _icon_back_locator = (By.ID, 'test-panel-back')
+    _test_panel_header_locator = (By.CSS_SELECTOR, '#test-panel-header')
 
     def __init__(self, marionette):
         UiTests.__init__(self, marionette)
 
     def back_to_main_screen(self):
-        time.sleep(3)
-        icon_back_sign = self.marionette.find_elements(*self._icon_back_sign_locator)
-        icon_cancel = self.marionette.find_elements(*self._icon_cancel_locator)
-        icon_back = self.marionette.find_elements(*self._icon_back_locator)
-        recover_icons = icon_back_sign + icon_cancel + icon_back
-        for icon in recover_icons:
-            if icon.is_displayed():
-                icon.tap()
-                # change to wait for title changes
-                time.sleep(3)
+        try:
+            self.wait_for_element_displayed(*self._test_panel_header_locator)
+            self.marionette.find_element(*self._test_panel_header_locator).tap(25, 25)
+            self.wait_for_element_not_displayed(*self._test_panel_header_locator)
+        except TimeoutException:
+            pass

@@ -4,9 +4,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from mtbf_driver.mtbf_apps.contacts.app import MTBF_Contacts as Contacts
+from gaiatest.apps.contacts.app import Contacts
 from gaiatest.mocks.mock_contact import MockContact
-from marionette.by import By
 
 
 class TestKeyboard(GaiaMtbfTestCase):
@@ -46,10 +45,6 @@ class TestKeyboard(GaiaMtbfTestCase):
             contact_details = new_contact.tap()
             output_text = contact_details.comments
             self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
+            contact_details.tap_back()
         else:
             self.assertEqual(True, False)
-
-    def tearDown(self):
-        contacts = Contacts(self.marionette)
-        contacts.back_contacts_list()
-        GaiaMtbfTestCase.tearDown(self)
