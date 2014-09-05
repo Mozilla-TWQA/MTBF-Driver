@@ -5,6 +5,6 @@
 "test_mtbf_keyboard.py",
 "test_mtbf_keyboard_predictive_key.py",
 "test_mtbf_number_keyboard.py",
-test_mtbf_music_song_3gp.py",
+"test_mtbf_music_song_3gp.py",
 "test_mtbf_settings_wifi.py"]
 }
