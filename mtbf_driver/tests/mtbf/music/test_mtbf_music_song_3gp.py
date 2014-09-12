@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import time
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest import GaiaDevice
 from mtbf_driver.mtbf_apps.music.app import Mtbf_Music
@@ -32,8 +33,10 @@ class TestPlay3GPMusic(GaiaMtbfTestCase):
 
         player_view = songs[0].tap_first_song()
 
+        play_time = time.strptime('00:08', '%M:%S')
         self.wait_for_condition(
-            lambda m: player_view.player_elapsed_time == '00:05',
+            lambda m: player_view.player_elapsed_time >= play_time,
+            timeout=18,
             message='3gp sample did not start playing')
 
         # validate playback
