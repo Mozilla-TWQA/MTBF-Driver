@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import re
 import time
 
 from gaiatest import GaiaTestCase
@@ -12,14 +11,7 @@ from marionette.by import By
 
 class GaiaMtbfTestCase(GaiaTestCase):
 
-    def __init__(self, *args, **kwargs):
-        GaiaTestCase.__init__(self, *args, **kwargs)
-
-    def setUp(self):
-        GaiaTestCase.setUp(self)
-
     def launch_by_touch(self, name):
-        homescreen = Homescreen(self.marionette)
         self.apps.switch_to_displayed_app()
         icon = self.marionette.find_element(By.CSS_SELECTOR, '.scrollable [data-identifier*=' + name + ']')
         self.marionette.execute_script("arguments[0].scrollIntoView(false);", [icon])
@@ -34,6 +26,9 @@ class GaiaMtbfTestCase(GaiaTestCase):
             switch_to_frame=True,
             url=None,
             launch_timeout=None):
+        '''
+        This function is deprecated because homescreen was changed to vertical
+        '''
         homescreen = Homescreen(self.marionette)
         self.marionette.switch_to_frame()
         hs = self.marionette.find_element('css selector', '#homescreen iframe')
@@ -53,26 +48,9 @@ class GaiaMtbfTestCase(GaiaTestCase):
             self.wait_for_condition(lambda m: m.find_element('tag name', 'body').get_attribute('data-transitioning') != 'true')
         icon.tap()
 
-        pt = re.compile("_|-")
-        lowered_name = pt.sub("", name).split(' ')[0].lower()
         self.marionette.switch_to_frame()
-        #launched_app = self.marionette.find_element(
-        #    'css selector',
-        #    "iframe[mozapp^='app://" + lowered_name +
-        #    "'][mozapp$='manifest.webapp']")
-
-        #if switch_to_frame:
-        #    self.marionette.switch_to_frame(frame=launched_app, focus=True)
-        #return launched_app
 
     def cleanup_gaia(self, full_reset=True):
-        # remove media
-        if self.device.is_android_build:
-            for filename in self.data_layer.media_files:
-                self.device.manager.removeFile(filename)
-
-        # switch off keyboard FTU screen
-        self.data_layer.set_setting("keyboard.ftu.enabled", False)
 
         # restore settings from testvars
         [self.data_layer.set_setting(name, value) for name, value in self.testvars.get('settings', {}).items()]
@@ -104,6 +82,10 @@ class GaiaMtbfTestCase(GaiaTestCase):
             # switch off spanish keyboard
             self.data_layer.set_setting("keyboard.layouts.spanish", False)
 
+            # reset keyboard to default values
+            self.data_layer.set_setting("keyboard.enabled-layouts",
+                                        "{'app://keyboard.gaiamobile.org/manifest.webapp': {'en': True, 'number': True}}")
+
             # reset do not track
             self.data_layer.set_setting('privacy.donottrackheader.value', '-1')
 
@@ -133,9 +115,6 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
             # reset to home screen
             self.device.touch_home_button()
-
-        # don't kill all apps
-        # self.apps.kill_all()
 
         # disable sound completely
         self.data_layer.set_volume(0)
