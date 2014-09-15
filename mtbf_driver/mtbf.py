@@ -44,7 +44,7 @@ class MTBF_Driver:
         self.options = options
 
         logger = structured.commandline.setup_logging(
-        options.logger_name, options, {"tbpl": sys.stdout})
+            options.logger_name, options, {"tbpl": sys.stdout})
 
         options.logger = logger
 
@@ -193,13 +193,17 @@ class MTBF_Driver:
 
             ## show us b2g status of the phone
             if 'b2g_status' in self.conf and self.conf['b2g_status']:
-                b2ginfo_cmd = "adb shell b2g-info -t > b2ginfo" + str(current_round)
                 b2gps_cmd = "adb shell b2g-ps -t -p -P --oom > b2gps" + str(current_round)
-                b2gprocrank_cmd = "adb shell b2g-procrank --oom > b2gprocrank" + str(current_round)
-                os.system(b2ginfo_cmd)
+                top_cmd = "adb shell top -m 10 -s cpu -n 1 -t >top" + str(current_round)
                 os.system(b2gps_cmd)
-                os.system(b2gprocrank_cmd)
+                os.system(top_cmd)
 
+                #  Those commands are currently unavailable
+                #  b2ginfo_cmd = "adb shell b2g-info -t > b2ginfo" + str(current_round)
+                #  b2gprocrank_cmd = "adb shell b2g-procrank --oom > b2gprocrank" + str(current_round)
+                #  os.system(b2ginfo_cmd)
+                #  os.system(b2gprocrank_cmd)
+            
             ## show us events
             if 'get_event' in self.conf and self.conf['get_event']:
                 bugreport_cmd = "adb shell getevent -S > getevent" + str(current_round)
