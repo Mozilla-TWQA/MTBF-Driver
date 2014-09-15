@@ -135,7 +135,7 @@ class MTBF_Driver:
 
     def get_report(self):
         self.running_time = time.time() - self.start_time
-        self.logger.info("\n*Total MTBF Time: %.3fs" % self.running_time)
+        self.logger.info("\n*Total MTBF Time: %.3f seconds" % self.running_time)
         self.logger.info('\nMTBF TEST SUMMARY\n-----------------')
         self.logger.info('passed: %d' % self.passed)
         self.logger.info('failed: %d' % self.failed)
