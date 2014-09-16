@@ -9,9 +9,6 @@ from marionette.errors import TimeoutException
 class MTBF_UiTests(UiTests):
     _test_panel_header_locator = (By.CSS_SELECTOR, '#test-panel-header')
 
-    def __init__(self, marionette):
-        UiTests.__init__(self, marionette)
-
     def back_to_main_screen(self):
         try:
             self.wait_for_element_displayed(*self._test_panel_header_locator)
