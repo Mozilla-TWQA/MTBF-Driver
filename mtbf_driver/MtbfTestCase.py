@@ -13,7 +13,7 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
     def launch_by_touch(self, name):
         self.apps.switch_to_displayed_app()
-        icon = self.marionette.find_element(By.CSS_SELECTOR, '.scrollable [data-identifier*=' + name + ']')
+        icon = self.marionette.find_element(By.CSS_SELECTOR, '#icons [data-identifier*=' + name + ']')
         self.marionette.execute_script("arguments[0].scrollIntoView(false);", [icon])
         # Sleep because homescreen protect touch event when scrolling
         time.sleep(1)

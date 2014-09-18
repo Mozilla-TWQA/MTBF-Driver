@@ -11,7 +11,7 @@ from setuptools import setup, find_packages
 with open('requirements.txt') as f:
     deps = f.read().splitlines()
 
-version = "0.1.0"
+version = "0.2.0"
 
 # copy check_version script
 check_version_script = os.path.join(os.path.dirname(__file__), "shell", "check_versions.sh")

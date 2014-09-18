@@ -10,17 +10,13 @@ from gaiatest.mocks.mock_contact import MockContact
 
 class TestKeyboard(GaiaMtbfTestCase):
 
-    _string = "aG1 D2s3~!=@.#$^aśZïd".decode("UTF-8")
-    _contact_rows = "#group-list strong"
+    _string = "aG1 2Ds3~!=@.#$^aśZîd".decode("UTF-8")
 
-    def setUp(self):
-        GaiaMtbfTestCase.setUp(self)
+    def test_keyboard_basic(self):
         # Use the contacts app to enter some text
         self.contact = MockContact()
         self.contacts_app = Contacts(self.marionette)
         self.contacts_app.launch()
-
-    def test_keyboard_basic(self):
         new_contact_form = self.contacts_app.tap_new_contact()
         new_contact_form.type_phone(self.contact['tel']['value'])
         new_contact_form.type_comment('')
@@ -35,7 +31,7 @@ class TestKeyboard(GaiaMtbfTestCase):
         keyboard.send(self._string[15:])
 
         # select special character using extended character selector
-        keyboard.choose_extended_character('A', 8)
+        keyboard.choose_extended_character('A', 9)
 
         # go back to app frame and finish this
         self.apps.switch_to_displayed_app()
