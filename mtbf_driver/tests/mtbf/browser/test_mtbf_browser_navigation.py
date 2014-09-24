@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette.by import By
+from marionette import Wait
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from mtbf_driver.mtbf_apps.search.app import MTBF_Search
@@ -12,12 +13,15 @@ class TestBrowserNavigation(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.apps.set_permission_by_url(MTBF_Search.manifest_url, 'geolocation', 'deny')
+
         self.connect_to_network()
         self.test_url = 'http://mozqa.com/data/firefox/layout/mozilla.html'
 
+        self.search = MTBF_Search(self.marionette)
+        self.search.launch()
+
     def test_browser_back_button(self):
-        search = MTBF_Search(self.marionette)
-        search.launch()
         browser = self.search.clean_and_go_to_url(self.test_url)
 
         browser.switch_to_content()

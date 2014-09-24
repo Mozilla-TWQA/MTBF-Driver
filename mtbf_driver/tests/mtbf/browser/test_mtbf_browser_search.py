@@ -14,15 +14,17 @@ class TestBrowserSearch(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.apps.set_permission_by_url(MTBF_Search.manifest_url, 'geolocation', 'deny')
+
         self.connect_to_network()
 
-    def test_browser_search(self):
-        search = MTBF_Search(self.marionette)
-        search.launch()
+        self.search = MTBF_Search(self.marionette)
+        self.search.launch()
 
+    def test_browser_search(self):
         search_text = 'Mozilla'
 
-        browser = self.search.clean_and_go_to_url(self.test_url)
+        browser = self.search.clean_and_go_to_url(search_text)
 
         browser.switch_to_content()
         self.wait_for_element_displayed(*self._google_search_input_locator)
