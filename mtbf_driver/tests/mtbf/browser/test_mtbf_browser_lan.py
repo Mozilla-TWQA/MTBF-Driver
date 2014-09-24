@@ -13,6 +13,8 @@ class TestBrowserLAN(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.apps.set_permission_by_url(MTBF_Search.manifest_url, 'geolocation', 'deny')
+
         self.connect_to_local_area_network()
         self.test_url = 'http://mozqa.com/data/firefox/layout/mozilla.html'
 

@@ -4,5 +4,9 @@
 "test_mtbf_number_keyboard.py",
 "test_mtbf_url_keyboard.py",
 "test_music_songs_3gp.py",
-"test_sms.py"]
+"test_sms.py",
+"test_mtbf_settings_wifi.py",
+"test_mtbf_browser_search.py",
+"test_mtbf_browser_lan.py",
+"test_mtbf_browser_navigation.py"]
 }
