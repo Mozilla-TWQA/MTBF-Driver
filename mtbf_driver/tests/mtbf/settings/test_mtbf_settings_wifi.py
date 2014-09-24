@@ -15,17 +15,17 @@ class TestSettingsWifi(GaiaMtbfTestCase):
         self.settings.launch()
 
     def test_connect_to_wifi_via_settings_app(self):
-        self.settings.back_to_main_screen()
-
         wifi_settings = self.settings.open_wifi_settings()
-        self.wait_for_element_displayed(*wifi_settings._wifi_enabled_label_locator)
+        # self.wait_for_element_displayed(*wifi_settings._wifi_enabled_label_locator)
+        
+        self.wait_for_condition(lambda m: m.find_element(*self.settings._header_locator).text == "Wi-Fi")
         wifi_settings.enable_wifi()
-
         wifi_settings.connect_to_network(self.testvars['wifi'])
 
         # verify that wifi is now on
         self.assertTrue(self.data_layer.is_wifi_connected(self.testvars['wifi']), "WiFi was not connected via Settings app")
 
     def tearDown(self):
+        self.settings.back_to_main_screen()
         self.data_layer.disable_wifi()
         GaiaMtbfTestCase.tearDown(self)

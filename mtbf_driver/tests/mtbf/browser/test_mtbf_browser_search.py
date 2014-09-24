@@ -5,7 +5,7 @@
 from marionette.by import By
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.browser.app import Browser
+from mtbf_driver.mtbf_apps.search.app import MTBF_Search
 
 
 class TestBrowserSearch(GaiaMtbfTestCase):
@@ -16,18 +16,15 @@ class TestBrowserSearch(GaiaMtbfTestCase):
         GaiaMtbfTestCase.setUp(self)
         self.connect_to_network()
 
-        self.browser = Browser(self.marionette)
-        self.browser.launch()
-
     def test_browser_search(self):
-        search_text = 'Mozilla Web QA'
+        search = MTBF_Search(self.marionette)
+        search.launch()
 
-        self.wait_for_element_displayed(*self.browser._awesome_bar_locator)
+        search_text = 'Mozilla'
 
-        self.marionette.find_element(*self.browser._awesome_bar_locator).clear()
-        self.browser.go_to_url(search_text)
+        browser = self.search.clean_and_go_to_url(self.test_url)
 
-        self.browser.switch_to_content()
+        browser.switch_to_content()
         self.wait_for_element_displayed(*self._google_search_input_locator)
         self.assertTrue(search_text in self.marionette.title)
         self.assertEqual(search_text,
