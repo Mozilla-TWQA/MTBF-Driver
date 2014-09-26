@@ -16,6 +16,15 @@ class MTBF_Settings(Settings):
     def wait_for_cellanddata(self):
         self.wait_for_condition(lambda m: m.find_element(*self._cellanddata_menu_locator).get_attribute('aria-disabled') != 'true')
 
+    def open_bluetooth_settings(self):
+        from mtbf_driver.mtbf_apps.settings.regions.bluetooth import MTBF_Bluetooth
+        # this is technically visible, but needs scroll to be tapped
+        # TODO Remove when bug 937053 is resolved
+        bluetooth_menu_item = self.marionette.find_element(*self._bluetooth_menu_item_locator)
+        self.marionette.execute_script("arguments[0].scrollIntoView(false);", [bluetooth_menu_item])
+        self._tap_menu_item(self._bluetooth_menu_item_locator)
+        return MTBF_Bluetooth(self.marionette)
+
     def back_to_main_screen(self):
         self.apps.switch_to_displayed_app()
         while True:

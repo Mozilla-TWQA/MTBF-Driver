@@ -21,6 +21,12 @@ class TestCameraMultipleShots(GaiaMtbfTestCase):
         self.camera = Camera(self.marionette)
         self.camera.launch()
 
+        # Switch to camera mode
+        self.camera.wait_for_capture_ready()
+        video = self.marionette.find_element('css selector', 'div[data-icon="video"]')
+        if video.is_displayed():
+            self.camera.tap_switch_source()
+
         # Take a photo
         self.camera.take_photo()
 

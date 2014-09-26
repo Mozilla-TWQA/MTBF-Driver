@@ -8,6 +8,6 @@
   "workspace": "/tmp/workspace",
   "manifest_prefix": "mtbf",
   "archive": "output",
-  "runlist": "runlist/flame_v210.list",
+  "runlist": "runlist/bt.list",
   "level": 4
 }
