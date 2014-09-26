@@ -7,5 +7,8 @@
 "test_mtbf_number_keyboard.py",
 "test_mtbf_sms.py",
 test_mtbf_music_song_3gp.py",
-"test_mtbf_settings_wifi.py"]
+"test_mtbf_settings_wifi.py",
+"test_mtbf_settings_airplane_mode.py",
+"test_mtbf_camera_capture_video.py",
+"test_mtbf_settings_bluetooth.py"]
 }
