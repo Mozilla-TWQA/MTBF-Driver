@@ -3,9 +3,9 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette.by import By
-from gaiatest.apps.base import Base
 from gaiatest.apps.contacts.app import Contacts
 import time
+
 
 class MTBF_Contacts(Contacts):
     _title_locator = (By.CSS_SELECTOR, "#app-title")
@@ -17,11 +17,16 @@ class MTBF_Contacts(Contacts):
     def __init__(self, marionette):
         Contacts.__init__(self, marionette)
 
+    def tap_new_contact(self):
+        self.marionette.find_element(*self._new_contact_button_locator).tap()
+        from mtbf_driver.mtbf_apps.contacts.regions.contact_form import MtbfNewContact as NewContact
+        return NewContact(self.marionette)
+
     def back_contacts_list(self):
         self.apps.switch_to_displayed_app()
         while True:
             if self.marionette.find_element(*self._title_locator).is_displayed():
-                break;
+                break
 
             # get all kinds of back buttons and go back
             back_icons = [

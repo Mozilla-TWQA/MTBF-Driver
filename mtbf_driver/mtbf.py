@@ -173,11 +173,11 @@ class MTBF_Driver:
         last_crash = self.crash_report.lastCrash
         self.running_time = last_crash - self.start_time
         crash_number = len(self.crash_report)
-        mtbf_logger.info("Total Running Time Before Failure:   %.3fs" % self.running_time)
+        mtbf_logger.info("Total Running Time Before Failure:   %.3f seconds" % self.running_time)
         if crash_number > 0:
             mtbf_logger.info("Last Crash at:                       %s" % datetime.datetime.fromtimestamp(last_crash).strftime('%Y-%m-%d %H:%M:%S'))
             mtbf_logger.info("Total Crash Numbers:                 %d" % crash_number)
-            mtbf_logger.info("Total MTBF Time:                     %.3fs" % (self.running_time / crash_number))
+            mtbf_logger.info("Total MTBF Time:                     %.3f seconds" % (self.running_time / crash_number))
         mtbf_logger.info('\nMTBF TEST SUMMARY\n-----------------')
         mtbf_logger.info('passed: %d' % self.passed)
         mtbf_logger.info('failed: %d' % self.failed)
