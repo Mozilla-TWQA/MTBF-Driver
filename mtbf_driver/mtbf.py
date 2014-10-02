@@ -106,6 +106,9 @@ class MTBF_Driver:
             sg = RandomStepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist, dummy=self.dummy)
 
         current_round = 0
+        # Avoid reinitialing test env
+        marionette = None
+        httpd = None
         self.logger.info("Starting MTBF....")
 
         while(True):
@@ -115,12 +118,22 @@ class MTBF_Driver:
             ## Run test
             ## workaround: kill the runner and create another
             ## one each round, should be fixed
-
+            argv = vars(self.options)
             self.runner = self.runner_class(**vars(self.options))
+            if marionette:
+                self.runner.marionette = marionette
+            if httpd:
+                self.runner.httpd = httpd
             tests = sg.generate()
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
-            self.runner.run_tests(file_path)
+            try:
+                self.runner.run_tests(file_path)
+            except Exception as e:
+                self.deinit()
+                raise e
+            marionette = self.runner.marionette
+            httpd = self.runner.httpd
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
@@ -231,11 +244,7 @@ def main():
     if not os.getenv("MTBF_REPLAY"):
         signal.signal(signal.SIGALRM, mtbf.time_up)
         signal.alarm(mtbf.duration)
-        try:
-            mtbf.start_gaiatest()
-        except Exception as e:
-            mtbf.logger.error("Exception occurs: " + str(e))
-            mtbf.deinit()
+        mtbf.start_gaiatest()
         signal.alarm(0)
     else:
         mtbf.start_gaiatest()
