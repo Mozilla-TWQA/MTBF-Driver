@@ -65,6 +65,9 @@ class GaiaMtbfTestCase(GaiaTestCase):
         #    self.marionette.switch_to_frame(frame=launched_app, focus=True)
         #return launched_app
 
+    def cleanup_storage(self):
+        pass
+
     def cleanup_gaia(self, full_reset=True):
         # remove media
         if self.device.is_android_build:
