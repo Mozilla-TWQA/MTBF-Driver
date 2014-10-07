@@ -105,7 +105,7 @@ class MTBF_Driver:
         # Avoid reinitialing test env
         marionette = None
         httpd = None
-        self.logger.info("Starting MTBF....")
+        mtbf_logger.info("Starting MTBF....")
 
         while(True):
             current_working_folder = os.getcwd()
@@ -137,9 +137,11 @@ class MTBF_Driver:
                 b2ginfo_cmd = "adb shell b2g-info -t > b2ginfo" + str(current_round)
                 b2gps_cmd = "adb shell b2g-ps -t -p -P --oom > b2gps" + str(current_round)
                 b2gprocrank_cmd = "adb shell b2g-procrank --oom > b2gprocrank" + str(current_round)
+                top_cmd = "adb shell top -m 10 -s cpu -n 1 -t >top" + str(current_round)
                 os.system(b2ginfo_cmd)
                 os.system(b2gps_cmd)
                 os.system(b2gprocrank_cmd)
+                os.system(top_cmd)
 
             ## show us events
             if 'get_event' in self.conf and self.conf['get_event']:
