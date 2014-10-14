@@ -191,7 +191,7 @@ class MTBF_Driver:
                 b2ginfo_cmd = "adb shell b2g-info > b2ginfo" + str(current_round)
                 heapsys_cmd = "adb shell cat /d/ion/heaps/system > heapsys" + str(current_round)
                 pagealloc_cmd = "adb shell /sys/class/kgsl/kgsl/page_alloc > pagealloc" + str(current_round)
-                procrank_cmd = "adb shell procrank" + str(current_round) 
+                procrank_cmd = "adb shell procrank > procrank" + str(current_round) 
                 os.system(b2ginfo_cmd)
                 os.system(heapsys_cmd)
                 os.system(pagealloc_cmd)
