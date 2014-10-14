@@ -186,8 +186,8 @@ class MTBF_Driver:
                 os.system(logcat_cmd)
                 os.system(dmesg_cmd)
 
-            ## get debugging info for QC debugging (bug 1074063)
-            if 'qc' in self.conf and self.conf['qc']:
+            ## get debugging info for CAF debugging (bug 1074063)
+            if 'caf' in self.conf and self.conf['caf']:
                 b2ginfo_cmd = "adb shell b2g-info > b2ginfo" + str(current_round)
                 heapsys_cmd = "adb shell cat /d/ion/heaps/system > heapsys" + str(current_round)
                 pagealloc_cmd = "adb shell /sys/class/kgsl/kgsl/page_alloc > pagealloc" + str(current_round)
