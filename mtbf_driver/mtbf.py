@@ -186,6 +186,17 @@ class MTBF_Driver:
                 os.system(logcat_cmd)
                 os.system(dmesg_cmd)
 
+            ## get debugging info for CAF debugging (bug 1074063)
+            if 'caf' in self.conf and self.conf['caf']:
+                b2ginfo_cmd = "adb shell b2g-info > b2ginfo" + str(current_round)
+                heapsys_cmd = "adb shell cat /d/ion/heaps/system > heapsys" + str(current_round)
+                pagealloc_cmd = "adb shell /sys/class/kgsl/kgsl/page_alloc > pagealloc" + str(current_round)
+                procrank_cmd = "adb shell procrank > procrank" + str(current_round) 
+                os.system(b2ginfo_cmd)
+                os.system(heapsys_cmd)
+                os.system(pagealloc_cmd)
+                os.system(procrank_cmd)
+
             ## show us the overall status of the phone
             if 'overall_status' in self.conf and self.conf['overall_status']:
                 bugreport_cmd = "adb shell dumpstate > bugreport" + str(current_round)

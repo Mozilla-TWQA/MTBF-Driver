@@ -2,6 +2,7 @@
   "memory_report": false,
   "logcat": true,
   "overall_status": false,
+  "caf": true,
   "b2g_status": true,
   "get_event": false,
   "rootdir": "tests/mtbf",
