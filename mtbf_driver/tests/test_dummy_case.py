@@ -23,8 +23,7 @@ class DummyTestCase(GaiaMtbfTestCase):
 
     def _check_cpu_load(self):
         status = True
-        adb_shell = subprocess.Popen(["adb shell top -m 20 -n 1 -s cpu"], stdout=subprocess.PIPE, shell=True)
-        b2g_status = subprocess.check_output(["grep", "b2g"], stdin=adb_shell.stdout)
+        b2g_status = subprocess.Popen(["adb shell top -m 20 -n 1 -s cpu"], shell=True)
         try:
             for li in b2g_status:
                 per = re.search('([0-9.]+s%)\s', b2g_status)
