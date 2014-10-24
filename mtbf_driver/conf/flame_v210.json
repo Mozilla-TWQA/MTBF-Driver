@@ -3,6 +3,7 @@
   "logcat": true,
   "overall_status": false,
   "caf": true,
+  "battery_status": true,
   "b2g_status": true,
   "get_event": false,
   "rootdir": "tests/mtbf",
