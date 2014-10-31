@@ -210,6 +210,13 @@ class MTBF_Driver:
                 os.system(pagealloc_cmd)
                 os.system(procrank_cmd)
 
+            ## get battery status
+            if 'battery_status' in self.conf and self.conf['battery_status']:
+                bstatus_cmd = "adb shell cat sys/class/power_supply/battery/status > bstatus" + str(current_round)
+                bcurrent_cmd = "adb shell cat sys/class/power_supply/battery/current_now > bcurrent" + str(current_round)
+                os.system(bstatus_cmd)
+                os.system(bcurrent_cmd)
+
             ## show us the overall status of the phone
             if 'overall_status' in self.conf and self.conf['overall_status']:
                 bugreport_cmd = "adb shell dumpstate > bugreport" + str(current_round)
