@@ -16,6 +16,7 @@ class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
         self.data_layer.set_setting('keyboard.autocorrect', True)
 
     def test_keyboard_predictive_key(self):
+        # TODO: Merge gaiatest new test of predictive key
         self.app_id = self.launch_by_touch("uitest")
         self.ui_tests = UiTests(self.marionette)
         self.mtbf_ui_tests = MTBF_UiTests(self.marionette)
@@ -29,7 +30,7 @@ class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
 
         # type first 6 letters of the expected word
         keyboard.switch_to_keyboard()
-        expected_word = 'keyboard '
+        expected_word = u'keyboard'
         keyboard.send(expected_word[:6])
 
         # tap the first predictive word
