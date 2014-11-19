@@ -13,9 +13,11 @@ dmesg*
 getevent*
 logcat*
 screenshot
+output
 
 # firefox os
 logcat
+console.log
 
 # C extensions
 *.so
