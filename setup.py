@@ -30,7 +30,7 @@ info.write("MTBF Revision:\n" + gitinfo + "\nFirefox os Revision:\n" + revinfo)
 info.close()
 # main setup script
 setup(
-    name="mtbf-driver",
+    name="mtbf_driver",
     version=version,
     packages=find_packages(),
     description="mtbf package",
