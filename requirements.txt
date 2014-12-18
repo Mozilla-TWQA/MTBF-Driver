@@ -1,1 +1,1 @@
-gaiatest>=0.28
+gaiatest>=0.32
