@@ -14,7 +14,7 @@ class TestPlay3GPMusic(GaiaMtbfTestCase):
         GaiaMtbfTestCase.setUp(self)
 
         # add video to storage
-        if not self.device.manager.fileExists("/storage/sdcard1/MUS_0001.3gp"):
+        if not self.device.manager.fileExists("/storage/sdcard0/MUS_0001.3gp"):
             self.push_resource('MUS_0001.3gp')
 
     def test_select_songs_play_3gp_file(self):

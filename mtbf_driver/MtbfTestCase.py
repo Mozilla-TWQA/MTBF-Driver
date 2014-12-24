@@ -50,6 +50,9 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
         self.marionette.switch_to_frame()
 
+    def cleanup_storage(self):
+        pass
+
     def cleanup_gaia(self, full_reset=True):
 
         # restore settings from testvars
@@ -103,12 +106,13 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
             self.data_layer.disable_cell_roaming()
 
-            if self.device.has_wifi:
-                # Bug 908553 - B2G Emulator: support wifi emulation
-                if not self.device.is_emulator:
-                    self.data_layer.enable_wifi()
-                    self.data_layer.forget_all_networks()
-                    self.data_layer.disable_wifi()
+            ## TODO: Disable wifi operation since Bug 1064800
+            # if self.device.has_wifi:
+            #     # Bug 908553 - B2G Emulator: support wifi emulation
+            #     if not self.device.is_emulator:
+            #         self.data_layer.enable_wifi()
+            #         self.data_layer.forget_all_networks()
+            #         self.data_layer.disable_wifi()
 
             # don't remove contact data
             # self.data_layer.remove_all_contacts()
