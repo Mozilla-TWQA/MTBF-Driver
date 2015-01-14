@@ -5,7 +5,7 @@
 import time
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.browser.app import Browser
+from gaiatest.apps.search.app import Search
 from gaiatest.apps.homescreen.app import Homescreen
 
 
@@ -15,37 +15,32 @@ class TestBrowserBookmark(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
-        self.connect_to_network()
+        self.connect_to_local_area_network()
+        self.apps.set_permission_by_url(Search.manifest_url, 'geolocation', 'deny')
 
-        self.test_url = 'http://mozqa.com/data/firefox/layout/mozilla.html'
+        self.test_url = self.marionette.absolute_url('mozilla.html')
 
         curr_time = repr(time.time()).replace('.', '')
         self.bookmark_title = 'gaia%s' % curr_time[10:]
 
         self.homescreen = Homescreen(self.marionette)
-        self.browser = Browser(self.marionette)
-        self.browser.launch()
+        self.search = Search(self.marionette)
+        self.search.launch()
 
     def test_browser_bookmark(self):
-        self.wait_for_element_displayed(*self.browser._awesome_bar_locator)
-        self.marionette.find_element(*self.browser._awesome_bar_locator).clear()
+        self.browser = search.go_to_url(self.test_url)
+        self.browser.tap_menu_button()
+        bookmark = browser.tap_add_to_home()
 
-        self.browser.go_to_url(self.test_url)
-        self.browser.tap_bookmark_button()
-
-        bookmark = self.browser.tap_add_bookmark_to_home_screen_choice_button()
-        self.wait_for_element_displayed(*bookmark._bookmark_title_input_locator)
         bookmark.type_bookmark_title(self.bookmark_title)
         bookmark.tap_add_bookmark_to_home_screen_dialog_button()
 
         # Switch to Home Screen to look for bookmark
         self.device.touch_home_button()
 
-        self.wait_for_element_displayed('id', 'bookmark-title')
+        self.homescreen = Homescreen(self.marionette)
         self.homescreen.wait_for_app_icon_present(self.bookmark_title)
-        self._bookmark_added = self.homescreen.is_app_installed(self.bookmark_title)
-        if self.find_element('id', 'edit-button').is_displayed():
-            self.find_element('id', 'edit-button').tap()
+        self._bookmark_added = homescreen.is_app_installed(self.bookmark_title)
 
         self.assertTrue(self._bookmark_added, 'The bookmark %s was not found to be installed on the home screen.' % self.bookmark_title)
 
@@ -54,11 +49,17 @@ class TestBrowserBookmark(GaiaMtbfTestCase):
         self.device.touch_home_button()
         self.device.touch_home_button()
 
-        # delete the bookmark
-        self.apps.switch_to_displayed_app()
+        # Delete the bookmark
         self.homescreen.activate_edit_mode()
-        self.confirm_dialog = self.homescreen.installed_app(self.bookmark_title).tap_delete_app()
-        self.confirm_dialog.tap_confirm()
+        self.homescreen.bookmark(self.bookmark_title).tap_delete_app().tap_confirm(bookmark=True)
+
+        self.wait_for_condition(lambda m: self.apps.displayed_app.name == homescreen.name)
+        self.apps.switch_to_displayed_app()
+        self.homescreen.wait_for_bookmark_icon_not_present(self.bookmark_title)
+
+        # Check that the bookmark icon is no longer displayed on the homescreen
+        self._bookmark_added = homescreen.is_app_installed(self.bookmark_title)
+        self.assertFalse(self._bookmark_added, 'The bookmark %s was not successfully removed from homescreen.' % self.bookmark_title)
 
         self.data_layer.disable_wifi()
         GaiaMtbfTestCase.tearDown(self)

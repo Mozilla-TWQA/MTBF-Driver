@@ -1,6 +1,5 @@
 { "runlist": ["test_mtbf_browser_search.py",
 "test_mtbf_browser_cell_data.py",
 "test_mtbf_browser_navigation.py",
-"test_mtbf_browser_tabs.py",
 "test_mtbf_browser_play_youtube_video.py"]
 }

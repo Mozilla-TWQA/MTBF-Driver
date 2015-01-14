@@ -5,7 +5,7 @@
 from marionette.by import By
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.browser.app import Browser
+from gaiatest.apps.search.app import Search
 
 
 class TestBrowserSearch(GaiaMtbfTestCase):
@@ -14,18 +14,16 @@ class TestBrowserSearch(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
-        self.connect_to_network()
+        self.connect_to_local_area_network()
+        self.apps.set_permission_by_url(Search.manifest_url, 'geolocation', 'deny')
 
-        self.browser = Browser(self.marionette)
-        self.browser.launch()
+        self.search = Search(self.marionette)
+        self.search.launch()
 
     def test_browser_search(self):
-        search_text = 'Mozilla Web QA'
+        search_text = 'Mozilla'
 
-        self.wait_for_element_displayed(*self.browser._awesome_bar_locator)
-
-        self.marionette.find_element(*self.browser._awesome_bar_locator).clear()
-        self.browser.go_to_url(search_text)
+        self.browser = self.search.go_to_url(search_text)
 
         self.browser.switch_to_content()
         self.wait_for_element_displayed(*self._google_search_input_locator)
