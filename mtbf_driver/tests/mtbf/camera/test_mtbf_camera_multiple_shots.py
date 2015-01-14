@@ -22,8 +22,12 @@ class TestCameraMultipleShots(GaiaMtbfTestCase):
         self.camera.launch()
 
         # Take a photo
+        if self.camera.camera_mode == u'video':
+            self.camera.switch_source()
+
         self.camera.take_photo()
 
+        self.apps.switch_to_displayed_app()
         # Check that thumbnail is visible
         self.assertTrue(self.camera.is_thumbnail_visible)
 

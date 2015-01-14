@@ -31,7 +31,7 @@ class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
         # type first 6 letters of the expected word
         keyboard.switch_to_keyboard()
         expected_word = u'keyboard'
-        keyboard.send(expected_word[:6])
+        keyboard.send(expected_word[:7])
 
         # tap the first predictive word
         keyboard.tap_first_predictive_word()
