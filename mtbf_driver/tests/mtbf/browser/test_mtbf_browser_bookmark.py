@@ -16,7 +16,6 @@ class TestBrowserBookmark(GaiaMtbfTestCase):
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
         self.connect_to_local_area_network()
-        self.apps.set_permission_by_url(Search.manifest_url, 'geolocation', 'deny')
 
         self.test_url = self.marionette.absolute_url('mozilla.html')
 
@@ -28,7 +27,7 @@ class TestBrowserBookmark(GaiaMtbfTestCase):
         self.search.launch()
 
     def test_browser_bookmark(self):
-        self.browser = search.go_to_url(self.test_url)
+        self.browser = self.search.go_to_url(self.test_url)
         self.browser.tap_menu_button()
         bookmark = browser.tap_add_to_home()
 
@@ -46,6 +45,8 @@ class TestBrowserBookmark(GaiaMtbfTestCase):
 
     def tearDown(self):
         # make sure it goes back to the top for activating editing mode
+        self.device.touch_home_button()
+        self.device.touch_home_button()
         self.device.touch_home_button()
         self.device.touch_home_button()
 

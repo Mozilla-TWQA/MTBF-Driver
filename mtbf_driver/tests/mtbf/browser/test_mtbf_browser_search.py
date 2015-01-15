@@ -15,7 +15,6 @@ class TestBrowserSearch(GaiaMtbfTestCase):
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
         self.connect_to_local_area_network()
-        self.apps.set_permission_by_url(Search.manifest_url, 'geolocation', 'deny')
 
         self.search = Search(self.marionette)
         self.search.launch()
