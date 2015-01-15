@@ -50,22 +50,18 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
         self.marionette.switch_to_frame()
 
+    def cleanup_storage(self):
+        pass
+
     def cleanup_gaia(self, full_reset=True):
 
-        # restore settings from testvars
-        [self.data_layer.set_setting(name, value) for name, value in self.testvars.get('settings', {}).items()]
-
-        # restore prefs from testvars
-        for name, value in self.testvars.get('prefs', {}).items():
-            if type(value) is int:
-                self.data_layer.set_int_pref(name, value)
-            elif type(value) is bool:
-                self.data_layer.set_bool_pref(name, value)
-            else:
-                self.data_layer.set_char_pref(name, value)
+        # Turn on screen
+        if not self.device.is_screen_enabled:
+            self.device.turn_screen_on()
 
         # unlock
-        self.device.unlock()
+        if self.data_layer.get_setting('lockscreen.enabled'):
+            self.device.unlock()
 
         # kill FTU if possible
         if self.apps.displayed_app.name.upper() == "FTU":
@@ -78,9 +74,6 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
             # change language back to english
             self.data_layer.set_setting("language.current", "en-US")
-
-            # switch off spanish keyboard
-            self.data_layer.set_setting("keyboard.layouts.spanish", False)
 
             # reset keyboard to default values
             self.data_layer.set_setting("keyboard.enabled-layouts",
@@ -103,12 +96,13 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
             self.data_layer.disable_cell_roaming()
 
-            if self.device.has_wifi:
-                # Bug 908553 - B2G Emulator: support wifi emulation
-                if not self.device.is_emulator:
-                    self.data_layer.enable_wifi()
-                    self.data_layer.forget_all_networks()
-                    self.data_layer.disable_wifi()
+            ## TODO: Disable wifi operation since Bug 1064800
+            # if self.device.has_wifi:
+            #     # Bug 908553 - B2G Emulator: support wifi emulation
+            #     if not self.device.is_emulator:
+            #         self.data_layer.enable_wifi()
+            #         self.data_layer.forget_all_networks()
+            #         self.data_layer.disable_wifi()
 
             # don't remove contact data
             # self.data_layer.remove_all_contacts()
@@ -118,6 +112,21 @@ class GaiaMtbfTestCase(GaiaTestCase):
 
         # disable sound completely
         self.data_layer.set_volume(0)
+
+        # disable auto-correction of keyboard
+        self.data_layer.set_setting('keyboard.autocorrect', False)
+
+        # restore settings from testvars
+        [self.data_layer.set_setting(name, value) for name, value in self.testvars.get('settings', {}).items()]
+
+        # restore prefs from testvars
+        for name, value in self.testvars.get('prefs', {}).items():
+            if type(value) is int:
+                self.data_layer.set_int_pref(name, value)
+            elif type(value) is bool:
+                self.data_layer.set_bool_pref(name, value)
+            else:
+                self.data_layer.set_char_pref(name, value)
 
     def tearDown(self):
         time.sleep(1)
