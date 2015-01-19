@@ -1,0 +1,13 @@
+{
+  "memory_report": false,
+  "logcat": true,
+  "overall_status": false,
+  "b2g_status": true,
+  "get_event": false,
+  "rootdir": "tests/mtbf",
+  "workspace": "/tmp/workspace",
+  "manifest_prefix": "mtbf",
+  "archive": "output",
+  "runlist": "runlist/flame_v220.list",
+  "level": 4
+}
