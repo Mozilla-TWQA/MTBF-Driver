@@ -24,22 +24,29 @@ class MTBF_Driver:
     failed = 0
     todo = 0
     level = 0
+    end = False
     ttr = []
     ori_dir = os.path.dirname(__file__)
     dummy = os.path.join(ori_dir, "tests", "test_dummy_case.py")
 
     ## time format here is seconds
-    def __init__(self, time, rp=None):
+    def __init__(self, time, rp=None, **kwargs):
         self.duration = time
         self.rp = rp
-        self.load_config()
+        self.load_config(**kwargs)
 
-    def load_config(self):
+    def load_config(self, **kwargs):
         parser = self.parser_class(
             usage='%prog [options] test_file_or_dir <test_file_or_dir> ...'
         )
         structured.commandline.add_logging_group(parser)
-        options, tests = parser.parse_args()
+        opts = []
+        for k,v in kwargs.iteritems():
+            opts.append("--" + k)
+            opts.append(v)
+        options, tests = parser.parse_args(sys.argv[1:] + opts)
+        if not tests:
+            tests = 'tests/test_dummy_case'  #avoid test case check, will add later
         parser.verify_usage(options, tests)
         self.options = options
 
@@ -127,11 +134,7 @@ class MTBF_Driver:
             tests = sg.generate()
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
-            try:
-                self.runner.run_tests(file_path)
-            except Exception as e:
-                self.deinit()
-                raise e
+            self.runner.run_tests(file_path)
             marionette = self.runner.marionette
             httpd = self.runner.httpd
             self.passed = self.runner.passed + self.passed
@@ -142,7 +145,7 @@ class MTBF_Driver:
             ## If there should be any interface there for us
             ## to detect continuous failure We can then
             ## remove this
-            if self.runner.passed == 0:
+            if self.runner.passed == 0 or self.end:
                 self.deinit()
                 break
 
@@ -156,8 +159,9 @@ class MTBF_Driver:
 
     def time_up(self, signum, frame):
         self.logger.info("Signal handler called with signal" + str(signum))
-        self.deinit()
-        os._exit(0)
+        self.end = True
+        if self.runner:
+            self.runner.tests = []
 
     def deinit(self):
         virtual_home = os.getenv('VIRTUAL_ENV')
@@ -225,7 +229,7 @@ class MTBF_Driver:
             os.chdir(current_working_folder)
 
 
-def main():
+def main(**kwargs):
     ## set default as 2 mins
     try:
         time = int(time2sec(os.getenv('MTBF_TIME', '2m')))
@@ -240,14 +244,16 @@ def main():
     rp = None
     if not os.getenv("MTBF_REPLAY"):
         rp = open(step_log, 'w')
-    mtbf = MTBF_Driver(time, rp)
+    mtbf = MTBF_Driver(time=time, rp=rp, **kwargs)
     if not os.getenv("MTBF_REPLAY"):
         signal.signal(signal.SIGALRM, mtbf.time_up)
         signal.alarm(mtbf.duration)
         mtbf.start_gaiatest()
         signal.alarm(0)
+        return True
     else:
         mtbf.start_gaiatest()
+        return True
 
 
 if __name__ == '__main__':
