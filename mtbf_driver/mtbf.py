@@ -30,9 +30,10 @@ class MTBF_Driver:
     dummy = os.path.join(ori_dir, "tests", "test_dummy_case.py")
 
     ## time format here is seconds
-    def __init__(self, time, rp=None, **kwargs):
+    def __init__(self, time, rp=None, marionette=None, **kwargs):
         self.duration = time
         self.rp = rp
+        self.marionette = marionette
         self.load_config(**kwargs)
 
     def load_config(self, **kwargs):
@@ -114,7 +115,7 @@ class MTBF_Driver:
 
         current_round = 0
         # Avoid reinitialing test env
-        marionette = None
+        marionette = self.marionette
         httpd = None
         self.logger.info("Starting MTBF....")
 
