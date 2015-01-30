@@ -17,8 +17,8 @@ class DummyTestCase(GaiaMtbfTestCase):
 
     def test_status_check(self):
         self._check_page_source()
-        # sleep for 2 min
-        time.sleep(120)
+        # sleep for 0.5 min
+        time.sleep(30)
         self.assertEqual(1,1)
         self._check_cpu_load()
 
