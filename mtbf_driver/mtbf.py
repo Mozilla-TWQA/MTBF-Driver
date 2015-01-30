@@ -51,7 +51,8 @@ class MTBF_Driver:
         parser.verify_usage(options, tests)
         self.options = options
         # filter empty string in testvars list
-        filter(lambda x:x, self.options.testvars)
+        if self.options.testvars:
+            filter(lambda x:x, self.options.testvars)
 
         logger = structured.commandline.setup_logging(
             options.logger_name, options, {"tbpl": sys.stdout})
