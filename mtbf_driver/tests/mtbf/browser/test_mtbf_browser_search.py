@@ -14,6 +14,7 @@ class TestBrowserSearch(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.data_layer.enable_wifi()
         self.connect_to_local_area_network()
 
         self.search = Search(self.marionette)
@@ -31,4 +32,5 @@ class TestBrowserSearch(GaiaMtbfTestCase):
                          self.marionette.find_element(*self._google_search_input_locator).get_attribute('value'))
 
     def tearDown(self):
+        self.data_layer.disable_wifi()
         GaiaMtbfTestCase.tearDown(self)
