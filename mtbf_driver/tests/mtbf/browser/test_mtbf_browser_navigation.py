@@ -16,6 +16,7 @@ class TestBrowserNavigation(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.data_layer.enable_wifi()
         self.connect_to_local_area_network()
 
         self.test_url = self.marionette.absolute_url('mozilla.html')

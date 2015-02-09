@@ -6,13 +6,14 @@ from marionette import Wait
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.search.app import Search
-from gaiatest.apps.settings.app import Settings
+from mtbf_driver.mtbf_apps.settings.app import MTBF_Settings
 
 
 class TestBrowserClearHistory(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.data_layer.enable_wifi()
         self.connect_to_local_area_network()
 
         self.test_url = self.marionette.absolute_url('mozilla.html')
@@ -30,11 +31,12 @@ class TestBrowserClearHistory(GaiaMtbfTestCase):
         self.device.touch_home_button()
 
         search.launch()
-        search.wait_for_history_to_load(number_of_items=1)
+        Wait(self.marionette).until(lambda m: search.history_items_count > 0)
         self.assertGreater(search.history_items_count, 0)
 
-        settings = Settings(self.marionette)
+        settings = MTBF_Settings(self.marionette)
         settings.launch()
+        settings.go_back()
         browsing_privacy = settings.open_browsing_privacy_settings()
 
         browsing_privacy.tap_clear_browsing_history()

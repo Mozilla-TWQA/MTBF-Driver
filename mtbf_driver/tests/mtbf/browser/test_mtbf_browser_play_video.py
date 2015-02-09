@@ -15,7 +15,9 @@ class TestVideo(GaiaMtbfTestCase):
 
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
+        self.data_layer.enable_wifi()
         self.connect_to_local_area_network()
+        self.push_resource('VID_0001.ogg')
         self.video_URL = self.marionette.absolute_url('VID_0001.ogg')
 
     def test_play_video(self):
