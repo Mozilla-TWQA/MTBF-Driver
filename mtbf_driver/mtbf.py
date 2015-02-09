@@ -5,6 +5,7 @@ import signal
 import time
 import json
 import shutil
+from ConfigParser import NoSectionError
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from mozlog import structured
 
@@ -42,17 +43,19 @@ class MTBF_Driver:
         )
         structured.commandline.add_logging_group(parser)
         opts = []
-        for k,v in kwargs.iteritems():
+        for k, v in kwargs.iteritems():
             opts.append("--" + k)
             opts.append(v)
+
+        parser.add_option("-o", "--output", dest="archive", help="Specifying log dest folder")
         options, tests = parser.parse_args(sys.argv[1:] + opts)
         if not tests:
-            tests = 'tests/test_dummy_case'  #avoid test case check, will add later
+            tests = 'tests/test_dummy_case'  # avoid test case check, will add later
         parser.verify_usage(options, tests)
         self.options = options
         # filter empty string in testvars list
         if self.options.testvars:
-            filter(lambda x:x, self.options.testvars)
+            filter(lambda x: x, self.options.testvars)
 
         logger = structured.commandline.setup_logging(
             options.logger_name, options, {"tbpl": sys.stdout})
@@ -72,10 +75,14 @@ class MTBF_Driver:
             sys.exit(1)
 
         ## assign folder for logs or debugging information in a folder
-        if 'archive' in self.conf:
-            self.archive_folder = os.path.join(os.getcwd(), self.conf['archive'])
+        if self.options.archive:
+            self.archive_folder = os.path.abspath(self.options.archive)
         else:
             self.archive_folder = os.path.join(os.getcwd(), "output")
+        if not os.path.exists(self.archive_folder):
+            os.makedirs(self.archive_folder)
+        if not os.path.isdir(self.archive_folder):
+            raise AttributeError("Output folder[" + self.archive_folder + "] has error")
 
         if 'level' in self.conf:
             self.level = self.conf['level']
@@ -129,8 +136,13 @@ class MTBF_Driver:
             ## Run test
             ## workaround: kill the runner and create another
             ## one each round, should be fixed
-            argv = vars(self.options)
-            self.runner = self.runner_class(**vars(self.options))
+            for i in range(0, 10):
+                try:
+                    self.runner = self.runner_class(**vars(self.options))
+                    break
+                except NoSectionError as e:
+                    self.logger.error(e)
+                    continue
             if marionette:
                 self.runner.marionette = marionette
             if httpd:
@@ -190,8 +202,6 @@ class MTBF_Driver:
     def collect_metrics(self, current_round):
             current_working_folder = os.getcwd()
             ## create directory for logs or debugging information
-            if not os.path.exists(self.archive_folder):
-                os.makedirs(self.archive_folder)
             os.chdir(self.archive_folder)
 
             ## import only if config file states tools is there

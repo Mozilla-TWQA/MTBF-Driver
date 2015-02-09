@@ -7,7 +7,6 @@
   "rootdir": "tests/mtbf",
   "workspace": "/tmp/workspace",
   "manifest_prefix": "mtbf",
-  "archive": "output",
   "runlist": "runlist/all.list",
   "level": 5
 }
