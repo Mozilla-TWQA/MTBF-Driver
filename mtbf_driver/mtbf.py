@@ -150,7 +150,13 @@ class MTBF_Driver:
             tests = sg.generate()
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
-            self.runner.run_tests(file_path)
+            for i in range(0, 10):
+                try:
+                    self.runner.run_tests(file_path)
+                    break
+                except NoSectionError as e:
+                    self.logger.error(e)
+                    continue
             marionette = self.runner.marionette
             httpd = self.runner.httpd
             self.passed = self.runner.passed + self.passed
