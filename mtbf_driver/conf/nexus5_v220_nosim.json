@@ -1,0 +1,12 @@
+{
+  "memory_report": false,
+  "logcat": true,
+  "overall_status": false,
+  "b2g_status": true,
+  "get_event": false,
+  "rootdir": "tests/mtbf",
+  "workspace": "/tmp/workspace",
+  "manifest_prefix": "mtbf",
+  "runlist": "runlist/nexus5_v220_nosim.list",
+  "level": 4
+}
