@@ -14,6 +14,9 @@ getevent*
 logcat*
 screenshot
 output
+output*.zip
+# for memory tools
+tools
 
 # firefox os
 logcat

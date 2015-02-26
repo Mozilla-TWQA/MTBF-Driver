@@ -4,7 +4,9 @@ import os.path
 import signal
 import time
 import json
+import re
 import shutil
+from zipfile import ZipFile
 from ConfigParser import NoSectionError
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from mozlog import structured
@@ -205,48 +207,62 @@ class MTBF_Driver:
         if os.path.exists(info):
             shutil.copy2(info, self.workspace)
 
+        archive_prefix = os.path.basename(self.archive_folder)
+        archive_file = archive_prefix + ".zip"
+        if os.path.exists(archive_file):
+            num = 0
+            m = re.search(archive_prefix + "_(\d+)", archive_file)
+            if m:
+                num = int(m.groups(0)) + 1
+            archive_file = archive_prefix + "_" + str(num) + ".zip"
+        with ZipFile(archive_file, "w") as archive:
+            for root, dirs, files in os.walk(self.archive_folder):
+                for f in files:
+                    f = os.path.join(root, f)
+                    archive.write(f, os.path.relpath(f, self.archive_folder))
+        # Remove output folder
+        shutil.rmtree(self.archive_folder)
+
     def collect_metrics(self, current_round):
-            current_working_folder = os.getcwd()
+            #current_working_folder = os.getcwd()
             ## create directory for logs or debugging information
-            os.chdir(self.archive_folder)
+            #os.chdir(self.archive_folder)
+            out_dir = self.archive_folder
 
             ## import only if config file states tools is there
             if 'memory_report' in self.conf and self.conf['memory_report']:
                 ## get some memory report before each round
+                mem_dir = os.path.join(out_dir, "about-memory" + str(current_round))
                 import tools.get_about_memory
-                tools.get_about_memory.get_and_show_info(memory_report_args())
+                tools.get_about_memory.get_and_show_info(memory_report_args(output_directory=mem_dir))
 
             ## get logcat and dmesg
             if 'logcat' in self.conf and self.conf['logcat']:
-                logcat_cmd = "adb logcat -v threadtime -d > logcat" + str(current_round)
-                dmesg_cmd = "adb shell dmesg > dmesg" + str(current_round)
+                logcat_cmd = "adb logcat -v threadtime -d > " + os.path.join(out_dir, "logcat" + str(current_round))
+                dmesg_cmd = "adb shell dmesg > " + os.path.join(out_dir, "dmesg" + str(current_round))
                 os.system(logcat_cmd)
                 os.system(dmesg_cmd)
 
             ## show us the overall status of the phone
             if 'overall_status' in self.conf and self.conf['overall_status']:
-                bugreport_cmd = "adb shell dumpstate > bugreport" + str(current_round)
+                bugreport_cmd = "adb shell dumpstate > " + os.path.join(out_dir, "bugreport" + str(current_round))
                 os.system(bugreport_cmd)
 
             ## show us b2g status of the phone
             if 'b2g_status' in self.conf and self.conf['b2g_status']:
-                b2gps_cmd = "adb shell b2g-ps -t -p -P --oom > b2gps" + str(current_round)
-                top_cmd = "adb shell top -m 10 -s cpu -n 1 -t >top" + str(current_round)
+                b2gps_cmd = "adb shell b2g-ps -t -p -P --oom > " + os.path.join(out_dir, "b2gps" + str(current_round))
+                top_cmd = "adb shell top -m 10 -s cpu -n 1 -t >" + os.path.join(out_dir, "top" + str(current_round))
                 os.system(b2gps_cmd)
                 os.system(top_cmd)
 
-                #  Those commands are currently unavailable
-                #  b2ginfo_cmd = "adb shell b2g-info -t > b2ginfo" + str(current_round)
-                #  b2gprocrank_cmd = "adb shell b2g-procrank --oom > b2gprocrank" + str(current_round)
-                #  os.system(b2ginfo_cmd)
-                #  os.system(b2gprocrank_cmd)
-            
+                b2ginfo_cmd = "adb shell b2g-info -t > " + os.path.join(out_dir, "b2ginfo" + str(current_round))
+                b2gprocrank_cmd = "adb shell b2g-procrank --oom > " + os.path.join(out_dir, "b2gprocrank" + str(current_round))
+                os.system(b2ginfo_cmd)
+                os.system(b2gprocrank_cmd)
             ## show us events
             if 'get_event' in self.conf and self.conf['get_event']:
-                bugreport_cmd = "adb shell getevent -S > getevent" + str(current_round)
+                bugreport_cmd = "adb shell getevent -S > " + os.path.join(out_dir, "getevent" + str(current_round))
                 os.system(bugreport_cmd)
-
-            os.chdir(current_working_folder)
 
 
 def main(**kwargs):
