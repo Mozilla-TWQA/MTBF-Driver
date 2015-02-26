@@ -25,7 +25,7 @@ class TestBrowserNavigation(GaiaMtbfTestCase):
         self.search.launch()
 
     def test_browser_back_button(self):
-        self.browser = search.go_to_url(self.test_url)
+        self.browser = self.search.go_to_url(self.test_url)
         self.browser.switch_to_content()
 
         Wait(self.marionette).until(lambda m: m.title == 'Mozilla')

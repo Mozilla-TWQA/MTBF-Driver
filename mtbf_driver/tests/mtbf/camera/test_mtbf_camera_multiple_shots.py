@@ -23,7 +23,7 @@ class TestCameraMultipleShots(GaiaMtbfTestCase):
 
         # Take a photo
         if self.camera.camera_mode == u'video':
-            self.camera.switch_source()
+            self.camera.tap_switch_source()
 
         self.camera.take_photo()
 
