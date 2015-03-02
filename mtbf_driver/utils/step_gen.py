@@ -6,6 +6,7 @@ import json
 import shutil
 import logging
 
+logging.basicConfig(level="INFO")
 logger = logging.getLogger(__name__)
 
 class StepGen(object):
@@ -78,6 +79,8 @@ class RandomStepGen(StepGen):
                     uniq.add(fp)
                     shutil.copy2(full_path, self.workspace)
                     self.enqueue.append((fp, full_path))
+        # logging not matched runlist items as warning
+        logger.warning("Can't find following test cases: " + str(list(to_run - uniq)))
         if len(self.enqueue) == 0:
             raise ValueError("0 file in runlist is matched, root dir: ", root)
 
