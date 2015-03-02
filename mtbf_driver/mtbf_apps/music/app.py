@@ -7,6 +7,7 @@ from gaiatest.apps.music.app import Music
 
 from mtbf_driver.mtbf_apps.music.regions.list_view import Mtbf_ListView
 
+
 class Mtbf_Music(Music):
     _header_locator = (By.ID, "title")
     _top_bannder_locator = (By.CSS_SELECTOR, "#title-text")
@@ -20,7 +21,7 @@ class Mtbf_Music(Music):
             expected.element_present(*self._songs_tab_locator))
         Wait(self.marionette).until(expected.element_displayed(element))
         element.tap()
-        if self.marionette.find_element(*self._top_bannder_locator).text <> 'Songs':
+        if self.marionette.find_element(*self._top_bannder_locator).text != 'Songs':
             return Mtbf_ListView(self.marionette)
         else:
-            return Mtbf_ListView(self.marionette,bolScrollingCheck=False)
+            return Mtbf_ListView(self.marionette, bolScrollingCheck=False)

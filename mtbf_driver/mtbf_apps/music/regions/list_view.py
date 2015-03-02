@@ -9,14 +9,13 @@ from marionette import Wait
 from gaiatest.apps.base import Base
 from gaiatest.apps.music.regions.list_view import ListView
 
+
 class Mtbf_ListView(ListView):
 
-
-    def __init__(self, marionette, bolScrollingCheck = True):
+    def __init__(self, marionette, bolScrollingCheck=True):
         Base.__init__(self, marionette)
         if bolScrollingCheck:
             Wait(self.marionette).until(
                 lambda m: self.marionette.find_element(*self._view_locator).get_attribute('class') == 'scrolling')
         Wait(self.marionette).until(
             lambda m: self.marionette.find_element(*self._view_locator).get_attribute('class') != 'scrolling')
-
