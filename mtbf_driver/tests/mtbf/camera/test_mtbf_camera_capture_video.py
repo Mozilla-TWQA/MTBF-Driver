@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.camera.app import Camera
+from mtbf_driver.mtbf_apps.camera.app import MTBF_Camera
 
 
 class TestCamera(GaiaMtbfTestCase):
@@ -14,7 +14,7 @@ class TestCamera(GaiaMtbfTestCase):
         # Turn off geolocation prompt
         self.apps.set_permission('Camera', 'geolocation', 'deny')
 
-        self.camera = Camera(self.marionette)
+        self.camera = MTBF_Camera(self.marionette)
         self.camera.launch()
 
     def test_capture_a_video(self):
@@ -23,7 +23,7 @@ class TestCamera(GaiaMtbfTestCase):
 
         # Switch to video mode
         self.camera.wait_for_capture_ready()
-        if not self.camera.camera_mode is u'picture':
+        if self.camera.camera_mode == u'picture':
             self.camera.tap_switch_source()
 
         # Record 10 seconds of video

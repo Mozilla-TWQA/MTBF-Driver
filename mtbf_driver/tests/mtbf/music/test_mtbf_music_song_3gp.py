@@ -4,7 +4,6 @@
 
 import time
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest import GaiaDevice
 from mtbf_driver.mtbf_apps.music.app import Mtbf_Music
 
 
