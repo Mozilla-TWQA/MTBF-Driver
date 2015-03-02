@@ -1,65 +1,33 @@
-import argparse
 ## this is for faking out an argument set for memory report
 
 
+class memory_args(object):
+    pass
+
+
 def memory_report_args(
-        minimize=False,
+        output_directory="output",
+        minimize_memory_usage=False,
+        create_archive=True,
         leave_on_device=False,
-        no_auto_open=False,
-        keep_report=False,
-        gc_log=True,
-        abbrev_gc_log=False):
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter)
+        open_in_firefox=False,
+        keep_individual_reports=False,
+        abbreviated_gc_cc_log=False,
+        get_gc_cc_logs=True,
+        compress_gc_cc_logs=True,
+        no_kgsl_logs=False,
+        compress_dmd_logs=True):
+    mem_args = memory_args()
 
-    parser.add_argument(
-        '--minimize',
-        '-m',
-        dest='minimize_memory_usage',
-        action='store_true',
-        default=minimize)
-    parser.add_argument(
-        '--directory',
-        '-d',
-        dest='output_directory',
-        action='store',
-        metavar='DIR')
-
-    parser.add_argument(
-        '--leave-on-device',
-        '-l',
-        dest='leave_on_device',
-        action='store_true',
-        default=leave_on_device)
-
-    parser.add_argument(
-        '--no-auto-open',
-        '-o',
-        dest='open_in_firefox',
-        action='store_false',
-        default=no_auto_open)
-    parser.add_argument(
-        '--keep-individual-reports',
-        dest='keep_individual_reports',
-        action='store_true',
-        default=keep_report)
-
-    gc_log_group = parser.add_mutually_exclusive_group()
-
-    gc_log_group.add_argument(
-        '--no-gc-cc-log',
-        dest='get_gc_cc_logs',
-        action='store_false',
-        default=gc_log)
-
-    gc_log_group.add_argument(
-        '--abbreviated-gc-cc-log',
-        dest='abbreviated_gc_cc_log',
-        action='store_true',
-        default=abbrev_gc_log)
-
-    parser.add_argument('--no-dmd', action='store_true', default=False)
-
-    args, unknown = parser.parse_known_args()
-    return args
+    mem_args.output_directory = output_directory
+    mem_args.minimize_memory_usage = minimize_memory_usage
+    mem_args.create_archive = create_archive
+    mem_args.leave_on_device = leave_on_device
+    mem_args.open_in_firefox = open_in_firefox
+    mem_args.keep_individual_reports = keep_individual_reports
+    mem_args.abbreviated_gc_cc_log = abbreviated_gc_cc_log
+    mem_args.get_gc_cc_logs = get_gc_cc_logs
+    mem_args.compress_gc_cc_logs = compress_gc_cc_logs
+    mem_args.no_kgsl_logs = no_kgsl_logs
+    mem_args.compress_dmd_logs = compress_dmd_logs
+    return mem_args
