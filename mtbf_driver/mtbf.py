@@ -184,8 +184,6 @@ class MTBF_Driver:
     def time_up(self, signum, frame):
         self.logger.info("Signal handler called with signal" + str(signum))
         self.end = True
-        if self.runner:
-            self.runner.tests = []
 
     def deinit(self):
         virtual_home = os.getenv('VIRTUAL_ENV')
