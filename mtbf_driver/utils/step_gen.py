@@ -9,6 +9,7 @@ import logging
 logging.basicConfig(level="INFO")
 logger = logging.getLogger(__name__)
 
+
 class StepGen(object):
     def __init__(self, workspace=None):
         self.setWorkspace(workspace)
