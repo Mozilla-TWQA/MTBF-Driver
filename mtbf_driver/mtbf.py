@@ -43,7 +43,6 @@ class MTBF_Driver:
         parser = self.parser_class(
             usage='%prog [options] test_file_or_dir <test_file_or_dir> ...'
         )
-        structured.commandline.add_logging_group(parser)
         opts = []
         for k, v in kwargs.iteritems():
             opts.append("--" + k)
@@ -59,6 +58,7 @@ class MTBF_Driver:
         if self.options.testvars:
             filter(lambda x: x, self.options.testvars)
 
+        structured.commandline.add_logging_group(parser)
         logger = structured.commandline.setup_logging(
             options.logger_name, options, {"tbpl": sys.stdout})
 
