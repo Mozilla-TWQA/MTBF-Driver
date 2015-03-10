@@ -4,7 +4,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.contacts.app import Contacts
+from mtbf_driver.mtbf_apps.contacts.app import MTBF_Contacts
 from gaiatest.mocks.mock_contact import MockContact
 
 
@@ -15,7 +15,8 @@ class TestKeyboard(GaiaMtbfTestCase):
     def test_keyboard_basic(self):
         # Use the contacts app to enter some text
         self.contact = MockContact()
-        self.contacts_app = Contacts(self.marionette)
+        self.contacts_app = MTBF_Contacts(self.marionette)
+
         self.contacts_app.launch()
         new_contact_form = self.contacts_app.tap_new_contact()
         new_contact_form.type_phone(self.contact['tel']['value'])
@@ -36,7 +37,8 @@ class TestKeyboard(GaiaMtbfTestCase):
         # go back to app frame and finish this
         self.apps.switch_to_displayed_app()
         new_contact_form.tap_done()
-        new_contact = self.contacts_app.contact(self.contact['tel']['value'])
+
+        new_contact = self.contacts_app.search_contact(self.contact['tel']['value'])
         if new_contact:
             contact_details = new_contact.tap()
             output_text = contact_details.comments
