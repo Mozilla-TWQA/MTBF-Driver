@@ -18,7 +18,8 @@ ifeq ($(device-id-in-forwardlist), 0)
 	@echo Create new forward list for device 
 	@adb forward tcp:2828 tcp:2828
 else
-	@echo Device is already in forward list
+	@echo Clean all devices in forward list
+	@adb forward --remove-all
 endif
 
 update-mtbf-install:
