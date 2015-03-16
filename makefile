@@ -1,7 +1,7 @@
 # Download and install all dependencies packages
 #
 
-device-id-in-forwardlist := $(shell adb forward --list | wc -l)
+no-of-devices-in-forwardlist := $(shell adb forward --list | wc -l)
 os-type := $(shell uname)
 
 install: install-pip install-virtual-env create-virtual-env exec-setup get-b2g-install-b2gtool
@@ -15,7 +15,7 @@ run: create-adb-forward
 	MTBF_TIME=10m MTBF_CONF=mtbf_driver/conf/local.json mtbf --address=localhost:2828 --testvars=mtbf_driver/testvars.json mtbf_driver/tests/test_dummy_case.py	
 
 create-adb-forward:
-ifeq ($(device-id-in-forwardlist), 0)
+ifeq ($(no-of-devices-in-forwardlist), 0)
 	@echo Create new forward list for device 
 	@adb forward tcp:2828 tcp:2828
 else
