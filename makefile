@@ -2,6 +2,7 @@
 #
 
 device-id-in-forwardlist := $(shell adb forward --list | wc -l)
+os-type := $(shell uname)
 
 install: install-pip install-virtual-env create-virtual-env exec-setup get-b2g-install-b2gtool
 	@echo Install Complete
@@ -20,6 +21,7 @@ ifeq ($(device-id-in-forwardlist), 0)
 else
 	@echo Clean all devices in forward list
 	@adb forward --remove-all
+	@adb forward tcp:2828 tcp:2828
 endif
 
 update-mtbf-install:
@@ -57,4 +59,8 @@ install-virtual-env:
 	@sudo pip install --upgrade virtualenv 
 
 install-pip:
+ifneq ($(os-type),Linux)
+	@sudo easy_install pip
+else
 	@sudo apt-get install python-pip python-dev build-essential 
+endif
