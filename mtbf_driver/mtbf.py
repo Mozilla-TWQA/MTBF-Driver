@@ -165,6 +165,9 @@ class MTBF_Driver:
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
 
+            current_runtime = time.time() - self.start_time
+            self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
+
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
             ## to detect continuous failure We can then
