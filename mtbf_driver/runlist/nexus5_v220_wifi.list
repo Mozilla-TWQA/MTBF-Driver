@@ -1,0 +1,8 @@
+{ "runlist": [
+"test_mtbf_settings_wifi.py",
+"test_mtbf_browser_play_video.py",
+"test_mtbf_browser_search.py",
+"test_mtbf_browser_navigation.py",
+"test_mtbf_browser_clear_browsing_history.py",
+"test_mtbf_browser_cell_data.py"]
+}
