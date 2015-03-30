@@ -291,6 +291,8 @@ def main(**kwargs):
     else:
         mtbf.start_gaiatest()
         return True
+    logcat_cmd = "adb logcat -v threadtime -d > last_logcat"
+    os.system(logcat_cmd)
 
 
 if __name__ == '__main__':
