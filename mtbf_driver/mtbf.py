@@ -10,6 +10,7 @@ from zipfile import ZipFile
 from ConfigParser import NoSectionError
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from mozlog import structured
+from mozdevice.devicemanager import DMError
 
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
@@ -143,6 +144,9 @@ class MTBF_Driver:
                     self.runner = self.runner_class(**vars(self.options))
                     break
                 except NoSectionError as e:
+                    self.logger.error(e)
+                    continue
+                except DMError as e:
                     self.logger.error(e)
                     continue
             if marionette:
