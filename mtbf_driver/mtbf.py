@@ -235,7 +235,11 @@ class MTBF_Driver:
                 ## get some memory report before each round
                 mem_dir = os.path.join(out_dir, "about-memory" + str(current_round))
                 import tools.get_about_memory
-                tools.get_about_memory.get_and_show_info(memory_report_args(output_directory=mem_dir))
+                try:
+                    tools.get_about_memory.get_and_show_info(memory_report_args(output_directory=mem_dir))
+                except:
+                # Ignore memory report and log it
+                    self.logger.error("Crash in get-about-memory")
 
             ## get logcat and dmesg
             if 'logcat' in self.conf and self.conf['logcat']:
