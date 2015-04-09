@@ -1,5 +1,4 @@
 { "runlist": ["test_mtbf_camera_multiple_shots.py",
-"test_mtbf_call_log_all_calls.py",
 "test_mtbf_sms.py",
 "test_mtbf_email_keyboard.py",
 "test_mtbf_keyboard.py",
