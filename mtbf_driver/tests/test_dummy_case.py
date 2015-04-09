@@ -25,8 +25,8 @@ class DummyTestCase(GaiaMtbfTestCase):
     def test_status_check(self):
         self.apps.switch_to_displayed_app()
         self._check_page_source()
-        # sleep for 2 min
-        time.sleep(120)
+        # sleep for 30s
+        time.sleep(30)
         self.marionette.switch_to_frame()
         self.device.turn_screen_on()
         self.device.unlock()
