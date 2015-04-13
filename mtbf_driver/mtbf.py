@@ -163,6 +163,11 @@ class MTBF_Driver:
                 except NoSectionError as e:
                     self.logger.error(e)
                     continue
+                # I suggest we could catch DMerror duirng run_tests, because most of these DMError problems are not the
+                # testing target of MTBF
+                except DMError as de:
+                    self.logger.error(de)
+                    continue
             marionette = self.runner.marionette
             httpd = self.runner.httpd
             self.passed = self.runner.passed + self.passed
