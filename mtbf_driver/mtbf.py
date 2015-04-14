@@ -269,7 +269,7 @@ class MTBF_Driver:
                 os.system(b2gps_cmd)
                 os.system(top_cmd)
 
-                b2ginfo_cmd = "adb shell b2g-info -t > " + os.path.join(out_dir, "b2ginfo" + str(current_round))
+                b2ginfo_cmd = "adb shell b2g-info > " + os.path.join(out_dir, "b2ginfo" + str(current_round))
                 b2gprocrank_cmd = "adb shell b2g-procrank --oom > " + os.path.join(out_dir, "b2gprocrank" + str(current_round))
                 os.system(b2ginfo_cmd)
                 os.system(b2gprocrank_cmd)
