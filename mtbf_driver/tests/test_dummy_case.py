@@ -17,6 +17,9 @@ logger = logging.getLogger(__name__)
 
 class DummyTestCase(GaiaMtbfTestCase):
     # TODO: bug 1147731 will change the behavior of lock, unlock screen, very possible to damage this test
+    def cleanup_gaia(self, full_reset=True):
+        pass
+
     def setUp(self):
         GaiaMtbfTestCase.setUp(self)
         self.marionette.switch_to_frame()
