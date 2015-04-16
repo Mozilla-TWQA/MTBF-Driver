@@ -17,8 +17,6 @@ from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
 import mozversion
-import traceback
-from marionette.runner.mixins.b2g import get_dm
 
 
 class MTBFTestRunner(GaiaTestRunner):
