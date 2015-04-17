@@ -11,7 +11,6 @@ from ConfigParser import NoSectionError
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from mozlog import structured
 from mozdevice.devicemanager import DMError
-
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
@@ -132,6 +131,13 @@ class MTBF_Driver:
         httpd = None
         self.logger.info("Starting MTBF....")
 
+        # Charge x hours per 24 hours
+        if os.getenv("CHARGE_HOUR"):
+            self.charge = 1
+            self.sleep_sec = CHARGE_HOUR * 60 * 60
+        else:
+            self.charge = -1
+
         while(True):
             self.collect_metrics(current_round)
             current_round = current_round + 1
@@ -176,6 +182,9 @@ class MTBF_Driver:
 
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
+
+            if self.charge > 0 and (current_runtime / 86400) > self.charge:
+                time.sleep(self.sleep_sec)
 
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
