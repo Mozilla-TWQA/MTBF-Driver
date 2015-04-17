@@ -188,6 +188,9 @@ class MTBF_Driver:
 
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
+            if self.charge > 0:
+                self.logger.info('Current Sleep Time: %.3f seconds" % (self.charge - 1)*86400')
+
 
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
