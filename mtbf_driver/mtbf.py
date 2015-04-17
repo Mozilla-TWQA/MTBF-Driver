@@ -167,8 +167,6 @@ class MTBF_Driver:
                 file_name = (u'test_charge.py',)
                 file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
                 self.charge += 1
-            file_name = (u'test_charge.py',)
-            file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
 
             for i in range(0, 10):
                 try:
