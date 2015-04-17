@@ -134,7 +134,6 @@ class MTBF_Driver:
         # Charge x hours per 24 hours
         if os.getenv("CHARGE_HOUR"):
             self.charge = 1
-            self.sleep_sec = CHARGE_HOUR * 60 * 60
         else:
             self.charge = -1
 
@@ -162,6 +161,15 @@ class MTBF_Driver:
             tests = sg.generate()
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
+
+            current_runtime = time.time() - self.start_time
+            if self.charge > 0 and (current_runtime / 86400) >= self.charge:
+                file_name = (u'test_charge.py',)
+                file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
+                self.charge += 1
+            file_name = (u'test_charge.py',)
+            file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
+
             for i in range(0, 10):
                 try:
                     self.runner.run_tests(file_path)
@@ -183,9 +191,6 @@ class MTBF_Driver:
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
 
-            if self.charge > 0 and (current_runtime / 86400) > self.charge:
-                time.sleep(self.sleep_sec)
-
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
             ## to detect continuous failure We can then
@@ -198,6 +203,8 @@ class MTBF_Driver:
         self.running_time = time.time() - self.start_time
         self.logger.info("\n*Total MTBF Time: %.3f seconds" % self.running_time)
         self.logger.info('\nMTBF TEST SUMMARY\n-----------------')
+        if self.charge > 0:
+            self.logger.info('Total Sleep Time: %.3f seconds" % (self.charge - 1)*86400')
         self.logger.info('passed: %d' % self.passed)
         self.logger.info('failed: %d' % self.failed)
         self.logger.info('todo:   %d' % self.todo)
