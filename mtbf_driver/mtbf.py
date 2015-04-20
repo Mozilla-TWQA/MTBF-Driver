@@ -154,15 +154,13 @@ class MTBF_Driver:
         httpd = None
         self.logger.info("Starting MTBF....")
 
-<<<<<<< HEAD
         # Charge x hours per 24 hours
         if os.getenv("CHARGE_HOUR"):
             self.charge = 1
         else:
             self.charge = -1
-=======
+
         version_info = None
->>>>>>> a06940c6d34862c8b59a893b924559142ad1e20a
 
         while(True):
             self.collect_metrics(current_round)
@@ -189,16 +187,13 @@ class MTBF_Driver:
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
 
-<<<<<<< HEAD
             current_runtime = time.time() - self.start_time
             if self.charge > 0 and (current_runtime / 86400) >= self.charge:
                 file_name = (u'test_charge.py',)
                 file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
                 self.charge += 1
-=======
             if version_info is None:
                 version_info = self.runner.get_version_info(version_info)
->>>>>>> a06940c6d34862c8b59a893b924559142ad1e20a
 
             for i in range(0, 10):
                 try:
