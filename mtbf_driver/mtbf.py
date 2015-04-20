@@ -15,10 +15,33 @@ from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
+import mozversion
+
+
+class MTBFTestRunner(GaiaTestRunner):
+
+    saved_version_info = None
+
+    def get_version_info(self, input_version_info=None):
+        if input_version_info is None:
+            self.saved_version_info = mozversion.get_version(binary=self.bin,
+                                                             sources=self.sources,
+                                                             dm_type=os.environ.get('DM_TRANS', 'adb'),
+                                                             device_serial=self.device_serial)
+            mozversion.get_version = self._new_get_version_info
+        else:
+            self.saved_version_info = input_version_info
+            mozversion.get_version = self._new_get_version_info
+        return self.saved_version_info
+
+    def _new_get_version_info(self,binary=None, sources=None, dm_type=None, host=None,
+                device_serial=None, adb_host=None, adb_port=None):
+        self.logger.info("get_version of mozversion is overrided!!!")
+
 
 class MTBF_Driver:
 
-    runner_class = GaiaTestRunner
+    runner_class = MTBFTestRunner
     parser_class = GaiaTestOptions
     start_time = 0
     running_time = 0
@@ -137,6 +160,8 @@ class MTBF_Driver:
         else:
             self.charge = -1
 
+        version_info = None
+
         while(True):
             self.collect_metrics(current_round)
             current_round = current_round + 1
@@ -167,6 +192,8 @@ class MTBF_Driver:
                 file_name = (u'test_charge.py',)
                 file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
                 self.charge += 1
+            if version_info is None:
+                version_info = self.runner.get_version_info(version_info)
 
             for i in range(0, 10):
                 try:
