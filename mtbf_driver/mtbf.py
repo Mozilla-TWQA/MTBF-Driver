@@ -192,6 +192,8 @@ class MTBF_Driver:
                 file_name = (u'test_charge.py',)
                 file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
                 self.charge += 1
+            self.logger.info("File Path: %s" % str(file_path))
+
             if version_info is None:
                 version_info = self.runner.get_version_info(version_info)
 
