@@ -123,11 +123,10 @@ class MTBF_Driver:
                     logger.error(self.conf['runlist'], " does not exist.")
                     sys.exit(1)
 
-        self.rootdir = self.conf['rootdir']
+        self.rootdir = os.path.join(self.ori_dir, self.conf['rootdir'])
         if not os.path.exists(self.rootdir):
-            self.rootdir = os.path.join(self.ori_dir, self.conf['rootdir'])
             if not os.path.exists(self.rootdir):
-                logger.error("Rootdir doesn't exist: " + self.conf['rootdir'])
+                logger.error("Rootdir doesn't exist: " + self.rootdir)
                 sys.exit(1)
 
         self.workspace = self.conf['workspace']
