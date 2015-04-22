@@ -29,9 +29,9 @@ class MTBFTestRunner(GaiaTestRunner):
                                                              sources=self.sources,
                                                              dm_type=os.environ.get('DM_TRANS', 'adb'),
                                                              device_serial=self.device_serial)
+            mozversion.get_version = self._new_get_version_info
         else:
             self.saved_version_info = input_version_info
-        mozversion.get_version = self._new_get_version_info
         return self.saved_version_info
 
     def _new_get_version_info(self,binary=None, sources=None, dm_type=None, host=None,
