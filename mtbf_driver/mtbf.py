@@ -161,6 +161,9 @@ class MTBF_Driver:
 
         version_info = None
 
+        #add this for checking all test cases will continuley failed on next round
+        self.retry = 0
+
         while(True):
             self.collect_metrics(current_round)
             current_round = current_round + 1
@@ -175,8 +178,12 @@ class MTBF_Driver:
                 except NoSectionError as e:
                     self.logger.error(e)
                     continue
-                except DMError as e:
-                    self.logger.error(e)
+                except DMError as de:
+                    self.logger.error("DMError catched!!!")
+                    self.logger.error(sys.exc_info()[0])
+                    self.logger.error(de)
+                    #add sleep to wait for adb recover
+                    time.sleep(5)
                     continue
             if marionette:
                 self.runner.marionette = marionette
@@ -206,7 +213,11 @@ class MTBF_Driver:
                 # I suggest we could catch DMerror duirng run_tests, because most of these DMError problems are not the
                 # testing target of MTBF
                 except DMError as de:
+                    self.logger.error("DMError catched!!!")
+                    self.logger.error(sys.exc_info()[0])
                     self.logger.error(de)
+                    #add sleep to wait for adb recover
+                    time.sleep(5)
                     continue
             marionette = self.runner.marionette
             httpd = self.runner.httpd
@@ -224,8 +235,14 @@ class MTBF_Driver:
             ## to detect continuous failure We can then
             ## remove this
             if self.runner.passed == 0 or self.end:
-                self.deinit()
-                break
+                #add this for checking all test cases will continuley failed on next round
+                if self.retry == 1:
+                    self.deinit()
+                    break
+                self.get_report()
+                self.retry += 1
+                time.sleep(60)
+
 
     def get_report(self):
         self.running_time = time.time() - self.start_time
