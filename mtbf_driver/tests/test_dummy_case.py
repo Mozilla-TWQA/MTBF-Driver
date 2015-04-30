@@ -38,7 +38,7 @@ class DummyTestCase(GaiaMtbfTestCase):
 
     def _check_cpu_load(self):
         status = True
-        b2g_status = subprocess.check_output(["adb wait-for-device shell top -m 20 -n 1 -s cpu"], shell=True, stderr=subprocess.STDOUT)
+        b2g_status = subprocess.check_output(["adb shell top -m 20 -n 1 -s cpu"], shell=True, stderr=subprocess.STDOUT)
         try:
             for li in b2g_status:
                 per = re.search('([0-9.]+s%)\s', b2g_status)

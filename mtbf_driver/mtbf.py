@@ -296,30 +296,30 @@ class MTBF_Driver:
 
             ## get logcat and dmesg
             if 'logcat' in self.conf and self.conf['logcat']:
-                logcat_cmd = "adb wait-for-device logcat -v threadtime -d > " + os.path.join(out_dir, "logcat" + str(current_round))
-                dmesg_cmd = "adb wait-for-device shell dmesg > " + os.path.join(out_dir, "dmesg" + str(current_round))
+                logcat_cmd = "adb logcat -v threadtime -d > " + os.path.join(out_dir, "logcat" + str(current_round))
+                dmesg_cmd = "adb shell dmesg > " + os.path.join(out_dir, "dmesg" + str(current_round))
                 os.system(logcat_cmd)
                 os.system(dmesg_cmd)
 
             ## show us the overall status of the phone
             if 'overall_status' in self.conf and self.conf['overall_status']:
-                bugreport_cmd = "adb wait-for-device shell dumpstate > " + os.path.join(out_dir, "bugreport" + str(current_round))
+                bugreport_cmd = "adb shell dumpstate > " + os.path.join(out_dir, "bugreport" + str(current_round))
                 os.system(bugreport_cmd)
 
             ## show us b2g status of the phone
             if 'b2g_status' in self.conf and self.conf['b2g_status']:
-                b2gps_cmd = "adb wait-for-device shell b2g-ps -t -p -P --oom > " + os.path.join(out_dir, "b2gps" + str(current_round))
-                top_cmd = "adb wait-for-device shell top -m 10 -s cpu -n 1 -t >" + os.path.join(out_dir, "top" + str(current_round))
+                b2gps_cmd = "adb shell b2g-ps -t -p -P --oom > " + os.path.join(out_dir, "b2gps" + str(current_round))
+                top_cmd = "adb shell top -m 10 -s cpu -n 1 -t >" + os.path.join(out_dir, "top" + str(current_round))
                 os.system(b2gps_cmd)
                 os.system(top_cmd)
 
-                b2ginfo_cmd = "adb wait-for-device shell b2g-info > " + os.path.join(out_dir, "b2ginfo" + str(current_round))
-                b2gprocrank_cmd = "adb wait-for-device shell b2g-procrank --oom > " + os.path.join(out_dir, "b2gprocrank" + str(current_round))
+                b2ginfo_cmd = "adb shell b2g-info > " + os.path.join(out_dir, "b2ginfo" + str(current_round))
+                b2gprocrank_cmd = "adb shell b2g-procrank --oom > " + os.path.join(out_dir, "b2gprocrank" + str(current_round))
                 os.system(b2ginfo_cmd)
                 os.system(b2gprocrank_cmd)
             ## show us events
             if 'get_event' in self.conf and self.conf['get_event']:
-                bugreport_cmd = "adb wait-for-device shell getevent -S > " + os.path.join(out_dir, "getevent" + str(current_round))
+                bugreport_cmd = "adb shell getevent -S > " + os.path.join(out_dir, "getevent" + str(current_round))
                 os.system(bugreport_cmd)
 
 
@@ -348,7 +348,7 @@ def main(**kwargs):
     else:
         mtbf.start_gaiatest()
         return True
-    logcat_cmd = "adb wait-for-device logcat -v threadtime -d > last_logcat"
+    logcat_cmd = "adb logcat -v threadtime -d > last_logcat"
     os.system(logcat_cmd)
 
 
