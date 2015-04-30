@@ -31,12 +31,11 @@ class MTBFTestRunner(GaiaTestRunner):
             mozversion.get_version = self._new_get_version_info
         else:
             self.saved_version_info = input_version_info
-            mozversion.get_version = self._new_get_version_info
         return self.saved_version_info
 
     def _new_get_version_info(self,binary=None, sources=None, dm_type=None, host=None,
                 device_serial=None, adb_host=None, adb_port=None):
-        self.logger.info("get_version of mozversion is overrided!!!")
+        self.logger.info("Using existing version info instead!")
 
 
 class MTBF_Driver:
