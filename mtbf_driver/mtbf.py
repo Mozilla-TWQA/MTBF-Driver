@@ -11,15 +11,36 @@ from ConfigParser import NoSectionError
 from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from mozlog import structured
 from mozdevice.devicemanager import DMError
-
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
+import mozversion
+
+
+class MTBFTestRunner(GaiaTestRunner):
+
+    saved_version_info = None
+
+    def get_version_info(self, input_version_info=None):
+        if input_version_info is None:
+            self.saved_version_info = mozversion.get_version(binary=self.bin,
+                                                             sources=self.sources,
+                                                             dm_type=os.environ.get('DM_TRANS', 'adb'),
+                                                             device_serial=self.device_serial)
+            mozversion.get_version = self._new_get_version_info
+        else:
+            self.saved_version_info = input_version_info
+        return self.saved_version_info
+
+    def _new_get_version_info(self,binary=None, sources=None, dm_type=None, host=None,
+                device_serial=None, adb_host=None, adb_port=None):
+        self.logger.info("Using existing version info instead!")
+
 
 class MTBF_Driver:
 
-    runner_class = GaiaTestRunner
+    runner_class = MTBFTestRunner
     parser_class = GaiaTestOptions
     start_time = 0
     running_time = 0
@@ -101,11 +122,13 @@ class MTBF_Driver:
                     logger.error(self.conf['runlist'], " does not exist.")
                     sys.exit(1)
 
-        self.rootdir = self.conf['rootdir']
-        if not os.path.exists(self.rootdir):
+        if os.path.isabs(self.conf['rootdir']):
+            self.rootdir = self.conf['rootdir']
+        else:
             self.rootdir = os.path.join(self.ori_dir, self.conf['rootdir'])
+        if not os.path.exists(self.rootdir):
             if not os.path.exists(self.rootdir):
-                logger.error("Rootdir doesn't exist: " + self.conf['rootdir'])
+                logger.error("Rootdir doesn't exist: " + self.rootdir)
                 sys.exit(1)
 
         self.workspace = self.conf['workspace']
@@ -132,6 +155,17 @@ class MTBF_Driver:
         httpd = None
         self.logger.info("Starting MTBF....")
 
+        # Charge x hours per 24 hours
+        if os.getenv("CHARGE_HOUR"):
+            self.charge = 1
+        else:
+            self.charge = -1
+
+        version_info = None
+
+        #add this for checking all test cases will continuley failed on next round
+        self.retry = 0
+
         while(True):
             self.collect_metrics(current_round)
             current_round = current_round + 1
@@ -146,8 +180,12 @@ class MTBF_Driver:
                 except NoSectionError as e:
                     self.logger.error(e)
                     continue
-                except DMError as e:
-                    self.logger.error(e)
+                except DMError as de:
+                    self.logger.error("DMError catched!!!")
+                    self.logger.error(sys.exc_info()[0])
+                    self.logger.error(de)
+                    #add sleep to wait for adb recover
+                    time.sleep(5)
                     continue
             if marionette:
                 self.runner.marionette = marionette
@@ -156,6 +194,17 @@ class MTBF_Driver:
             tests = sg.generate()
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
+
+            current_runtime = time.time() - self.start_time
+            if self.charge > 0 and (current_runtime / 86400) >= self.charge:
+                file_name = (u'test_charge.py',)
+                file_path = (os.path.join(self.ori_dir, "tests", "test_charge.py"),)
+                self.charge += 1
+            self.logger.info("File Path: %s" % str(file_path))
+
+            if version_info is None:
+                version_info = self.runner.get_version_info(version_info)
+
             for i in range(0, 10):
                 try:
                     self.runner.run_tests(file_path)
@@ -166,7 +215,11 @@ class MTBF_Driver:
                 # I suggest we could catch DMerror duirng run_tests, because most of these DMError problems are not the
                 # testing target of MTBF
                 except DMError as de:
+                    self.logger.error("DMError catched!!!")
+                    self.logger.error(sys.exc_info()[0])
                     self.logger.error(de)
+                    #add sleep to wait for adb recover
+                    time.sleep(5)
                     continue
             marionette = self.runner.marionette
             httpd = self.runner.httpd
@@ -176,18 +229,28 @@ class MTBF_Driver:
 
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
+            if self.charge > 0:
+                self.logger.info("\n*Current Sleep Time: %.3f seconds" % ((self.charge - 1)*3600*int(os.getenv("CHARGE_HOUR"))))
 
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
             ## to detect continuous failure We can then
             ## remove this
             if self.runner.passed == 0 or self.end:
-                self.deinit()
-                break
+                #add this for checking all test cases will continuley failed on next round
+                if self.retry == 1:
+                    self.deinit()
+                    break
+                self.get_report()
+                self.retry += 1
+                time.sleep(60)
+
 
     def get_report(self):
         self.running_time = time.time() - self.start_time
         self.logger.info("\n*Total MTBF Time: %.3f seconds" % self.running_time)
+        if self.charge > 0:
+            self.logger.info("\nTotal Sleep Time: %.3f seconds" % ((self.charge - 1)*3600*int(os.getenv("CHARGE_HOUR"))))
         self.logger.info('\nMTBF TEST SUMMARY\n-----------------')
         self.logger.info('passed: %d' % self.passed)
         self.logger.info('failed: %d' % self.failed)
