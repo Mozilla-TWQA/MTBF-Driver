@@ -227,6 +227,8 @@ class MTBF_Driver:
 
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
+            with open("/proc/meminfo", "r") as mem_info:
+                self.logger.info(mem_info.read())
             if self.charge > 0:
                 self.logger.info("\n*Current Sleep Time: %.3f seconds" % ((self.charge - 1)*3600*int(os.getenv("CHARGE_HOUR"))))
 
