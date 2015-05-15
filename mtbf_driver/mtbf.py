@@ -201,6 +201,8 @@ class MTBF_Driver:
                     continue
             marionette = self.runner.marionette
             httpd = self.runner.httpd
+            # Hotfix for bug 1165231
+            self.runner.mixin_run_tests = []
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
