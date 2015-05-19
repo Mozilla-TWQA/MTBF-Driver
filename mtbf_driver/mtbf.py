@@ -14,6 +14,7 @@ from mozdevice.devicemanager import DMError
 from utils.memory_report_args import memory_report_args
 from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
+import utils.crash_scan as CrashScan
 
 import mozversion
 
@@ -224,6 +225,8 @@ class MTBF_Driver:
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
+            if self.marionette:
+                self.output_crash_report_no_to_log(self.marionette.device_serial)
 
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
@@ -340,6 +343,17 @@ class MTBF_Driver:
             if 'get_event' in self.conf and self.conf['get_event']:
                 bugreport_cmd = "adb wait-for-device shell getevent -S > " + os.path.join(out_dir, "getevent" + str(current_round))
                 os.system(bugreport_cmd)
+
+    def output_crash_report_no_to_log(self, serial):
+            ## get device crash no
+            if serial in CrashScan.get_current_all_dev_serials():
+                crash_result = CrashScan.get_crash_no_by_serial(serial)
+                if crash_result['crashNo'] > 0:
+                    self.logger.error("CrashReportFound: device " + serial + " has " + str(crash_result['crashNo']) + " crashes.")
+                else:
+                    self.logger.info("CrashReportNotFound: No crash report found in device " + serial)
+            else:
+                self.logger.error("CrashReportAdbError: Can't find device in ADB list")
 
 
 def main(**kwargs):
