@@ -225,6 +225,9 @@ class MTBF_Driver:
             httpd = self.runner.httpd
             # Hotfix for bug 1165231
             self.runner.mixin_run_tests = []
+            for res in self.runner.results:
+                res.result_modifiers = []
+
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
