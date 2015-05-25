@@ -227,8 +227,8 @@ class MTBF_Driver:
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
-            if self.marionette:
-                self.output_crash_report_no_to_log(self.marionette.device_serial)
+            if self.runner.marionette:
+                self.output_crash_report_no_to_log(self.runner.marionette.device_serial)
 
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
