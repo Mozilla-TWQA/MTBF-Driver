@@ -57,10 +57,9 @@ class MTBF_Driver:
     dummy = os.path.join(ori_dir, "tests", "test_dummy_case.py")
 
     ## time format here is seconds
-    def __init__(self, time, rp=None, marionette=None, **kwargs):
+    def __init__(self, time, rp=None, **kwargs):
         self.duration = time
         self.rp = rp
-        self.marionette = marionette
         self.load_config(**kwargs)
 
     def load_config(self, **kwargs):
@@ -150,8 +149,6 @@ class MTBF_Driver:
 
         current_round = 0
         # Avoid reinitialing test env
-        marionette = self.marionette
-        httpd = None
         self.logger.info("Starting MTBF....")
 
         # Charge x hours per 24 hours
@@ -186,10 +183,6 @@ class MTBF_Driver:
                     #add sleep to wait for adb recover
                     time.sleep(5)
                     continue
-            if marionette:
-                self.runner.marionette = marionette
-            if httpd:
-                self.runner.httpd = httpd
             tests = sg.generate()
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
@@ -220,8 +213,6 @@ class MTBF_Driver:
                     #add sleep to wait for adb recover
                     time.sleep(5)
                     continue
-            marionette = self.runner.marionette
-            httpd = self.runner.httpd
             # Hotfix for bug 1165231
             self.runner.mixin_run_tests = []
             for res in self.runner.results:
@@ -229,8 +220,8 @@ class MTBF_Driver:
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
-            if self.marionette:
-                self.output_crash_report_no_to_log(self.marionette.device_serial)
+            if self.runner.marionette:
+                self.output_crash_report_no_to_log(self.runner.marionette.device_serial)
 
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
