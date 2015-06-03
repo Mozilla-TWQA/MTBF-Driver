@@ -17,8 +17,6 @@ from utils.step_gen import RandomStepGen, ReplayStepGen
 from utils.time_utils import time2sec
 
 import mozversion
-import traceback
-from marionette.runner.mixins.b2g import get_dm
 
 
 class MTBFTestRunner(GaiaTestRunner):
@@ -37,8 +35,8 @@ class MTBFTestRunner(GaiaTestRunner):
             mozversion.get_version = self._new_get_version_info
         return self.saved_version_info
 
-    def _new_get_version_info(self,binary=None, sources=None, dm_type=None, host=None,
-                device_serial=None, adb_host=None, adb_port=None):
+    def _new_get_version_info(self, binary=None, sources=None, dm_type=None, host=None,
+                              device_serial=None, adb_host=None, adb_port=None):
         self.logger.info("get_version of mozversion is overrided!!!")
 
 
@@ -157,8 +155,6 @@ class MTBF_Driver:
         version_info = None
 
         while(True):
-            self.collect_metrics(current_round)
-            current_round = current_round + 1
 
             ## Run test
             ## workaround: kill the runner and create another
@@ -204,6 +200,8 @@ class MTBF_Driver:
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
 
+            self.collect_metrics(current_round)
+            current_round = current_round + 1
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
             ## to detect continuous failure We can then
