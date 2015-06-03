@@ -33,8 +33,8 @@ class MTBFTestRunner(GaiaTestRunner):
             self.saved_version_info = input_version_info
         return self.saved_version_info
 
-    def _new_get_version_info(self,binary=None, sources=None, dm_type=None, host=None,
-                device_serial=None, adb_host=None, adb_port=None):
+    def _new_get_version_info(self, binary=None, sources=None, dm_type=None, host=None,
+                              device_serial=None, adb_host=None, adb_port=None):
         self.logger.info("Using existing version info instead!")
 
 
@@ -164,8 +164,6 @@ class MTBF_Driver:
         self.retry = 0
 
         while(True):
-            self.collect_metrics(current_round)
-            current_round = current_round + 1
 
             ## Run test
             ## workaround: kill the runner and create another
@@ -226,8 +224,10 @@ class MTBF_Driver:
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
             if self.charge > 0:
-                self.logger.info("\n*Current Sleep Time: %.3f seconds" % ((self.charge - 1)*3600*int(os.getenv("CHARGE_HOUR"))))
+                self.logger.info("\n*Current Sleep Time: %.3f seconds" % ((self.charge - 1) * 3600 * int(os.getenv("CHARGE_HOUR"))))
 
+            self.collect_metrics(current_round)
+            current_round = current_round + 1
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
             ## to detect continuous failure We can then
@@ -241,12 +241,11 @@ class MTBF_Driver:
                 self.retry += 1
                 time.sleep(60)
 
-
     def get_report(self):
         self.running_time = time.time() - self.start_time
         self.logger.info("\n*Total MTBF Time: %.3f seconds" % self.running_time)
         if self.charge > 0:
-            self.logger.info("\nTotal Sleep Time: %.3f seconds" % ((self.charge - 1)*3600*int(os.getenv("CHARGE_HOUR"))))
+            self.logger.info("\nTotal Sleep Time: %.3f seconds" % ((self.charge - 1) * 3600 * int(os.getenv("CHARGE_HOUR"))))
         self.logger.info('\nMTBF TEST SUMMARY\n-----------------')
         self.logger.info('passed: %d' % self.passed)
         self.logger.info('failed: %d' % self.failed)
