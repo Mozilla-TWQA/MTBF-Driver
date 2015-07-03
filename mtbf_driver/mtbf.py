@@ -34,8 +34,8 @@ class MTBFTestRunner(GaiaTestRunner):
             self.saved_version_info = input_version_info
         return self.saved_version_info
 
-    def _new_get_version_info(self,binary=None, sources=None, dm_type=None, host=None,
-                device_serial=None, adb_host=None, adb_port=None):
+    def _new_get_version_info(self, binary=None, sources=None, dm_type=None, host=None,
+                              device_serial=None, adb_host=None, adb_port=None):
         self.logger.info("Using existing version info instead!")
 
 
@@ -56,10 +56,9 @@ class MTBF_Driver:
     dummy = os.path.join(ori_dir, "tests", "test_dummy_case.py")
 
     ## time format here is seconds
-    def __init__(self, time, rp=None, marionette=None, **kwargs):
+    def __init__(self, time, rp=None, **kwargs):
         self.duration = time
         self.rp = rp
-        self.marionette = marionette
         self.load_config(**kwargs)
 
     def load_config(self, **kwargs):
@@ -152,8 +151,6 @@ class MTBF_Driver:
 
         current_round = 0
         # Avoid reinitialing test env
-        marionette = self.marionette
-        httpd = None
         self.logger.info("Starting MTBF....")
 
         # Charge x hours per 24 hours
@@ -168,8 +165,6 @@ class MTBF_Driver:
         self.retry = 0
 
         while(True):
-            self.collect_metrics(current_round)
-            current_round = current_round + 1
 
             ## Run test
             ## workaround: kill the runner and create another
@@ -188,10 +183,6 @@ class MTBF_Driver:
                     #add sleep to wait for adb recover
                     time.sleep(5)
                     continue
-            if marionette:
-                self.runner.marionette = marionette
-            if httpd:
-                self.runner.httpd = httpd
             tests = sg.generate()
             file_name, file_path = zip(*tests)
             self.ttr = self.ttr + list(file_name)
@@ -222,8 +213,11 @@ class MTBF_Driver:
                     #add sleep to wait for adb recover
                     time.sleep(5)
                     continue
-            marionette = self.runner.marionette
-            httpd = self.runner.httpd
+            # Hotfix for bug 1165231
+            self.runner.mixin_run_tests = []
+            for res in self.runner.results:
+                res.result_modifiers = []
+
             self.passed = self.runner.passed + self.passed
             self.failed = self.runner.failed + self.failed
             self.todo = self.runner.todo + self.todo
@@ -233,8 +227,10 @@ class MTBF_Driver:
             current_runtime = time.time() - self.start_time
             self.logger.info("\n*Current MTBF Time: %.3f seconds" % current_runtime)
             if self.charge > 0:
-                self.logger.info("\n*Current Sleep Time: %.3f seconds" % ((self.charge - 1)*3600*int(os.getenv("CHARGE_HOUR"))))
+                self.logger.info("\n*Current Sleep Time: %.3f seconds" % ((self.charge - 1) * 3600 * int(os.getenv("CHARGE_HOUR"))))
 
+            self.collect_metrics(current_round)
+            current_round = current_round + 1
             ## This is a temporary solution for stop the tests
             ## If there should be any interface there for us
             ## to detect continuous failure We can then
@@ -248,12 +244,11 @@ class MTBF_Driver:
                 self.retry += 1
                 time.sleep(60)
 
-
     def get_report(self):
         self.running_time = time.time() - self.start_time
         self.logger.info("\n*Total MTBF Time: %.3f seconds" % self.running_time)
         if self.charge > 0:
-            self.logger.info("\nTotal Sleep Time: %.3f seconds" % ((self.charge - 1)*3600*int(os.getenv("CHARGE_HOUR"))))
+            self.logger.info("\nTotal Sleep Time: %.3f seconds" % ((self.charge - 1) * 3600 * int(os.getenv("CHARGE_HOUR"))))
         self.logger.info('\nMTBF TEST SUMMARY\n-----------------')
         self.logger.info('passed: %d' % self.passed)
         self.logger.info('failed: %d' % self.failed)
