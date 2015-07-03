@@ -2,11 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette.by import By
-from marionette import expected
-from marionette.errors import JavascriptException
+from marionette_driver.by import By
+from marionette_driver import expected
+from marionette_driver.errors import JavascriptException
 from gaiatest.apps.contacts.app import Contacts
-from marionette import Wait
+from marionette_driver.wait import Wait
 from gaiatest.apps.base import Base
 
 

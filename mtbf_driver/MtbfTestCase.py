@@ -6,7 +6,7 @@ import time
 
 from gaiatest import GaiaTestCase
 from gaiatest.apps.homescreen.app import Homescreen
-from marionette.by import By
+from marionette_driver.by import By
 
 
 class GaiaMtbfTestCase(GaiaTestCase):

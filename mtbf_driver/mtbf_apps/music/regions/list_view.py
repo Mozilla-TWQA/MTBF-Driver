@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 
-from marionette import Wait
+from marionette_driver.wait import Wait
 
 
 from gaiatest.apps.base import Base

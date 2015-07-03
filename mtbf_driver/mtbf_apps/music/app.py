@@ -1,7 +1,7 @@
 #!/usr/bin/python
-from marionette import expected
-from marionette import Wait
-from marionette.by import By
+from marionette_driver import expected
+from marionette_driver.wait import Wait
+from marionette_driver.by import By
 
 from gaiatest.apps.music.app import Music
 

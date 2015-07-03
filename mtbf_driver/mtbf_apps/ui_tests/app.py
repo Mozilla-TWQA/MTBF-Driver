@@ -2,9 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette.by import By
+from marionette_driver.by import By
 from gaiatest.apps.ui_tests.app import UiTests
-from marionette.errors import TimeoutException
+from marionette_driver.errors import TimeoutException
 
 class MTBF_UiTests(UiTests):
     _test_panel_header_locator = (By.CSS_SELECTOR, '#test-panel-header')

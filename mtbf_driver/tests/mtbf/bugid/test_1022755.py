@@ -6,7 +6,7 @@ from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 import time
 from gaiatest.apps.messages.app import Messages
 from gaiatest.apps.messages.regions.message_thread import MessageThread
-from marionette.by import By
+from marionette_driver.by import By
 
 
 class TestSms(GaiaMtbfTestCase):
