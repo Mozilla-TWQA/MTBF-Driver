@@ -22,9 +22,6 @@ class MTBF_Contacts(Contacts):
     def launch(self):
         Base.launch(self)
 
-        Wait(self.marionette, ignored_exceptions=JavascriptException).until(
-            lambda m: m.execute_script('return window.wrappedJSObject.Contacts.asyncScriptsLoaded;') is True)
-
         self.close_existing_edit_form()
 
         self.clear_search_view()
