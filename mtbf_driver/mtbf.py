@@ -70,21 +70,22 @@ class MTBF_Driver:
             opts.append("--" + k)
             opts.append(v)
 
-        parser.add_option("-o", "--output", dest="archive", help="Specifying log dest folder")
-        options, tests = parser.parse_args(sys.argv[1:] + opts)
+        parser.add_argument("-o", "--output", dest="archive", help="Specifying log dest folder")
+        args = parser.parse_args(sys.argv[1:] + opts)
         if not tests:
             tests = 'tests/test_dummy_case'  # avoid test case check, will add later
-        parser.verify_usage(options, tests)
-        self.options = options
+        args.tests = tests
+        parser.verify_usage(args)
+        self.args = args
         # filter empty string in testvars list
-        if self.options.testvars:
-            filter(lambda x: x, self.options.testvars)
+        if self.args.testvars:
+            filter(lambda x: x, self.args.testvars)
 
         structured.commandline.add_logging_group(parser)
         logger = structured.commandline.setup_logging(
-            options.logger_name, options, {"tbpl": sys.stdout})
+            "MTBF Test", args, {"tbpl": sys.stdout})
 
-        options.logger = logger
+        args.logger = logger
 
         self.logger = logger
 
@@ -99,8 +100,8 @@ class MTBF_Driver:
             sys.exit(1)
 
         ## assign folder for logs or debugging information in a folder
-        if self.options.archive:
-            self.archive_folder = os.path.abspath(self.options.archive)
+        if self.args.archive:
+            self.archive_folder = os.path.abspath(self.args.archive)
         else:
             self.archive_folder = os.path.join(os.getcwd(), "output")
         if not os.path.exists(self.archive_folder):
@@ -171,7 +172,7 @@ class MTBF_Driver:
             ## one each round, should be fixed
             for i in range(0, 10):
                 try:
-                    self.runner = self.runner_class(**vars(self.options))
+                    self.runner = self.runner_class(**vars(self.args))
                     break
                 except NoSectionError as e:
                     self.logger.error(e)
@@ -295,9 +296,6 @@ class MTBF_Driver:
         shutil.rmtree(self.archive_folder)
 
     def collect_metrics(self, current_round):
-            #current_working_folder = os.getcwd()
-            ## create directory for logs or debugging information
-            #os.chdir(self.archive_folder)
             out_dir = self.archive_folder
 
             ## import only if config file states tools is there
