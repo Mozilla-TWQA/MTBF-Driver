@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
-from gaiatest.apps.camera.app import Camera
+from mtbf_driver.mtbf_apps.camera.app import Mtbf_Camera as Camera
 
 
 class TestCameraMultipleShots(GaiaMtbfTestCase):
@@ -19,6 +19,7 @@ class TestCameraMultipleShots(GaiaMtbfTestCase):
         self.previous_number_of_pictures = len(self.data_layer.picture_files)
 
         self.camera = Camera(self.marionette)
+        self.camera.kill_abnormal_camera_app()
         self.camera.launch()
 
         # Take a photo
@@ -57,3 +58,4 @@ class TestCameraMultipleShots(GaiaMtbfTestCase):
 
     def tearDown(self):
         GaiaMtbfTestCase.tearDown(self)
+
