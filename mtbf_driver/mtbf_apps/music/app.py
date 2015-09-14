@@ -14,7 +14,7 @@ class Mtbf_Music(Music):
 
     def back_from_playback(self):
         self.marionette.find_element(*self._header_locator).tap(25, 25)
-        self.wait_for_element_displayed(*self._music_tiles_locator)
+        Wait(self.marionette).until(expected.element_displayed(*self._songs_tab_locator))
 
     def tap_songs_tab(self):
         element = Wait(self.marionette).until(
