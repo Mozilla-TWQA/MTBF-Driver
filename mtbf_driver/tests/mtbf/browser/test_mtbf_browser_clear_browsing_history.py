@@ -6,7 +6,7 @@ from marionette_driver.wait import Wait
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.search.app import Search
-from mtbf_driver.mtbf_apps.settings.app import MTBF_Settings
+from gaiatest.apps.settings.app import Settings
 
 
 class TestBrowserClearHistory(GaiaMtbfTestCase):
@@ -26,18 +26,18 @@ class TestBrowserClearHistory(GaiaMtbfTestCase):
         search.launch()
         browser = search.go_to_url(self.test_url)
         browser.switch_to_content()
-        Wait(self.marionette).until(lambda m: m.title == 'Mozilla')
+        Wait(self.marionette, timeout=30).until(lambda m: m.title == 'Mozilla')
 
+        self.apps.kill(search.app)
         self.device.touch_home_button()
 
         search.launch()
-        Wait(self.marionette).until(lambda m: search.history_items_count > 0)
+        Wait(self.marionette).until(lambda m: len(m.find_elements(*search._history_item_locator)) > 0)
         self.assertGreater(search.history_items_count, 0)
 
-        settings = MTBF_Settings(self.marionette)
-        settings.launch()
-        settings.go_back()
-        browsing_privacy = settings.open_browsing_privacy_settings()
+        self.settings = Settings(self.marionette)
+        self.settings.launch()
+        browsing_privacy = self.settings.open_browsing_privacy()
 
         browsing_privacy.tap_clear_browsing_history()
         browsing_privacy.tap_clear()
@@ -48,5 +48,6 @@ class TestBrowserClearHistory(GaiaMtbfTestCase):
         self.assertEqual(0, search.history_items_count)
 
     def tearDown(self):
+        self.apps.kill(self.settings.app)
         self.data_layer.disable_cell_data()
         GaiaMtbfTestCase.tearDown(self)

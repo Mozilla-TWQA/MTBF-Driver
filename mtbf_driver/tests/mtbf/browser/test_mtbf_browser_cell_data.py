@@ -2,11 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver.by import By
+from marionette_driver import By, Wait, expected
 from gaiatest import GaiaData
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.search.app import Search
-
 
 class TestBrowserCellData(GaiaMtbfTestCase):
 
@@ -31,10 +30,10 @@ class TestBrowserCellData(GaiaMtbfTestCase):
 
         self.browser.switch_to_content()
 
-        self.wait_for_element_present(*self._page_title_locator, timeout=120)
-        heading = self.marionette.find_element(*self._page_title_locator)
+        heading = Wait(self.marionette, timeout=120).until(expected.element_present(*self._page_title_locator))
         self.assertEqual(heading.text, 'We believe that the internet should be public, open and accessible.')
 
     def tearDown(self):
+        self.marionette.switch_to_frame()
         self.data_layer.disable_cell_data()
         GaiaMtbfTestCase.tearDown(self)
