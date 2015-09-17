@@ -20,29 +20,27 @@ class TestKeyboard(GaiaMtbfTestCase):
         self.contacts_app.launch()
         new_contact_form = self.contacts_app.tap_new_contact()
         new_contact_form.type_phone(self.contact['tel']['value'])
-        new_contact_form.type_comment('')
-
-        # initialize the keyboard app
-        keyboard = new_contact_form.keyboard
+        new_contact_form.keyboard.dismiss()
+        new_contact_form.tap_comment()
 
         # send first 15 characters, delete last character, send a space, and send all others
-        keyboard.send(self._string[:15])
-        keyboard.tap_backspace()
-        keyboard.tap_space()
-        keyboard.send(self._string[15:])
+        new_contact_form.keyboard.send(self._string[:15])
+        new_contact_form.keyboard.tap_backspace()
+        new_contact_form.keyboard.tap_space()
+        new_contact_form.keyboard.send(self._string[15:])
 
         # select special character using extended character selector
-        keyboard.choose_extended_character('A', 9)
+        # Now the menu would include the original char, so the index should +1
+        new_contact_form.keyboard.choose_extended_character('A', 9)
 
         # go back to app frame and finish this
         self.apps.switch_to_displayed_app()
         new_contact_form.tap_done()
+        self.wait_for_condition(lambda m: len(self.contacts_app.contacts) >= 1)
 
-        new_contact = self.contacts_app.search_contact(self.contact['tel']['value'])
-        if new_contact:
-            contact_details = new_contact.tap()
-            output_text = contact_details.comments
-            self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
-            contact_details.tap_back()
-        else:
-            self.assertEqual(True, False)
+        contact_details = self.contacts_app.contacts[0].tap()
+        output_text = contact_details.comments
+
+        self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
+
+        contact_details.tap_back()
