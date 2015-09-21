@@ -256,6 +256,9 @@ class MTBF_Driver:
 
     def time_up(self, signum, frame):
         self.logger.info("Signal handler called with signal" + str(signum))
+        if self.runner:
+            for t in self.runner.results:
+                t.shouldStop = True
         self.end = True
 
     def deinit(self):
