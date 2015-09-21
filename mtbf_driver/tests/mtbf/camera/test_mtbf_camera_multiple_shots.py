@@ -19,8 +19,9 @@ class TestCameraMultipleShots(GaiaMtbfTestCase):
         self.previous_number_of_pictures = len(self.data_layer.picture_files)
 
         self.camera = Camera(self.marionette)
-        self.camera.kill_abnormal_camera_app()
-        self.camera.launch()
+        #will launch the camera app at validation, if it's in abnormal status, the app will be killed.
+        if self.camera.kill_abnormal_camera_app() is False:
+            self.camera.launch()
 
         # Take a photo
         if self.camera.camera_mode == u'video':

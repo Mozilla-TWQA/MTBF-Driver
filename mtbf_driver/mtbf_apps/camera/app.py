@@ -14,6 +14,7 @@ class Mtbf_Camera(Camera):
         viewfinder = Wait(self.marionette).until(expected.element_present(*self._viewfinder_video_locator))
         try:
             Wait(self.marionette, timeout=10).until(lambda m: m.execute_script('return arguments[0].readyState;', [viewfinder]) > 0)
+            return True
         except:
             #Kill Camera app
             self.marionette.switch_to_frame()
@@ -21,4 +22,5 @@ class Mtbf_Camera(Camera):
             self.marionette.execute_async_script("GaiaApps.kill('%s');" % app_origin_name)
             result = self.marionette.execute_script('return GaiaApps.getDisplayedApp();')
             Wait(self.marionette).until(lambda m: result.get('name').lower() == 'default home screen')
+            return False
 
