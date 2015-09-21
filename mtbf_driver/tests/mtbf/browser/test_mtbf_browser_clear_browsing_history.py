@@ -42,12 +42,13 @@ class TestBrowserClearHistory(GaiaMtbfTestCase):
         browsing_privacy.tap_clear_browsing_history()
         browsing_privacy.tap_clear()
 
+        self.settings.return_to_prev_menu(self.settings.screen_element)
+
         self.device.touch_home_button()
         search.launch()
         search.wait_for_history_to_load(number_of_items=0)
         self.assertEqual(0, search.history_items_count)
 
     def tearDown(self):
-        self.apps.kill(self.settings.app)
         self.data_layer.disable_cell_data()
         GaiaMtbfTestCase.tearDown(self)
