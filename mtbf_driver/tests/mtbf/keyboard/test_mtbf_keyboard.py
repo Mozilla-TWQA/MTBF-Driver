@@ -18,6 +18,7 @@ class TestKeyboard(GaiaMtbfTestCase):
         self.contacts_app = MTBF_Contacts(self.marionette)
 
         self.contacts_app.launch()
+        original_contact_no = len(self.contacts_app.contacts)
         new_contact_form = self.contacts_app.tap_new_contact()
         new_contact_form.type_phone(self.contact['tel']['value'])
         new_contact_form.keyboard.dismiss()
@@ -36,9 +37,9 @@ class TestKeyboard(GaiaMtbfTestCase):
         # go back to app frame and finish this
         self.apps.switch_to_displayed_app()
         new_contact_form.tap_done()
-        self.wait_for_condition(lambda m: len(self.contacts_app.contacts) >= 1)
+        self.wait_for_condition(lambda m: len(self.contacts_app.contacts) == original_contact_no + 1)
 
-        contact_details = self.contacts_app.contacts[0].tap()
+        contact_details = self.contacts_app.search_contact(self.contact['tel']['value']).tap()
         output_text = contact_details.comments
 
         self.assertEqual(self._string[:14] + ' ' + self._string[15:] + 'Æ'.decode("UTF-8"), output_text)
