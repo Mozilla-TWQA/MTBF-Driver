@@ -2,19 +2,17 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import expected, By, Wait
+import time
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from mtbf_driver.mtbf_apps.settings.app import MTBF_Settings as Settings
 
-import time
-from gaiatest import GaiaTestCase
+class TestSettingsBluetooth(GaiaMtbfTestCase):
 
-
-class TestSettingsBluetooth(GaiaTestCase):
+    def setUp(self):
+        GaiaMtbfTestCase.setUp(self)
 
     def test_turn_on_and_off_bt(self):
         device_name = str(time.time())
-
         settings = Settings(self.marionette)
         settings.launch()
 
@@ -33,7 +31,8 @@ class TestSettingsBluetooth(GaiaTestCase):
         self.assertTrue(self.data_layer.bluetooth_is_discoverable)
         self.assertEquals(self.data_layer.bluetooth_name, device_name)
 
+        settings.disable_bluetooth()
+        settings.return_to_prev_menu(settings.screen_element)
+
     def tearDown(self):
-        self.marionette.switch_to_frame()
-        self.data_layer.bluetooth_disable()
-        GaiaTestCase.tearDown(self)
+        GaiaMtbfTestCase.tearDown(self)

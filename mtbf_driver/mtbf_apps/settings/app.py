@@ -13,6 +13,7 @@ class MTBF_Settings(Settings):
     _icon_cancel_locator = (By.CSS_SELECTOR, 'span.icon-close')
     _icon_back_locator = (By.ID, 'test-panel-back')
     _cellanddata_menu_locator = (By.ID, 'data-connectivity')
+    _bluetooth_header_locator = (By.CSS_SELECTOR, '#bluetooth_v2 gaia-header')
 
     def __init__(self, marionette):
         Settings.__init__(self, marionette)
@@ -68,3 +69,7 @@ class MTBF_Settings(Settings):
         _bluetooth_checkbox_locator = (By.CSS_SELECTOR, '#bluetooth_v2 .bluetooth-rename button')
         self.marionette.find_element(*_bluetooth_label_locator).tap()
         Wait(self.marionette).until(expected.element_displayed(*_bluetooth_checkbox_locator))
+
+    def disable_bluetooth(self):
+        _bluetooth_label_locator = (By.CSS_SELECTOR, '#bluetooth_v2 .bluetooth-status gaia-switch')
+        self.marionette.find_element(*_bluetooth_label_locator).tap()
