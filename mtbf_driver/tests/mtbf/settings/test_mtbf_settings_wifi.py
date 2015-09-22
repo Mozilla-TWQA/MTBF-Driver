@@ -20,7 +20,7 @@ class TestSettingsWifi(GaiaMtbfTestCase):
         # we need to go back to main screen of settings app
         self.settings.go_back()
 
-        wifi_settings = self.settings.open_wifi_settings()
+        wifi_settings = self.settings.open_wifi()
         # self.wait_for_element_displayed(*wifi_settings._wifi_enabled_label_locator)
 
         wifi_settings.enable_wifi()
