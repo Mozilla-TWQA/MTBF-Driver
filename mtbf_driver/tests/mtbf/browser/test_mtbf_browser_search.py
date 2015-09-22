@@ -22,7 +22,7 @@ class TestBrowserSearch(GaiaMtbfTestCase):
 
     def test_browser_search(self):
         search_text = 'Mozilla'
-        self.browser = self.search.search_keyword(search_text)
+        self.browser = self.search.go_to_url(search_text)
 
         self.browser.switch_to_content()
         Wait(self.marionette, timeout=120).until(
