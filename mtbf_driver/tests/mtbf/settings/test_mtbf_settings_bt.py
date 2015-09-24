@@ -2,7 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import time
+import string
+import random
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from mtbf_driver.mtbf_apps.settings.app import MTBF_Settings as Settings
 
@@ -12,7 +13,7 @@ class TestSettingsBluetooth(GaiaMtbfTestCase):
         GaiaMtbfTestCase.setUp(self)
 
     def test_turn_on_and_off_bt(self):
-        device_name = str(time.time())
+        device_name = ''.join(random.choice(string.ascii_lowercase) for i in range(20))
         settings = Settings(self.marionette)
         settings.launch()
 
