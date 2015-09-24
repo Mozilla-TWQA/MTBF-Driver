@@ -8,7 +8,7 @@ import re
 import shutil
 from zipfile import ZipFile
 from ConfigParser import NoSectionError
-from gaiatest.runtests import GaiaTestRunner, GaiaTestArguments
+from gaiatest.runtests import GaiaTestRunner, GaiaTestOptions
 from mozlog import structured
 from mozdevice.devicemanager import DMError
 from utils.memory_report_args import memory_report_args
@@ -42,7 +42,7 @@ class MTBFTestRunner(GaiaTestRunner):
 class MTBF_Driver:
 
     runner_class = MTBFTestRunner
-    parser_class = GaiaTestArguments
+    parser_class = GaiaTestOptions
     start_time = 0
     running_time = 0
     runner = None
