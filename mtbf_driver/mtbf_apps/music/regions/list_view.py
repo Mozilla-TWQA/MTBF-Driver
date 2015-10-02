@@ -7,7 +7,7 @@ from marionette_driver.wait import Wait
 
 
 from gaiatest.apps.base import Base
-from gaiatest.apps.music.regions.list_view import ListView
+from gaiatest.apps.music_oga.regions.list_view import ListView
 
 
 class Mtbf_ListView(ListView):

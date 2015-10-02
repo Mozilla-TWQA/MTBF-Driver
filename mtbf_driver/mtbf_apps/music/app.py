@@ -3,7 +3,7 @@ from marionette_driver import expected
 from marionette_driver.wait import Wait
 from marionette_driver.by import By
 
-from gaiatest.apps.music.app import Music
+from gaiatest.apps.music_oga.app import Music
 
 from mtbf_driver.mtbf_apps.music.regions.list_view import Mtbf_ListView
 
