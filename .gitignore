@@ -5,6 +5,7 @@ last_replay.*
 *.py[cod]
 gecko.log
 info
+runinfo_*
 b2ginfo*
 b2gprocrank*
 b2gps*

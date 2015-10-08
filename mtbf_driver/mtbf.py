@@ -6,6 +6,7 @@ import time
 import json
 import re
 import shutil
+import codecs
 from zipfile import ZipFile
 from ConfigParser import NoSectionError
 from gaiatest.runtests import GaiaTestRunner, GaiaTestArguments
@@ -150,9 +151,15 @@ class MTBF_Driver:
             sg = RandomStepGen(level=self.level, root=self.rootdir, workspace=self.workspace, runlist=self.runlist, dummy=self.dummy)
 
         current_round = 0
-        # Avoid reinitialing test env
         self.logger.info("Starting MTBF....")
-
+        with codecs.open("runinfo_" + os.path.basename(self.archive_folder), "w", encoding="UTF-8") as run_info_fh:
+            serial = ""
+            if 'ANDROID_SERIAL' in os.environ:
+                serial = os.environ['ANDROID_SERIAL']
+            run_info = {"serial": serial,
+                        "timestamp": str(time.time())
+                        }
+            run_info_fh.write(json.dumps(run_info))
         # Charge x hours per 24 hours
         if os.getenv("CHARGE_HOUR"):
             self.charge = 1
