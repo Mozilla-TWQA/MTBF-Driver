@@ -30,11 +30,11 @@ class TestCardsViewTwoApps(GaiaMtbfTestCase):
         self.cards_view.wait_for_cards_view()
 
         # Wait for first app ready
-        self.cards_view.wait_for_card_ready(self._test_apps[1])
+        self.cards_view.cards[1].wait_for_centered()
 
         # Close the current apps from the cards view
-        self.cards_view.close_app(self._test_apps[1])
-        self.cards_view.close_app(self._test_apps[0])
+        self.cards_view.cards[1].close()
+        self.cards_view.cards[0].close()
 
         # If successfully killed, the apps should no longer appear in the cards view and the "No recent apps" message should be displayed
         self.assertFalse(self.cards_view.is_app_present(self._test_apps[1]),
