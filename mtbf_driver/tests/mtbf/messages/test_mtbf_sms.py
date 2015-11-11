@@ -17,9 +17,9 @@ class TestSms(GaiaMtbfTestCase):
         self._last_message = ".message-list li"
 
         # launch the app
-        self.launch_by_touch("sms")
-        self.apps.switch_to_displayed_app()
         self.messages = Messages(self.marionette)
+        self.launch_by_touch(self.messages)
+        self.apps.switch_to_displayed_app()
         self.messages.wait_for_message_list()
 
         # click new message

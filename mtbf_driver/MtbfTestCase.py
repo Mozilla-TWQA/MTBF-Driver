@@ -11,44 +11,16 @@ from marionette_driver.by import By
 
 class GaiaMtbfTestCase(GaiaTestCase):
 
-    def launch_by_touch(self, name):
-        self.apps.switch_to_displayed_app()
-        icon = self.marionette.find_element(By.CSS_SELECTOR, '#icons [data-identifier*=' + name + ']')
+    def launch_by_touch(self, app):
+        # Parameter: GaiaApp
+        Homescreen(self.marionette).launch()
+        icon = self.marionette.find_element(By.CSS_SELECTOR, 'gaia-app-icon[data-identifier="' + app.manifest_url + '"]')
         self.marionette.execute_script("arguments[0].scrollIntoView(false);", [icon])
         # Sleep because homescreen protect touch event when scrolling
         time.sleep(1)
         icon.tap()
+        time.sleep(3)
         self.apps.switch_to_displayed_app()
-
-    def horizontal_launch_by_touch(
-            self,
-            name,
-            switch_to_frame=True,
-            url=None,
-            launch_timeout=None):
-        '''
-        This function is deprecated because homescreen was changed to vertical
-        '''
-        homescreen = Homescreen(self.marionette)
-        self.marionette.switch_to_frame()
-        hs = self.marionette.find_element('css selector', '#homescreen iframe')
-        self.marionette.switch_to_frame(hs)
-        homescreen.go_to_next_page()
-
-        icon = self.marionette.find_element(
-            'css selector',
-            'li[aria-label="' + name + '"]:not([data-type="collection"])')
-
-        while not icon.is_displayed() and homescreen.homescreen_has_more_pages:
-            homescreen.go_to_next_page()
-
-        get_current_page = "var pageHelper = window.wrappedJSObject.GridManager.pageHelper;return pageHelper.getCurrentPageNumber() > 0;"
-        while not icon.is_displayed() and self.marionette.execute_script(get_current_page):
-            self.marionette.execute_script('window.wrappedJSObject.GridManager.goToPreviousPage()')
-            self.wait_for_condition(lambda m: m.find_element('tag name', 'body').get_attribute('data-transitioning') != 'true')
-        icon.tap()
-
-        self.marionette.switch_to_frame()
 
     def cleanup_storage(self):
         pass
