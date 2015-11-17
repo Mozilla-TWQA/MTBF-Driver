@@ -13,15 +13,13 @@ class TestSettingsWifi(GaiaMtbfTestCase):
         self.data_layer.enable_wifi()
         self.data_layer.forget_all_networks()
         self.data_layer.disable_wifi()
-        self.settings = MTBF_Settings(self.marionette)
-        self.settings.launch()
 
     def test_connect_to_wifi_via_settings_app(self):
         # we need to go back to main screen of settings app
-        self.settings.go_back()
-
+        self.settings = MTBF_Settings(self.marionette)
+        self.settings.launch()
+        self.settings.return_to_prev_menu(settings.screen_element)
         wifi_settings = self.settings.open_wifi()
-        # self.wait_for_element_displayed(*wifi_settings._wifi_enabled_label_locator)
 
         wifi_settings.enable_wifi()
         wifi_settings.connect_to_network(self.testvars['wifi'])

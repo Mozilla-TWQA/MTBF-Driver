@@ -5,7 +5,6 @@
 
 from mtbf_driver.MtbfTestCase import GaiaMtbfTestCase
 from gaiatest.apps.ui_tests.app import UiTests
-from mtbf_driver.mtbf_apps.ui_tests.app import MTBF_UiTests
 
 
 class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
@@ -17,10 +16,8 @@ class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
 
     def test_keyboard_predictive_key(self):
         # TODO: Merge gaiatest new test of predictive key
-        self.app_id = self.launch_by_touch("uitest")
         self.ui_tests = UiTests(self.marionette)
-        self.mtbf_ui_tests = MTBF_UiTests(self.marionette)
-        self.mtbf_ui_tests.back_to_main_screen()
+        self.app_id = self.launch_by_touch(self.ui_tests)
         # go to UI/keyboard page
         keyboard_page = self.ui_tests.tap_keyboard_option()
         keyboard_page.switch_to_frame()
@@ -41,3 +38,5 @@ class TestKeyboardPredictiveKey(GaiaMtbfTestCase):
         # check if the word in the input field is the same as the expected word
         typed_word = keyboard_page.text_input
         self.assertEqual(typed_word, expected_word)
+        self.apps.switch_to_displayed_app()
+        self.ui_tests.tap_back_button()
