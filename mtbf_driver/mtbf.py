@@ -3,6 +3,7 @@ import sys
 import os.path
 import signal
 import time
+import datetime
 import json
 import re
 import shutil
@@ -18,6 +19,9 @@ from utils.time_utils import time2sec
 import utils.crash_scan as CrashScan
 
 import mozversion
+
+
+jenkins_fmt = '%Y-%m-%d_%H-%M-%S'
 
 
 class MTBFTestRunner(GaiaTestRunner):
@@ -157,7 +161,7 @@ class MTBF_Driver:
             if 'ANDROID_SERIAL' in os.environ:
                 serial = os.environ['ANDROID_SERIAL']
             run_info = {"serial": serial,
-                        "timestamp": str(time.time())
+                        "timestamp": datetime.datetime.fromtimestamp(time.time()).strftime(jenkins_fmt)
                         }
             run_info_fh.write(json.dumps(run_info))
         # Charge x hours per 24 hours
@@ -356,6 +360,7 @@ class MTBF_Driver:
                     self.logger.info("CrashReportNotFound: No crash report found in device " + serial)
             else:
                 self.logger.error("CrashReportAdbError: Can't find device in ADB list")
+
 
 def main(**kwargs):
     ## set default as 2 mins
