@@ -18,7 +18,7 @@ class TestSettingsWifi(GaiaMtbfTestCase):
         # we need to go back to main screen of settings app
         self.settings = MTBF_Settings(self.marionette)
         self.settings.launch()
-        self.settings.return_to_prev_menu(settings.screen_element)
+        self.settings.return_to_prev_menu(self.settings.screen_element)
         wifi_settings = self.settings.open_wifi()
 
         wifi_settings.enable_wifi()
